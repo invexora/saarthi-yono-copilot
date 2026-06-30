@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saarthi — Proactive Financial Co-Pilot for YONO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 25, 40, 0.75);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary-sbi: #00a0e4;
+      --sbi-dark: #003366;
+      --sbi-light: #f1f7fc;
+      --saffron: #ff9933;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --glow-color: rgba(0, 160, 228, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at 50% 0%, #152238 0%, var(--bg-dark) 70%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    header {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(9, 13, 22, 0.5);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--primary-sbi), #0055b8);
+      color: white;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 0.5px;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(0, 160, 228, 0.3);
+    }
+
+    .project-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 1.4rem;
+      background: linear-gradient(to right, #ffffff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .team-badge {
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      color: var(--text-muted);
+    }
+
+    .team-badge strong {
+      color: var(--text-main);
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 340px 380px 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem;
+      flex-grow: 1;
+      height: calc(100vh - 75px);
+      max-height: calc(100vh - 75px);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Common Card Styling */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .card-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    /* Column 1: Simulator Control */
+    .profile-select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .profile-select:focus {
+      border-color: var(--primary-sbi);
+    }
+
+    .profile-info-box {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+    .profile-info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+    .profile-info-label {
+      color: var(--text-muted);
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .scenario-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      text-align: left;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .scenario-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .scenario-btn.active {
+      background: rgba(0, 160, 228, 0.15);
+      border-color: var(--primary-sbi);
+      box-shadow: 0 0 12px rgba(0, 160, 228, 0.2);
+    }
+    .scenario-icon {
+      font-size: 1.25rem;
+      margin-top: 0.1rem;
+    }
+    .scenario-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .scenario-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .scenario-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Column 2: Phone Emulator */
+    .phone-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-frame {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 40px;
+      border: 12px solid #27272a;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      aspect-ratio: 9/19;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 130px;
+      height: 25px;
+      background: #27272a;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      z-index: 10;
+    }
+
+    .phone-screen {
+      flex-grow: 1;
+      background: var(--sbi-light);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      padding-top: 25px;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* YONO Mobile App Header */
+    .yono-header {
+      background: linear-gradient(135deg, var(--sbi-dark) 0%, #00509d 100%);
+      color: white;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .yono-logo {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .yono-logo::after {
+      content: 'SBI';
+      font-size: 0.65rem;
+      background: var(--primary-sbi);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+
+    /* YONO User Dashboard Content */
+    .yono-content {
+      padding: 0.75rem;
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .yono-welcome {
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .yono-balance-card {
+      background: white;
+      border-radius: 12px;
+      padding: 0.85rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--primary-sbi);
+    }
+    .balance-label {
+      font-size: 0.7rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .balance-amount {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #111;
+      margin: 2px 0;
+    }
+
+    .yono-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .yono-grid-item {
+      background: white;
+      border-radius: 8px;
+      padding: 0.6rem;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .yono-grid-item:hover {
+      background: #f8fafc;
+    }
+    .grid-icon {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+    }
+    .grid-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    /* Dynamic Saarthi Nudge - Inside YONO App UI */
+    .saarthi-nudge-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 20;
+      border-top: 3px solid var(--primary-sbi);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .saarthi-nudge-container.visible {
+      transform: translateY(0);
+    }
+
+    .nudge-header {
+      background: #f8fafc;
+      padding: 0.65rem 0.85rem;
+      border-top-left-radius: 13px;
+      border-top-right-radius: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--sbi-dark);
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .nudge-logo {
+      background: var(--primary-sbi);
+      color: white;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 0.6rem;
+    }
+
+    .nudge-body {
+      padding: 0.85rem;
+    }
+    .nudge-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #1a202c;
+      margin-bottom: 0.35rem;
+    }
+    .nudge-text {
+      font-size: 0.75rem;
+      color: #4a5568;
+      line-height: 1.35;
+      margin-bottom: 0.75rem;
+    }
+
+    .nudge-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .nudge-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .nudge-btn:hover {
+      opacity: 0.9;
+    }
+    .nudge-btn-primary {
+      background: var(--primary-sbi);
+      color: white;
+    }
+    .nudge-btn-secondary {
+      background: #edf2f7;
+      color: #4a5568;
+    }
+
+    /* Consent Screen inside Phone Emulator */
+    .yono-consent-screen {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.98);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1rem;
+      display: none;
+    }
+    .yono-consent-screen.visible {
+      display: flex;
+    }
+    .consent-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .consent-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--sbi-dark);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .consent-desc {
+      font-size: 0.75rem;
+      color: #4a5568;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .consent-terms {
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      padding: 0.65rem;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      color: #718096;
+      height: 100px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    /* Column 3: Saarthi Agent Trace Console */
+    .trace-layout {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100%;
+    }
+
+    .pipeline-status {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.8rem;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .logs-area {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.2);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+    }
+
+    .trace-node {
+      border-left: 2px solid rgba(255, 255, 255, 0.1);
+      margin-left: 6px;
+      padding-left: 12px;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+      transition: opacity 0.3s, border-color 0.3s;
+      position: relative;
+    }
+    .trace-node.active {
+      opacity: 1;
+      border-left-color: var(--primary-sbi);
+    }
+    .trace-node.completed {
+      opacity: 0.85;
+      border-left-color: var(--success);
+    }
+    .trace-node::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #374151;
+      transition: background-color 0.3s;
+    }
+    .trace-node.active::before {
+      background: var(--primary-sbi);
+      box-shadow: 0 0 6px var(--primary-sbi);
+    }
+    .trace-node.completed::before {
+      background: var(--success);
+    }
+
+    .node-header {
+      font-weight: 600;
+      color: #93c5fd;
+      margin-bottom: 0.25rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .node-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .node-content {
+      font-size: 0.75rem;
+      white-space: pre-wrap;
+      color: #cbd5e1;
+    }
+
+    /* Decision Token View */
+    .token-box {
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: rgba(16, 185, 129, 0.03);
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: none;
+    }
+    .token-box.visible {
+      display: block;
+      animation: fadeIn 0.4s ease-out;
+    }
+    .token-header {
+      font-weight: bold;
+      color: var(--success);
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .token-hash {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      word-break: break-all;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      margin-top: 0.25rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .audit-trail-container {
+      border-top: 1px solid var(--border-color);
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.01);
+    }
+    .audit-trail-list {
+      max-height: 80px;
+      overflow-y: auto;
+      font-size: 0.7rem;
+      font-family: 'Fira Code', monospace;
+      color: var(--text-muted);
+    }
+    .audit-item {
+      margin-bottom: 0.2rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .audit-ts {
+      color: #60a5fa;
+    }
+    .audit-text {
+      color: #34d399;
+    }
+
+    /* Tabs/Consents in profile */
+    .profile-consent-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 0.75rem;
+    }
+    .consent-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .consent-badge.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+    .consent-badge.revoked {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+    }
+
+    .revoke-btn {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: all 0.2s;
+    }
+    .revoke-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-badge">YONO</div>
+      <div class="project-title">Saarthi: Proactive AI Agent Co-Pilot</div>
+    </div>
+    <div class="team-badge">
+      Developed by <strong>Team Invexora</strong> (Gaurav Mahajan & Kishore Jadhav)
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- COLUMN 1: SIMULATOR CONTROL -->
+    <section class="glass-card">
+      <div class="card-header">
+        <span>Simulation Controls</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Step 1: Choose Persona</span>
+      </div>
+      <div class="card-body">
+        
+        <label class="section-title">Select Customer Profile</label>
+        <select id="profileSelect" class="profile-select" onchange="changeProfile()">
+          <option value="priya">Priya Sharma (Corporate Tech Lead)</option>
+          <option value="ramesh">Ramesh Kumar (Retired Pensioner)</option>
+          <option value="amit">Amit Patel (SME / Retail Shop Owner)</option>
+        </select>
+
+        <div class="profile-info-box">
+          <div class="profile-info-row">
+            <span class="profile-info-label">Customer ID:</span>
+            <span id="profId">SBI-772910</span>
+          </div>
+          <div class="profile-info-row">
+            <span class="profile-info-label">Monthly Salary:</span>
+            <span id="profSalary">₹1,45,000</span>
+          </div>
+          <div class="profile-info-row">
+            <span class="profile-info-label">Savings Balance:</span>
+            <span id="profBalance">₹2,80,000</span>
+          </div>
+          <div class="profile-info-row">
+            <span class="profile-info-label">CC Interest paid:</span>
+            <span id="profInterest">₹4,200/mo (across 2 cards)</span>
+          </div>
+        </div>
+
+        <div class="profile-consent-status">
+          <span>DPDP Active Consent:</span>
+          <span id="consentBadge" class="consent-badge active">OPTED IN</span>
+        </div>
+
+        <label class="section-title">Trigger Behavioral Signals</label>
+        
+        <button class="scenario-btn" onclick="triggerScenario('friction')">
+          <span class="scenario-icon">🏛️</span>
+          <div class="scenario-details">
+            <span class="scenario-name">1. Branch Friction Signal</span>
+            <span class="scenario-desc">User physically visits branch to deposit check/open FD</span>
+          </div>
+        </button>
+
+        <button class="scenario-btn" onclick="triggerScenario('opportunity')">
+          <span class="scenario-icon">💡</span>
+          <div class="scenario-details">
+            <span class="scenario-name">2. Opportunity Signal</span>
+            <span class="scenario-desc">High idle balance & paying high credit card interest rates</span>
+          </div>
+        </button>
+
+        <button class="scenario-btn" onclick="triggerScenario('lifeevent')">
+          <span class="scenario-icon">🚀</span>
+          <div class="scenario-details">
+            <span class="scenario-name">3. Life-Event Signal</span>
+            <span class="scenario-desc">Salary jump pattern detected in monthly credits</span>
+          </div>
+        </button>
+
+        <button id="revokeBtn" class="revoke-btn" onclick="toggleConsent()">
+          Revoke Consent (DPDP Right to Erasure)
+        </button>
+
+      </div>
+    </section>
+
+    <!-- COLUMN 2: YONO PHONE EMULATOR -->
+    <section class="phone-wrapper">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          
+          <!-- App Header -->
+          <div class="yono-header">
+            <div class="yono-logo" onclick="navigateToView('home')" style="cursor: pointer;">yono</div>
+            <div onclick="navigateToView('services')" style="cursor: pointer; display: flex; align-items: center; gap: 4px;">Hi, <span id="yonoUser">Priya</span> 👤</div>
+          </div>
+
+          <!-- Dynamic View Header (Breadcrumb / Back) -->
+          <div id="yonoSubHeader" style="display: none; background: #00254d; color: white; padding: 0.4rem 0.75rem; align-items: center; gap: 0.5rem; font-size: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: system-ui, -apple-system, sans-serif;">
+            <button onclick="navigateToView('home')" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; cursor: pointer; border-radius: 4px; padding: 2px 6px; font-weight: 600; font-size: 0.65rem; display: flex; align-items: center; gap: 2px;">
+              ← Back
+            </button>
+            <span id="yonoViewTitle" style="font-weight: 600; font-size: 0.75rem; letter-spacing: 0.3px;">View</span>
+          </div>
+
+          <!-- YONO View: Home Dashboard -->
+          <div id="yono-view-home" class="yono-content">
+            <div class="yono-welcome">
+              Welcome back to YONO SBI. Your digital assistant Saarthi is watching over.
+            </div>
+
+            <!-- Savings Balance Card -->
+            <div class="yono-balance-card">
+              <div class="balance-label">Savings Account Balance</div>
+              <div id="yonoBalance" class="balance-amount">₹2,80,000.00</div>
+              <div style="font-size: 0.65rem; color: #666;">A/c No: XXXXXXX4812</div>
+            </div>
+
+            <!-- Grid Items (Router Buttons) -->
+            <div class="yono-grid">
+              <div class="yono-grid-item" onclick="navigateToView('pay')">
+                <div class="grid-icon">💸</div>
+                <div class="grid-label">YONO Pay</div>
+              </div>
+              <div class="yono-grid-item" onclick="navigateToView('investments')">
+                <div class="grid-icon">📈</div>
+                <div class="grid-label">Investments</div>
+              </div>
+              <div class="yono-grid-item" onclick="navigateToView('cards')">
+                <div class="grid-icon">💳</div>
+                <div class="grid-label">Cards</div>
+              </div>
+              <div class="yono-grid-item" onclick="navigateToView('loans')">
+                <div class="grid-icon">🤝</div>
+                <div class="grid-label">Loans</div>
+              </div>
+              <div class="yono-grid-item" onclick="navigateToView('insurance')">
+                <div class="grid-icon">🛡️</div>
+                <div class="grid-label">Insurance</div>
+              </div>
+              <div class="yono-grid-item" onclick="navigateToView('services')">
+                <div class="grid-icon">⚙️</div>
+                <div class="grid-label">Services</div>
+              </div>
+            </div>
+
+            <!-- Static Banners -->
+            <div style="background: #e2e8f0; border-radius: 8px; padding: 0.75rem; font-size: 0.7rem; color: #475569; text-align: center; border: 1px dashed #cbd5e1; margin-top: auto;">
+              SBI Quick: Call or SMS to check balance without login
+            </div>
+          </div>
+
+          <!-- YONO View: YONO Pay -->
+          <div id="yono-view-pay" class="yono-content" style="display: none;">
+            <!-- Quick Actions Grid -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;">
+              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
+                <div style="font-size: 1rem; margin-bottom: 2px;">📷</div>
+                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">Scan QR</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
+                <div style="font-size: 1rem; margin-bottom: 2px;">👤</div>
+                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">To Contact</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
+                <div style="font-size: 1rem; margin-bottom: 2px;">🏦</div>
+                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">To Bank A/c</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
+                <div style="font-size: 1rem; margin-bottom: 2px;">🔄</div>
+                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">Self Trans</div>
+              </div>
+            </div>
+
+            <!-- Recent Transactions List -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; overflow-y: auto;">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Recent Transactions</div>
+              
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <!-- Transaction 1: Branch counter friction indicator -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9; cursor: pointer;" onclick="triggerScenario('friction')">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.1rem; background: #fee2e2; border-radius: 50%; padding: 4px; display: inline-flex;">🏛️</span>
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">BRANCH CASH DEPOSIT</span>
+                      <span style="font-size: 0.55rem; color: #ef4444; font-weight: bold;">Counter Manual - Branch 0032</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">+₹20,000.00</div>
+                    <div style="font-size: 0.5rem; color: #94a3b8;">Today, 10:15 AM</div>
+                  </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.1rem; background: #e0f2fe; border-radius: 50%; padding: 4px; display: inline-flex;">🛍️</span>
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">Amazon India Pay</span>
+                      <span style="font-size: 0.55rem; color: #64748b;">UPI Instant Pay</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">-₹1,240.00</div>
+                    <div style="font-size: 0.5rem; color: #94a3b8;">Yesterday</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.1rem; background: #f0fdf4; border-radius: 50%; padding: 4px; display: inline-flex;">💰</span>
+                    <div style="display: flex; flex-direction: column;">
+                      <span id="salaryTransName" style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">SALARY / TechCorp</span>
+                      <span style="font-size: 0.55rem; color: #64748b;">ACH Credit</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div id="salaryTransAmount" style="font-size: 0.7rem; font-weight: bold; color: var(--success);">+₹1,45,000.00</div>
+                    <div style="font-size: 0.5rem; color: #94a3b8;">28th Jun</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.1rem; background: #fee2e2; border-radius: 50%; padding: 4px; display: inline-flex;">💳</span>
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">CC Interest Payment</span>
+                      <span style="font-size: 0.55rem; color: #64748b;">Auto-Debit Card Bill</span>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div id="ccInterestTransAmount" style="font-size: 0.7rem; font-weight: bold; color: #ef4444;">-₹4,200.00</div>
+                    <div style="font-size: 0.5rem; color: #94a3b8;">25th Jun</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- YONO View: Investments -->
+          <div id="yono-view-investments" class="yono-content" style="display: none;">
+            <!-- Portfolio Summary -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem;">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">My Investment Portfolio</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                <span style="color: #64748b;">Mutual Funds:</span>
+                <span id="portfolioMF" style="font-weight: 600; color: var(--success);">₹1,20,000.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                <span style="color: #64748b;">Fixed Deposits (FD):</span>
+                <span id="portfolioFD" style="font-weight: 600; color: #334155;">₹0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; padding-top: 0.25rem; border-top: 1px solid #f1f5f9;">
+                <span style="font-weight: 600; color: #1e293b;">Total Invested:</span>
+                <span id="portfolioTotal" style="font-weight: 700; color: #1e293b;">₹1,20,000.00</span>
+              </div>
+            </div>
+            
+            <!-- Idle Wealth Leak Card -->
+            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; padding: 0.65rem; display: flex; flex-direction: column; gap: 0.25rem; cursor: pointer;" onclick="triggerScenario('lifeevent')">
+              <div style="font-size: 0.7rem; font-weight: bold; color: #b45309; display: flex; align-items: center; gap: 4px;">
+                ⚠️ Wealth Leak Detected
+              </div>
+              <div style="font-size: 0.65rem; color: #78350f; line-height: 1.35;">
+                Your savings account balance of <strong id="investSavingsBalance">₹2,80,000.00</strong> earns only 2.70%. Setup Auto-Sweep to Recurring Deposit (7.10%) to optimize.
+              </div>
+            </div>
+
+            <!-- Investment Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Explore Markets</div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">🚀</span>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">SBI Mutual Fund (SIP)</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Top performing funds from 12% p.a.</span>
+                  </div>
+                </div>
+                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">🔒</span>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Fixed & Recurring Deposit</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Guaranteed returns up to 7.10% p.a.</span>
+                  </div>
+                </div>
+                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- YONO View: Cards -->
+          <div id="yono-view-cards" class="yono-content" style="display: none;">
+            <!-- Credit Card UI -->
+            <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px; padding: 0.85rem; color: white; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1.58/1; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden;">
+              <div style="position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; background: rgba(0, 160, 228, 0.12); border-radius: 50%;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
+                <span style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--primary-sbi); font-weight: bold;">YONO Premium</span>
+                <span style="font-size: 0.85rem; font-weight: bold; font-family: 'Space Grotesk', sans-serif;">SBI</span>
+              </div>
+              <div style="font-family: 'Fira Code', monospace; font-size: 0.9rem; letter-spacing: 1.5px; margin: 0.5rem 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); z-index: 1;">
+                4321 XXXX XXXX 9901
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
+                <div>
+                  <div style="font-size: 0.5rem; color: #94a3b8; text-transform: uppercase;">Card Holder</div>
+                  <div id="cardHolderName" style="font-size: 0.7rem; font-weight: bold; letter-spacing: 0.3px;">PRIYA SHARMA</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.5rem; color: #94a3b8; text-transform: uppercase;">Expiry</div>
+                  <div style="font-size: 0.7rem; font-weight: bold;">09/30</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Statement Summary -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; cursor: pointer;" onclick="triggerScenario('opportunity')">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Card Statement</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                <span style="color: #64748b;">Total Outstanding:</span>
+                <span id="cardOutstanding" style="font-weight: 700; color: var(--error);">₹85,000.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                <span style="color: #64748b;">Minimum Due:</span>
+                <span id="cardMinDue" style="font-weight: 600; color: #334155;">₹4,250.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                <span style="color: #64748b;">Interest Rate:</span>
+                <span style="font-weight: 600; color: #334155;">42% p.a. (3.5%/mo)</span>
+              </div>
+              <div id="cardInterestRow" style="display: flex; justify-content: space-between; font-size: 0.75rem; padding-top: 0.25rem; border-top: 1px dashed #e2e8f0; color: var(--error);">
+                <span style="font-weight: 600;">Monthly Interest Cost:</span>
+                <span id="cardInterestPaid" style="font-weight: 700;">₹4,200.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- YONO View: Loans -->
+          <div id="yono-view-loans" class="yono-content" style="display: none;">
+            <!-- Active Loans -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.25rem;">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Active Loans</div>
+              <div id="activeLoansContainer">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #3b82f6; padding-left: 6px; margin: 4px 0;">
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: bold; color: #1e293b;">Home Loan</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">A/c: XXXXXX99102</span>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="font-weight: bold; color: #1e293b;">₹45,00,000</span>
+                    <br><span style="font-size: 0.6rem; color: #64748b;">EMI: ₹38,500/mo</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pre-Approved Loan Offers -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem;">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Pre-Approved Offers</div>
+              <div id="loanOffersContainer">
+                <!-- Loan Offer Details dynamically generated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- YONO View: Insurance -->
+          <div id="yono-view-insurance" class="yono-content" style="display: none;">
+            <!-- Active Policies -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.25rem;">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">My Policies</div>
+              
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #10b981; padding-left: 6px; margin: 4px 0;">
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-weight: bold; color: #1e293b;">SBI General Health</span>
+                  <span style="font-size: 0.6rem; color: #64748b;">Policy: HI-9912048</span>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-weight: bold; color: #10b981;">₹5,00,000 Cover</span>
+                  <br><span style="font-size: 0.6rem; color: #64748b;">Premium: Paid</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insurance Products to Buy -->
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Explore Coverages</div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">🚗</span>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Motor Insurance</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Instant cover for car & two-wheeler</span>
+                  </div>
+                </div>
+                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">🛡️</span>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Term Life Insurance</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Secure your family's future</span>
+                  </div>
+                </div>
+                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- YONO View: Services (DPDP Privacy Centre) -->
+          <div id="yono-view-services" class="yono-content" style="display: none;">
+            <!-- DPDP Center -->
+            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: auto;">
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b; display: flex; align-items: center; gap: 4px;">
+                🛡️ DPDP Act Privacy Centre
+              </div>
+              
+              <div style="font-size: 0.65rem; color: #64748b; line-height: 1.35;">
+                Under the Digital Personal Data Protection (DPDP) Act, you have full control over how YONO and your AI assistant Saarthi processes your financial patterns.
+              </div>
+
+              <!-- Inner Consent Toggle -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
+                <div style="display: flex; flex-direction: column; max-width: 75%;">
+                  <span style="font-size: 0.7rem; font-weight: bold; color: #334155;">Active Profiling Consent</span>
+                  <span style="font-size: 0.52rem; color: #64748b;">Allow Saarthi to analyze transaction history for pre-approved savings offers.</span>
+                </div>
+                <!-- Custom Checkbox -->
+                <input type="checkbox" id="yonoConsentToggle" onchange="syncConsentFromApp()" style="width: 16px; height: 16px; cursor: pointer;">
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.2rem;">
+                <button class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" onclick="triggerDataExport()">
+                  📥 Data Portability Export (PDF/JSON)
+                </button>
+                <button class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; color: #ef4444; background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.1); border-radius: 6px;" onclick="triggerDataErasure()">
+                  🗑️ Request Complete Data Erasure
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Slide-Up Nudge Card -->
+          <div id="nudgeCard" class="saarthi-nudge-container">
+            <div class="nudge-header">
+              <span class="nudge-logo">SAARTHI</span>
+              <span>PROACTIVE RECOMMENDATION</span>
+            </div>
+            <div class="nudge-body">
+              <div id="nudgeTitle" class="nudge-title">Consolidate Debt & Save</div>
+              <div id="nudgeText" class="nudge-text">
+                You've paid ₹4,200 in card interest across two credit cards. Consolidation pre-approved at half the rate.
+              </div>
+              <div class="nudge-actions">
+                <button class="nudge-btn nudge-btn-secondary" onclick="dismissNudge()">Skip</button>
+                <button id="nudgeActionBtn" class="nudge-btn nudge-btn-primary" onclick="acceptNudge()">Apply Now</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consent Flow Screen -->
+          <div id="consentScreen" class="yono-consent-screen">
+            <div class="consent-icon">📝</div>
+            <div class="consent-title">Confirm Pre-Approved Offer</div>
+            <div id="consentText" class="consent-desc">
+              To proceed with the pre-approved consolidation loan, please confirm your consent.
+            </div>
+            <div class="consent-terms">
+              <strong>DPDP Act & FPC Gating Terms:</strong><br>
+              1. The data used for this nudge is strictly purpose-limited.<br>
+              2. Explicit one-time consent is required to execute.<br>
+              3. You have the right to revoke processing or request erasure of this transaction's history at any point.
+            </div>
+            <div class="nudge-actions" style="margin-top: auto;">
+              <button class="nudge-btn nudge-btn-secondary" onclick="closeConsentScreen()">Cancel</button>
+              <button class="nudge-btn nudge-btn-primary" onclick="confirmAction()">Authorize & Execute</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMN 3: LIVE AGENTIC TRACE CONSOLE -->
+    <section class="glass-card">
+      <div class="card-header">
+        <span>Saarthi Backend Agentic Orchestrator (LangGraph Trace)</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted); font-family: monospace;">status: active</span>
+      </div>
+      <div class="trace-layout">
+        
+        <div class="pipeline-status">
+          <div class="status-item">
+            <span id="dot1" class="status-dot"></span>
+            <span>Input Guardian</span>
+          </div>
+          <div class="status-item">
+            <span id="dot2" class="status-dot"></span>
+            <span>Signal Detection</span>
+          </div>
+          <div class="status-item">
+            <span id="dot3" class="status-dot"></span>
+            <span>Recommendation</span>
+          </div>
+          <div class="status-item">
+            <span id="dot4" class="status-dot"></span>
+            <span>Compliance Gating</span>
+          </div>
+        </div>
+
+        <div id="logsArea" class="logs-area">
+          <div style="color: var(--text-muted); text-align: center; margin-top: 3rem;">
+            Select a customer profile and trigger a behavioral signal to view the real-time agent workflow execution.
+          </div>
+        </div>
+
+        <div id="tokenBox" class="token-box">
+          <div class="token-header">
+            <span>🛡️ Decision Token Generated & Signed</span>
+          </div>
+          <div style="font-size: 0.75rem; color: #d1fae5;">
+            Cryptographically signed gating token stored on the immutable ledger.
+          </div>
+          <div id="tokenHash" class="token-hash">
+            SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+          </div>
+        </div>
+
+        <div class="audit-trail-container">
+          <label class="section-title">Immutable Audit Trail (Local DB & DPDP Logs)</label>
+          <div id="auditList" class="audit-trail-list">
+            <div class="audit-item"><span class="audit-ts">[10:56:25]</span> <span class="audit-text">Saarthi Backend Engine Initialized</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // State database of current profile
+    const profiles = {
+      priya: {
+        id: "SBI-772910",
+        name: "Priya Sharma",
+        salary: "₹1,45,000",
+        balance: "₹2,80,000",
+        interest: "₹4,200/mo (across 2 cards)",
+        rawBalance: 280000,
+        rawCardDebt: 85000,
+        email: "priya.sharma@example.com",
+        pan: "ABCDE1234F",
+        aadhaar: "4532 9981 1204"
+      },
+      ramesh: {
+        id: "SBI-881234",
+        name: "Ramesh Kumar",
+        salary: "₹42,000",
+        balance: "₹92,000",
+        interest: "₹0/mo",
+        rawBalance: 92000,
+        rawCardDebt: 0,
+        email: "ramesh.kumar@example.com",
+        pan: "FGHIJ5678K",
+        aadhaar: "8899 4432 1122"
+      },
+      amit: {
+        id: "SBI-223456",
+        name: "Amit Patel",
+        salary: "₹95,000",
+        balance: "₹6,40,000",
+        interest: "₹8,500/mo (business loan EMI)",
+        rawBalance: 640000,
+        rawCardDebt: 120000,
+        email: "amit.patel@example.com",
+        pan: "LMNOP9012Q",
+        aadhaar: "3322 1155 9988"
+      }
+    };
+
+    let currentProfileKey = 'priya';
+    let currentNudge = null;
+    let consentState = true; // DPDP consent state
+
+    function changeProfile() {
+      const select = document.getElementById('profileSelect');
+      currentProfileKey = select.value;
+      const profile = profiles[currentProfileKey];
+      
+      document.getElementById('profId').innerText = profile.id;
+      document.getElementById('profSalary').innerText = profile.salary;
+      document.getElementById('profBalance').innerText = profile.balance;
+      document.getElementById('profInterest').innerText = profile.interest;
+      
+      document.getElementById('yonoUser').innerText = profile.name.split(' ')[0];
+      document.getElementById('yonoBalance').innerText = parseFloat(profile.rawBalance).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+
+      // Update dynamic sub-screen fields
+      document.getElementById('cardHolderName').innerText = profile.name.toUpperCase();
+      document.getElementById('cardOutstanding').innerText = profile.rawCardDebt.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      
+      // Calculate min due (5%)
+      const minDue = profile.rawCardDebt * 0.05;
+      document.getElementById('cardMinDue').innerText = minDue.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      
+      // Calculate cc interest (42% p.a. -> 3.5%/mo on card debt)
+      const ccInterest = profile.rawCardDebt * 0.035;
+      if (profile.rawCardDebt > 0) {
+        document.getElementById('cardInterestRow').style.display = 'flex';
+        document.getElementById('cardInterestPaid').innerText = ccInterest.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      } else {
+        document.getElementById('cardInterestRow').style.display = 'none';
+      }
+
+      document.getElementById('investSavingsBalance').innerText = parseFloat(profile.rawBalance).toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      
+      // MF and FD calculation
+      const mfVal = profile.rawBalance * 0.4; 
+      document.getElementById('portfolioMF').innerText = mfVal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      document.getElementById('portfolioTotal').innerText = mfVal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      
+      // Active Loans UI
+      const loansContainer = document.getElementById('activeLoansContainer');
+      if (currentProfileKey === 'priya') {
+        loansContainer.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #3b82f6; padding-left: 6px; margin: 4px 0;">
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: bold; color: #1e293b;">Home Loan</span>
+              <span style="font-size: 0.6rem; color: #64748b;">A/c No: XXXXXX99102</span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-weight: bold; color: #1e293b;">₹45,00,000</span>
+              <br><span style="font-size: 0.6rem; color: #64748b;">EMI: ₹38,500/mo</span>
+            </div>
+          </div>
+        `;
+      } else if (currentProfileKey === 'amit') {
+        loansContainer.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #f59e0b; padding-left: 6px; margin: 4px 0;">
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: bold; color: #1e293b;">Business Expansion Loan</span>
+              <span style="font-size: 0.6rem; color: #64748b;">A/c No: XXXXXX22340</span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-weight: bold; color: #1e293b;">₹6,50,000</span>
+              <br><span style="font-size: 0.6rem; color: #64748b;">EMI: ₹8,500/mo</span>
+            </div>
+          </div>
+        `;
+      } else {
+        loansContainer.innerHTML = `<div style="font-size: 0.7rem; color: #64748b; padding: 0.25rem 0;">No Active Loans found.</div>`;
+      }
+
+      // Transactions details
+      const salaryAmt = currentProfileKey === 'priya' ? 145000 : (currentProfileKey === 'ramesh' ? 42000 : 95000);
+      document.getElementById('salaryTransAmount').innerText = '+' + salaryAmt.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+      document.getElementById('salaryTransName').innerText = 'SALARY / ' + (currentProfileKey === 'priya' ? 'TechCorp Ltd' : (currentProfileKey === 'ramesh' ? 'Govt Pension' : 'Retail Business'));
+
+      if (profile.rawCardDebt > 0) {
+        document.getElementById('ccInterestTransAmount').innerText = '-' + ccInterest.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+        document.getElementById('ccInterestTransAmount').parentElement.parentElement.style.display = 'flex';
+      } else {
+        document.getElementById('ccInterestTransAmount').parentElement.parentElement.style.display = 'none';
+      }
+
+      // Pre-approved offer gating
+      const loanOffers = document.getElementById('loanOffersContainer');
+      if (profile.rawCardDebt > 0) {
+        loanOffers.innerHTML = `
+          <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 8px; padding: 0.6rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="triggerScenario('opportunity')">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 1rem;">🛡️</span>
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.65rem; font-weight: bold; color: #065f46;">Debt Consolidation Loan</span>
+                <span style="font-size: 0.55rem; color: #047857;">Pre-approved up to ${profile.rawCardDebt.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })} @ 10.5%</span>
+              </div>
+            </div>
+            <span style="font-size: 0.75rem; color: #047857; font-weight: bold;">Apply</span>
+          </div>
+        `;
+      } else {
+        loanOffers.innerHTML = `<div style="font-size: 0.7rem; color: #64748b; padding: 0.25rem 0;">No pre-approved offers available.</div>`;
+      }
+
+      // Sync consent checkbox inside the Services screen
+      const appToggle = document.getElementById('yonoConsentToggle');
+      if (appToggle) {
+        appToggle.checked = consentState;
+      }
+      
+      dismissNudge();
+      closeConsentScreen();
+      clearTrace();
+      logAudit(`Switched active session to profile ${profile.id} (${profile.name})`);
+    }
+
+    function clearTrace() {
+      document.getElementById('logsArea').innerHTML = `
+        <div style="color: var(--text-muted); text-align: center; margin-top: 3rem;">
+          Select a customer profile and trigger a behavioral signal to view the real-time agent workflow execution.
+        </div>
+      `;
+      document.getElementById('tokenBox').classList.remove('visible');
+      resetStatusDots();
+    }
+
+    function resetStatusDots() {
+      document.getElementById('dot1').className = 'status-dot';
+      document.getElementById('dot2').className = 'status-dot';
+      document.getElementById('dot3').className = 'status-dot';
+      document.getElementById('dot4').className = 'status-dot';
+    }
+
+    function logAudit(message) {
+      const auditList = document.getElementById('auditList');
+      const timeStr = new Date().toLocaleTimeString('en-IN', { hour12: false });
+      const item = document.createElement('div');
+      item.className = 'audit-item';
+      item.innerHTML = `<span class="audit-ts">[${timeStr}]</span> <span class="audit-text">${message}</span>`;
+      auditList.insertBefore(item, auditList.firstChild);
+    }
+
+    function toggleConsent() {
+      consentState = !consentState;
+      const badge = document.getElementById('consentBadge');
+      const revokeBtn = document.getElementById('revokeBtn');
+      
+      // Sync toggle in Services view
+      const appToggle = document.getElementById('yonoConsentToggle');
+      if (appToggle) {
+        appToggle.checked = consentState;
+      }
+
+      if (consentState) {
+        badge.className = 'consent-badge active';
+        badge.innerText = 'OPTED IN';
+        revokeBtn.innerText = 'Revoke Consent (DPDP Right to Erasure)';
+        revokeBtn.style.background = 'rgba(239, 68, 68, 0.1)';
+        logAudit('Customer opt-in consent re-established for financial pattern co-piloting');
+      } else {
+        badge.className = 'consent-badge revoked';
+        badge.innerText = 'CONSENT REVOKED';
+        revokeBtn.innerText = 'Re-grant DPDP Consent';
+        revokeBtn.style.background = 'rgba(16, 185, 129, 0.1)';
+        revokeBtn.style.color = '#34d399';
+        revokeBtn.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+        dismissNudge();
+        closeConsentScreen();
+        clearTrace();
+        logAudit('DPDP Erasure Rights triggered. Purging local model memory cache & embeddings');
+        alert("DPDP Gating triggered: User data erased from vector cache and downstream co-pilot processing blocked.");
+      }
+    }
+
+    // Scenarios setup
+    const scenarios = {
+      friction: {
+        name: "Branch Friction Event",
+        signal: "Branch Cash Deposit of ₹20,000 manually executed at Branch Code 0032 (New Delhi)",
+        rawDetail: "User ID: SBI-772910 | Mode: COUNTER | Service: DEPOSIT | Aadhaar Verified: 4532 9981 1204",
+        nudge: {
+          title: "Avoid the Line - Go Digital",
+          text: "Hi {{name}}, you deposited cash at the branch today. Save time next time! Skip the counter: transfer or deposit instantly inside YONO in just 2 taps. Here is a quick video tutorial on how.",
+          actionLabel: "Watch Tutorial"
+        }
+      },
+      opportunity: {
+        name: "Debt Consolidation Opportunity",
+        signal: "Recurring credit card payment outflow pattern of ₹4,200/mo across external card balances",
+        rawDetail: "User Email: {{email}} | Card: 4321-XXXX-XXXX-9901 | PAN: {{pan}} | Interest Paid: ₹4,200",
+        nudge: {
+          title: "Consolidate Debt & Save ₹2,100/mo",
+          text: "Hi {{name}}, we noticed you are paying ₹4,200 monthly in interest across other credit cards. We have pre-approved a Debt Consolidation Loan for you at 10.5% (half the typical card rate). Tap to accept.",
+          actionLabel: "Consolidate Now"
+        }
+      },
+      lifeevent: {
+        name: "Salary Credit Increment (Life-Event)",
+        signal: "Salary credit spike pattern of +30% recognized (₹1,45,000 -> ₹1,88,500)",
+        rawDetail: "User ID: {{id}} | Employer: TechCorp India Ltd | Account: XXXXXXX4812",
+        nudge: {
+          title: "Grow Your Extra Savings",
+          text: "Congratulations on the salary credit increase of ₹43,500, {{name}}! Let's make it work for you. Tap to auto-sweep anything above your normal expense budget into a high-yield Recurring Deposit at 7.1%.",
+          actionLabel: "Activate Auto-Sweep"
+        }
+      }
+    };
+
+    function triggerScenario(type) {
+      if (!consentState) {
+        alert("Compliance Gate Blocked: User has revoked consent under DPDP guidelines. Please opt-in first.");
+        return;
+      }
+
+      clearTrace();
+      const profile = profiles[currentProfileKey];
+      const scenario = scenarios[type];
+
+      // Prepare simulation text with profile data
+      let signalStr = scenario.signal.replace('{{name}}', profile.name);
+      let rawDetailStr = scenario.rawDetail
+                            .replace('{{email}}', profile.email)
+                            .replace('{{pan}}', profile.pan)
+                            .replace('{{id}}', profile.id);
+
+      // Start Agent Orchestrator Visual Trace
+      executeAgentPipeline(type, profile, signalStr, rawDetailStr);
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function executeAgentPipeline(type, profile, signal, rawDetail) {
+      const logs = document.getElementById('logsArea');
+      logs.innerHTML = ''; // Clear initial message
+
+      // Setup dots
+      const d1 = document.getElementById('dot1');
+      const d2 = document.getElementById('dot2');
+      const d3 = document.getElementById('dot3');
+      const d4 = document.getElementById('dot4');
+
+      // Step 1: Ingestion & Input Guardian
+      d1.className = 'status-dot active';
+      let node1 = appendNode('Input Guardian (PII Masking Filter)', 'processing...');
+      await sleep(1000);
+      
+      // Mask PII
+      let maskedDetail = rawDetail
+        .replace(/[A-Z]{5}[0-9]{4}[A-Z]{1}/g, '[MASKED PAN]')
+        .replace(/[0-9]{4}\s[0-9]{4}\s[0-9]{4}/g, '[MASKED AADHAAR]')
+        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[MASKED EMAIL]')
+        .replace(/[0-9]{4}-XXXX-XXXX-[0-9]{4}/g, '[MASKED CARD]');
+
+      updateNode(node1, `Ingesting real-time event signal from Redis Stream.\nInput Guardian active. Masking customer identifiers to satisfy DPDP Data Minimization rules:\n\n[Raw Signal]: "${signal}"\n[Masked Parameters]: "${maskedDetail}"`, 'completed');
+      d1.className = 'status-dot';
+      logAudit(`Input Guardian masked PII identifiers for session ${profile.id}`);
+
+      // Step 2: Signal Detection Agent
+      d2.className = 'status-dot active';
+      let node2 = appendNode('Signal Detection Agent', 'processing...');
+      await sleep(1200);
+      
+      let sigCategory = "";
+      if (type === 'friction') sigCategory = "Friction Signal (Counter to digital migration potential)";
+      if (type === 'opportunity') sigCategory = "Opportunity Signal (Idle balance / High-interest debt consolidation)";
+      if (type === 'lifeevent') sigCategory = "Life-Event Signal (Significant positive credit spike/Salary bump)";
+
+      updateNode(node2, `Trigger: LangGraph Node [signal_detection]\nCategory Detected: ${sigCategory}\nEvaluation State: Pattern matches active ruleset. Routing payload to recommendation queue.`, 'completed');
+      d2.className = 'status-dot';
+      logAudit(`Signal Detection Agent categorized event as ${type.toUpperCase()}`);
+
+      // Step 3: Recommendation Agent (Neo4j match)
+      d3.className = 'status-dot active';
+      let node3 = appendNode('Recommendation Agent & Graph Rules Matching', 'processing...');
+      await sleep(1400);
+
+      let ruleMatched = "";
+      let productInfo = "";
+      if (type === 'friction') {
+        ruleMatched = "MATCH (c:Customer {id: $cid})-[:ELIGIBLE_FOR]->(p:Product {type: 'digital_onboarding_tutorial'}) RETURN p";
+        productInfo = "Action ID: SR-TUT-08 | Product: Digital Quick-Deposit Tutorial | Value Prop: Convenience, Zero Wait Time";
+      } else if (type === 'opportunity') {
+        ruleMatched = "MATCH (c:Customer {id: $cid})-[:HAS_DEBT_RATIO {status: 'high'}]->(p:Product {type: 'consolidation_loan'}) RETURN p";
+        productInfo = "Action ID: SR-LOAN-99 | Product: Pre-approved Consolidation Personal Loan | Interest rate: 10.5% fixed";
+      } else if (type === 'lifeevent') {
+        ruleMatched = "MATCH (c:Customer {id: $cid})-[:ELIGIBLE_FOR]->(p:Product {type: 'autosweep_rd'}) RETURN p";
+        productInfo = "Action ID: SR-DEP-102 | Product: Flexi-Recurring Deposit (Auto-Sweep) | Interest rate: 7.1%";
+      }
+
+      updateNode(node3, `Querying Graph Constraints Database (Neo4j eligibility rules):\nQuery: "${ruleMatched}"\n\nGraph Result: Rule validated. Product is pre-approved and fits the customer segment profile.\n[Target Product]: ${productInfo}`, 'completed');
+      d3.className = 'status-dot';
+      logAudit(`Recommendation Agent matched graph rules for target product`);
+
+      // Step 4: Compliance Agent & Output Guardian
+      d4.className = 'status-dot active';
+      let node4 = appendNode('Compliance Gating & Output Guardian', 'processing...');
+      await sleep(1500);
+
+      let complianceText = "";
+      let validationScore = "100%";
+      if (type === 'friction') {
+        complianceText = "DPDP Compliance: Pass (opt-in validated, purely educational digital migration nudge, no cross-selling of credit products)\nRBI Fair Practices Code: Pass (transparent onboarding direction)";
+      } else {
+        complianceText = "DPDP Compliance: Pass (opt-in validated, transaction-data used strictly under personalization guidelines)\nRBI Fair Practices Code: Pass (Interest rates match pre-approved pricing grid, clear disclosures regarding execution fee)\nOutput Guardian: Verified zero hallucinated rate metrics.";
+      }
+
+      updateNode(node4, `Running compliance verification audits:\n\n${complianceText}\nValidation Score: ${validationScore}\nResult: APPROVED FOR CUSTOMER NUDGE`, 'completed');
+      d4.className = 'status-dot active'; // Keep active for final delivery
+      logAudit(`Compliance Agent approved recommended nudge with score ${validationScore}`);
+
+      // Render the nudge inside the phone emulator
+      await sleep(500);
+      showNudgeInPhone(type, profile);
+    }
+
+    function appendNode(title, content) {
+      const logs = document.getElementById('logsArea');
+      const node = document.createElement('div');
+      node.className = 'trace-node active';
+      
+      const timeStr = new Date().toLocaleTimeString('en-IN', { hour12: false });
+      node.innerHTML = `
+        <div class="node-header">
+          <span>${title}</span>
+          <span class="node-time">${timeStr}</span>
+        </div>
+        <div class="node-content">${content}</div>
+      `;
+      logs.appendChild(node);
+      logs.scrollTop = logs.scrollHeight;
+      return node;
+    }
+
+    function updateNode(nodeElement, newContent, statusClass) {
+      nodeElement.className = `trace-node ${statusClass}`;
+      nodeElement.querySelector('.node-content').innerText = newContent;
+    }
+
+    function showNudgeInPhone(type, profile) {
+      const scenario = scenarios[type];
+      const nudge = scenario.nudge;
+
+      // Replace place-holder
+      let text = nudge.text.replace('{{name}}', profile.name.split(' ')[0]);
+      
+      document.getElementById('nudgeTitle').innerText = nudge.title;
+      document.getElementById('nudgeText').innerText = text;
+      document.getElementById('nudgeActionBtn').innerText = nudge.actionLabel;
+
+      currentNudge = {
+        type: type,
+        title: nudge.title,
+        text: text,
+        profileId: profile.id
+      };
+
+      document.getElementById('nudgeCard').classList.add('visible');
+      logAudit(`Saarthi nudge delivered to YONO UI: "${nudge.title}"`);
+    }
+
+    function dismissNudge() {
+      document.getElementById('nudgeCard').classList.remove('visible');
+      if (currentNudge) {
+        logAudit(`User skipped nudge: "${currentNudge.title}"`);
+        currentNudge = null;
+      }
+      resetStatusDots();
+    }
+
+    function acceptNudge() {
+      if (!currentNudge) return;
+      
+      // Open the consent screen in the phone simulator
+      const consentTextElement = document.getElementById('consentText');
+      if (currentNudge.type === 'friction') {
+        consentTextElement.innerText = `To proceed with watching the YONO Quick-Deposit Tutorial, please confirm. No financial commitments are involved.`;
+      } else if (currentNudge.type === 'opportunity') {
+        consentTextElement.innerText = `To proceed with the pre-approved Debt Consolidation Loan of ₹85,000 at 10.5% fixed interest, confirm authorization. Funds will be credited instantly to pay off external cards.`;
+      } else if (currentNudge.type === 'lifeevent') {
+        consentTextElement.innerText = `Authorize Saarthi to activate the Flexi-Recurring Deposit sweep. Excess balances above ₹1,00,000 will automatically earn 7.1% interest.`;
+      }
+
+      document.getElementById('nudgeCard').classList.remove('visible');
+      document.getElementById('consentScreen').classList.add('visible');
+    }
+
+    function closeConsentScreen() {
+      document.getElementById('consentScreen').classList.remove('visible');
+      resetStatusDots();
+    }
+
+    function confirmAction() {
+      if (!currentNudge) return;
+
+      closeConsentScreen();
+      
+      // Generate Decision Token details
+      const payload = {
+        customerId: currentNudge.profileId,
+        nudgeType: currentNudge.type,
+        timestamp: new Date().toISOString(),
+        agentId: "SAARTHI_RECOMMENDER_v2.0",
+        complianceHash: "FPC-DPDP-OK",
+        policyApplied: currentNudge.type === 'friction' ? "Frictionless-Digital-Onboarding-v1" : "Fair-Lending-Debt-Consolidation-v4"
+      };
+
+      // Simple fake hash representation
+      const payloadStr = JSON.stringify(payload);
+      let hash = 0;
+      for (let i = 0; i < payloadStr.length; i++) {
+        hash = (hash << 5) - hash + payloadStr.charCodeAt(i);
+        hash |= 0;
+      }
+      const tokenSignature = "DECISION_TOKEN_SHA256_" + Math.abs(hash).toString(16).toUpperCase() + "_" + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+      document.getElementById('tokenHash').innerText = tokenSignature;
+      document.getElementById('tokenBox').classList.add('visible');
+
+      logAudit(`Decision Token Generated and Authorized: ${tokenSignature}`);
+      logAudit(`Transaction executing on core ledger with Temporary Scoped Gateway API Credential.`);
+      
+      // Simulate success toast inside phone
+      alert(`Success! Offer Authorized.\nDecision Token Registered:\n${tokenSignature}`);
+      
+      currentNudge = null;
+      resetStatusDots();
+    }
+
+    function navigateToView(viewName) {
+      // Hide all sub-views and the home view
+      document.getElementById('yono-view-home').style.display = 'none';
+      document.getElementById('yono-view-pay').style.display = 'none';
+      document.getElementById('yono-view-investments').style.display = 'none';
+      document.getElementById('yono-view-cards').style.display = 'none';
+      document.getElementById('yono-view-loans').style.display = 'none';
+      document.getElementById('yono-view-insurance').style.display = 'none';
+      document.getElementById('yono-view-services').style.display = 'none';
+      
+      const subHeader = document.getElementById('yonoSubHeader');
+      const viewTitle = document.getElementById('yonoViewTitle');
+
+      if (viewName === 'home') {
+        document.getElementById('yono-view-home').style.display = 'flex';
+        subHeader.style.display = 'none';
+      } else {
+        document.getElementById('yono-view-' + viewName).style.display = 'flex';
+        subHeader.style.display = 'flex';
+        
+        let title = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+        if (viewName === 'pay') title = 'YONO Pay';
+        viewTitle.innerText = title;
+
+        // Auto-trigger corresponding Saarthi agent signals
+        if (viewName === 'cards') {
+          triggerScenario('opportunity');
+        } else if (viewName === 'investments') {
+          triggerScenario('lifeevent');
+        }
+      }
+      // Scroll phone view contents to top
+      const scrollableContents = document.querySelectorAll('.yono-content');
+      scrollableContents.forEach(el => el.scrollTop = 0);
+    }
+
+    function syncConsentFromApp() {
+      const toggleCheckbox = document.getElementById('yonoConsentToggle');
+      if (toggleCheckbox && toggleCheckbox.checked !== consentState) {
+        toggleConsent();
+      }
+    }
+
+    function triggerDataExport() {
+      const profile = profiles[currentProfileKey];
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(profile, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `saarthi_dpdp_export_${profile.id}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      
+      logAudit(`DPDP Act Portability Export triggered for customer ${profile.id}`);
+      alert("DPDP Portability: Exporting all collected personal data patterns and profile mappings. Check your browser downloads for saarthi_dpdp_export.json.");
+    }
+
+    function triggerDataErasure() {
+      if (confirm("Are you sure you want to request complete data erasure under DPDP guidelines? This will wipe your personalization cache and opt you out of active co-piloting.")) {
+        if (consentState) {
+          toggleConsent();
+        } else {
+          alert("DPDP Erasure: Data already purged. Profiling is disabled.");
+        }
+      }
+    }
+
+    // Initial load setup
+    window.addEventListener('load', function() {
+      changeProfile();
+    });
+  </script>
+</body>
+</html>
