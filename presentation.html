@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saarthi — SBI YONO Co-Pilot | GFF26 Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --border: rgba(255,255,255,0.08);
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --sbi-blue: #00a0e4;
+      --sbi-dark: #003366;
+      --accent: #60a5fa;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --saffron: #ff9933;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Slide Container */
+    .deck { position: relative; width: 100vw; height: 100vh; }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      padding: 3.5rem 5rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .slide.active { display: flex; opacity: 1; }
+
+    /* Navigation */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: rgba(10, 14, 26, 0.9);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 100;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .nav-dots { display: flex; gap: 8px; }
+    .nav-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-dot.active { background: var(--sbi-blue); box-shadow: 0 0 8px var(--sbi-blue); }
+    .nav-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.15); }
+
+    /* Typography */
+    .slide-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--sbi-blue);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.7;
+    }
+    .slide-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 0%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .slide-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      font-weight: 400;
+      max-width: 700px;
+    }
+
+    /* Grid layouts */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; flex: 1; align-items: start; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+
+    /* Cards */
+    .info-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .info-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-card p, .info-card li {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .info-card ul { list-style: none; padding: 0; }
+    .info-card li { padding: 0.2rem 0; }
+    .info-card li::before { content: "→ "; color: var(--sbi-blue); font-weight: 600; }
+
+    /* Problem bullets */
+    .problem-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      align-items: flex-start;
+    }
+    .problem-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .problem-icon.red { background: rgba(239,68,68,0.12); }
+    .problem-icon.amber { background: rgba(245,158,11,0.12); }
+    .problem-icon.blue { background: rgba(96,165,250,0.12); }
+    .problem-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem; }
+    .problem-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+    /* Solution cards */
+    .solution-card {
+      background: rgba(0, 160, 228, 0.04);
+      border: 1px solid rgba(0, 160, 228, 0.15);
+      border-radius: 12px;
+      padding: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .solution-card h4 {
+      font-size: 0.85rem;
+      color: var(--sbi-blue);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .solution-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+    /* Tech stack badges */
+    .tech-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin: 4px;
+    }
+    .tech-badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .tech-badge .dot.blue { background: var(--sbi-blue); }
+    .tech-badge .dot.green { background: var(--success); }
+    .tech-badge .dot.amber { background: var(--warning); }
+    .tech-badge .dot.purple { background: #a78bfa; }
+
+    /* Pipeline diagram */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 1.5rem 0;
+      flex-wrap: nowrap;
+    }
+    .pipe-node {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+    .pipe-node.active-node { border-color: var(--sbi-blue); background: rgba(0,160,228,0.06); }
+    .pipe-node h4 { font-size: 0.7rem; font-weight: 700; margin-bottom: 0.2rem; white-space: nowrap; }
+    .pipe-node p { font-size: 0.6rem; color: var(--muted); }
+    .pipe-arrow {
+      font-size: 1.2rem;
+      color: var(--sbi-blue);
+      padding: 0 0.35rem;
+      flex-shrink: 0;
+    }
+
+    /* Phase cards */
+    .phase-card {
+      border-left: 3px solid var(--sbi-blue);
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 0.75rem;
+    }
+    .phase-card h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .phase-card p { font-size: 0.72rem; color: var(--muted); line-height: 1.35; }
+
+    /* Compliance badges */
+    .compliance-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .compliance-badge {
+      flex: 1;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .compliance-badge .emoji { font-size: 1.4rem; margin-bottom: 0.25rem; }
+    .compliance-badge h5 { font-size: 0.72rem; font-weight: 700; color: var(--success); margin-bottom: 0.15rem; }
+    .compliance-badge p { font-size: 0.62rem; color: var(--muted); }
+
+    /* Demo slide */
+    .demo-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .demo-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .demo-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,160,228,0.08);
+      border: 1px solid rgba(0,160,228,0.25);
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      color: var(--sbi-blue);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .demo-link:hover { background: rgba(0,160,228,0.15); transform: translateY(-1px); }
+
+    .demo-placeholder {
+      width: 80%;
+      max-width: 900px;
+      aspect-ratio: 16/9;
+      background: rgba(255,255,255,0.03);
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      color: var(--muted);
+    }
+    .demo-placeholder .play-icon { font-size: 3rem; opacity: 0.4; }
+    .demo-placeholder p { font-size: 0.85rem; }
+
+    /* Title slide special */
+    .title-slide {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .title-slide .slide-title { font-size: 3.2rem; max-width: 900px; }
+    .title-slide .slide-subtitle { max-width: 650px; margin: 0.75rem auto 2rem; }
+
+    .team-info {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .team-member {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .team-member strong { color: var(--text); }
+
+    .tagline {
+      font-size: 1.15rem;
+      color: var(--sbi-blue);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+    .sbi-logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--sbi-dark), #00509d);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,160,228,0.25);
+    }
+
+    .impact-stat {
+      text-align: center;
+      padding: 0.75rem;
+    }
+    .impact-stat .number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--sbi-blue);
+    }
+    .impact-stat .label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Subtle background grid */
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .slide > * { position: relative; z-index: 1; }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <!-- ====== SLIDE 1: INTRODUCTION ====== -->
+    <div class="slide title-slide active" data-slide="0">
+      <div class="sbi-logo-badge">YONO <span style="font-size:0.65rem;background:var(--sbi-blue);padding:2px 6px;border-radius:4px;margin-left:2px;">SBI</span></div>
+      <div class="slide-title">Saarthi</div>
+      <div class="tagline">Proactive Digital Engagement Co-Pilot for YONO SBI</div>
+      <div class="slide-subtitle">Saarthi doesn't wait for customers to ask — it watches, understands, and acts. A multi-agent AI co-pilot that turns passive banking data into active customer relationships.</div>
+      <div style="display:flex;gap:2.5rem;margin:1.5rem 0;">
+        <div class="impact-stat">
+          <div class="number">500M+</div>
+          <div class="label">SBI Customers</div>
+        </div>
+        <div class="impact-stat">
+          <div class="number">80%</div>
+          <div class="label">Cross-sell Opportunities Missed</div>
+        </div>
+        <div class="impact-stat">
+          <div class="number">3</div>
+          <div class="label">Behavioral Signal Types Detected</div>
+        </div>
+      </div>
+      <div class="team-info">
+        <div class="team-member"><strong>Team Invexora</strong></div>
+        <div class="team-member">Gaurav Mahajan</div>
+        <div class="team-member">Kishore Jadhav</div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 2: PROBLEM & SOLUTION ====== -->
+    <div class="slide" data-slide="1">
+      <div class="slide-number">02 / Problem & Solution</div>
+      <div class="slide-title">The Engagement Gap<br>in Digital Banking</div>
+      <div class="two-col" style="margin-top:1rem;">
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--error);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem;">The Problem — Missed Moments</div>
+          <div class="problem-item">
+            <div class="problem-icon red">💳</div>
+            <div>
+              <div class="problem-title">Invisible Debt Burden</div>
+              <div class="problem-desc">Customers paying ₹4,200/mo in CC interest don't know SBI offers consolidation loans at 10.5% — half the card rate.</div>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-icon amber">🏦</div>
+            <div>
+              <div class="problem-title">Branch Counter Friction</div>
+              <div class="problem-desc">Customers making manual cash deposits at branches don't know YONO can do it in 2 taps digitally.</div>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-icon blue">📈</div>
+            <div>
+              <div class="problem-title">Idle Savings Leak</div>
+              <div class="problem-desc">Salary jumps go unnoticed. Excess balances sit at 3.5% savings rate instead of 7.1% RD auto-sweep.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--success);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem;">Saarthi's Answer — Proactive Co-Pilot</div>
+          <div class="solution-card">
+            <h4>🔍 Signal Detection</h4>
+            <p>Real-time behavioral pattern recognition from transaction streams — detects friction events, financial optimization opportunities, and life-stage changes.</p>
+          </div>
+          <div class="solution-card">
+            <h4>🎯 Contextual Nudging</h4>
+            <p>Personalized, in-app recommendations delivered at the exact moment of relevance inside the YONO interface — not push notifications, but contextual interventions.</p>
+          </div>
+          <div class="solution-card">
+            <h4>🛡️ DPDP-First Design</h4>
+            <p>Every recommendation passes through compliance gating before reaching the customer. Right to Erasure, Right to Data Portability, and Data Minimization are built into the pipeline.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 3: TECHNOLOGY STACK ====== -->
+    <div class="slide" data-slide="2">
+      <div class="slide-number">03 / Technology Stack</div>
+      <div class="slide-title">Agentic Architecture —<br>Not a Chatbot, a Co-Pilot</div>
+      <div class="slide-subtitle" style="margin-bottom:1rem;">A 4-node LangGraph DAG pipeline with separation of concerns: security → detection → recommendation → compliance.</div>
+
+      <div class="pipeline">
+        <div class="pipe-node">
+          <h4>📡 Event Stream</h4>
+          <p>Redis Streams</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node active-node">
+          <h4>🔒 Input Guardian</h4>
+          <p>PII Masking (PAN, Aadhaar)</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node active-node">
+          <h4>🔍 Signal Detection</h4>
+          <p>LangGraph Agent Node</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node active-node">
+          <h4>🎯 Recommender</h4>
+          <p>Neo4j + Pinecone RAG</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node active-node">
+          <h4>✅ Compliance Gate</h4>
+          <p>RBI FPC + DPDP Validator</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">
+          <h4>📱 YONO Nudge</h4>
+          <p>UI Delivery + Decision Token</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;">
+        <div class="tech-badge"><span class="dot blue"></span> LangGraph — Agentic DAG Orchestration</div>
+        <div class="tech-badge"><span class="dot green"></span> Pinecone — Vector Knowledge Base (RBI/Product Docs)</div>
+        <div class="tech-badge"><span class="dot amber"></span> Neo4j — Graph Eligibility Rules</div>
+        <div class="tech-badge"><span class="dot purple"></span> Guardrails AI — PII Masking + Output Validation</div>
+        <div class="tech-badge"><span class="dot blue"></span> Pydantic — Schema Validation</div>
+        <div class="tech-badge"><span class="dot green"></span> Faker — Synthetic Customer Data Generation</div>
+      </div>
+
+      <div class="compliance-row">
+        <div class="compliance-badge">
+          <div class="emoji">🗑️</div>
+          <h5>Right to Erasure</h5>
+          <p>Consent revoke purges all agent processing instantly</p>
+        </div>
+        <div class="compliance-badge">
+          <div class="emoji">📦</div>
+          <h5>Data Portability</h5>
+          <p>One-click JSON export of all personal data</p>
+        </div>
+        <div class="compliance-badge">
+          <div class="emoji">🔒</div>
+          <h5>Data Minimization</h5>
+          <p>PII masked before any downstream processing</p>
+        </div>
+        <div class="compliance-badge">
+          <div class="emoji">📋</div>
+          <h5>Audit Trail</h5>
+          <p>Immutable log of every agent decision</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 4: DEVELOPMENT APPROACH ====== -->
+    <div class="slide" data-slide="3">
+      <div class="slide-number">04 / Prototype Development Approach</div>
+      <div class="slide-title">System Architecture &<br>Development Methodology</div>
+      <div class="two-col" style="margin-top:1rem;">
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem;">Layered Architecture</div>
+          <div class="info-card" style="margin-bottom:1rem;">
+            <h3>📊 Data Layer</h3>
+            <ul>
+              <li>Synthetic customer profiles (Faker, Indian locale)</li>
+              <li>Transaction logs with behavioral signal patterns</li>
+              <li>RBI + SBI product docs vectorized in Pinecone</li>
+            </ul>
+          </div>
+          <div class="info-card" style="margin-bottom:1rem;">
+            <h3>🤖 Agent Layer</h3>
+            <ul>
+              <li>4-node LangGraph DAG (GraphState TypedDict)</li>
+              <li>Stateless, parallelizable node functions</li>
+              <li>Dual guardrails: Input (PII) + Output (RBI FPC)</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>📱 Presentation Layer</h3>
+            <ul>
+              <li>YONO phone emulator (6 interactive screens)</li>
+              <li>Real-time agent trace console with status visualization</li>
+              <li>3 switchable customer personas with dynamic data</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem;">Development Phases</div>
+          <div class="phase-card">
+            <h4>Phase 1 — Data Synthesis & Knowledge Base</h4>
+            <p>Generated 500+ synthetic customer profiles using Faker. Ingested RBI Fair Practices Code and SBI product documentation into Pinecone vector store for RAG-based retrieval.</p>
+          </div>
+          <div class="phase-card">
+            <h4>Phase 2 — LangGraph Orchestrator</h4>
+            <p>Built the 4-node DAG state machine: Input Guardian → Signal Detection → Neo4j Recommendation → Compliance Gate. Each node operates on a shared GraphState context.</p>
+          </div>
+          <div class="phase-card">
+            <h4>Phase 3 — Interactive YONO Emulator</h4>
+            <p>Developed a full phone simulator with 6 YONO app screens, view routing, dynamic data binding to customer personas, and real-time agentic trace visualization.</p>
+          </div>
+          <div class="phase-card" style="border-left-color: var(--success);">
+            <h4>Phase 4 — DPDP Compliance Integration</h4>
+            <p>Implemented Right to Erasure (consent toggle purges pipeline), Right to Data Portability (JSON export), and Data Minimization (PII masked at ingestion). Decision tokens generated per authorization.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 5: DEMO ====== -->
+    <div class="slide" data-slide="4">
+      <div class="slide-number">05 / Demonstration</div>
+      <div class="slide-title">Saarthi in Action</div>
+      <div class="slide-subtitle">Live prototype walkthrough — Signal detection, contextual nudging, DPDP compliance, and multi-persona support.</div>
+      <div class="demo-container">
+        <div class="demo-placeholder">
+          <div class="play-icon">▶</div>
+          <p>Demo Video — Screen share the live prototype or play pre-recorded video</p>
+          <p style="font-size:0.7rem;opacity:0.5;">Use the live demo link below to walk through the prototype interactively</p>
+        </div>
+        <div class="demo-links">
+          <a href="https://invexora.github.io/saarthi-yono-copilot/" target="_blank" class="demo-link">
+            🌐 Live Prototype
+          </a>
+          <a href="https://github.com/invexora/saarthi-yono-copilot" target="_blank" class="demo-link">
+            📦 GitHub Repository
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-bar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="nav-btn" onclick="prevSlide()">← Prev</button>
+      <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    </div>
+    <div class="nav-dots" id="navDots"></div>
+    <div style="font-size:0.7rem;color:var(--muted);">
+      Team Invexora | GFF26 SBI Hackathon
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+
+    function buildDots() {
+      const container = document.getElementById('navDots');
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        container.appendChild(dot);
+      });
+    }
+
+    function goToSlide(n) {
+      slides[current].classList.remove('active');
+      document.querySelectorAll('.nav-dot')[current].classList.remove('active');
+      current = n;
+      slides[current].classList.add('active');
+      document.querySelectorAll('.nav-dot')[current].classList.add('active');
+    }
+
+    function nextSlide() { if (current < slides.length - 1) goToSlide(current + 1); }
+    function prevSlide() { if (current > 0) goToSlide(current - 1); }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    });
+
+    buildDots();
+  </script>
+</body>
+</html>

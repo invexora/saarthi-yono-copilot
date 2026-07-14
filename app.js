@@ -419,7 +419,7 @@ function acceptNudge() {
   } else if (currentNudge.type === 'opportunity') {
     consentTextElement.innerText = `To proceed with the pre-approved Debt Consolidation Loan of ₹85,000 at 10.5% fixed interest, confirm authorization. Funds will be credited instantly to pay off external cards.`;
   } else if (currentNudge.type === 'lifeevent') {
-    consentTextElement.innerText = `Authorize Saarthi to activate the Flexi-Recurring Deposit sweep. Excess balances above ₹1,0,000 will automatically earn 7.1% interest.`;
+    consentTextElement.innerText = `Authorize Saarthi to activate the Flexi-Recurring Deposit sweep. Excess balances above ₹1,00,000 will automatically earn 7.1% interest.`;
   }
 
   document.getElementById('nudgeCard').classList.remove('visible');
