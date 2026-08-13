@@ -6,36 +6,45 @@
   <title>Saarthi — Proactive Financial Co-Pilot for YONO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header>
     <div class="logo-container">
-      <div class="logo-badge">YONO</div>
-      <div class="project-title">Saarthi: Proactive AI Agent Co-Pilot</div>
+      <div class="logo-badge" aria-hidden="true">YONO</div>
+      <h1 class="project-title">Saarthi: Governed Proactive Engagement Prototype</h1>
     </div>
     <div class="team-badge">
-      Developed by <strong>Team Invexora</strong> (Gaurav Mahajan & Kishore Jadhav)
+      Developed by <strong>Team Invexora</strong> (Gaurav Mahajan &amp; Kishore Jadhav)
+    </div>
+    <div id="apiStatus" class="api-status" role="status" aria-live="polite">
+      <span id="apiStatusDot" class="api-dot offline" aria-hidden="true"></span>
+      <span id="apiStatusText">Standalone Mode</span>
     </div>
   </header>
 
   <main class="main-container">
     
     <!-- COLUMN 1: SIMULATOR CONTROL -->
-    <section class="glass-card">
+    <section class="glass-card" aria-labelledby="simulationHeading">
       <div class="card-header">
-        <span>Simulation Controls</span>
+        <h2 id="simulationHeading" class="card-heading">Simulation Controls</h2>
         <span style="font-size: 0.8rem; color: var(--text-muted);">Step 1: Choose Persona</span>
       </div>
       <div class="card-body">
+        <div style="font-size:0.68rem;line-height:1.4;color:#92400e;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:0.55rem;">
+          Synthetic personas and balances only. No live SBI customer data or banking system is connected.
+        </div>
         
-        <label class="section-title">Select Customer Profile</label>
+        <label class="section-title" for="profileSelect">Select Customer Profile</label>
         <select id="profileSelect" class="profile-select" onchange="changeProfile()">
           <option value="priya">Priya Sharma (Corporate Tech Lead)</option>
           <option value="ramesh">Ramesh Kumar (Retired Pensioner)</option>
           <option value="amit">Amit Patel (SME / Retail Shop Owner)</option>
+          <option value="sneha">Sneha Patel (Salaried — Financial Stress)</option>
+          <option value="rohan">Rohan Mehta (Student / Young Professional)</option>
         </select>
 
         <div class="profile-info-box">
@@ -58,59 +67,90 @@
         </div>
 
         <div class="profile-consent-status">
-          <span>DPDP Active Consent:</span>
+          <span>Purpose Consent:</span>
           <span id="consentBadge" class="consent-badge active">OPTED IN</span>
         </div>
 
-        <label class="section-title">Trigger Behavioral Signals</label>
+        <!-- Customer Assistance Profile Badge -->
+        <div class="assistance-profile-card">
+          <div class="assistance-profile-label">Customer Assistance Profile</div>
+          <div id="assistBadge" class="assistance-badge green"><span id="assistIcon" aria-hidden="true">🎯</span> <span id="assistLabel">Opportunity Ready</span></div>
+          <div id="assistDesc" class="assistance-desc">High-value nudges for financial optimization</div>
+        </div>
+
+        <!-- Nudge Budget Indicator -->
+        <div class="nudge-budget">
+          <span>Nudge Budget</span>
+          <div class="nudge-dots">
+            <div id="nudgeDot1" class="nudge-dot" aria-hidden="true"></div>
+            <div id="nudgeDot2" class="nudge-dot" aria-hidden="true"></div>
+            <span id="nudgeBudgetText" class="nudge-budget-text">0 of 2 used</span>
+          </div>
+        </div>
+        <div id="nudgeBudgetWarning" class="nudge-budget-warning">Max reached — next nudge in 14 days</div>
+
+        <!-- Stress Mode Banner -->
+        <div id="stressBanner" class="stress-banner">
+          🛡️ Protection Mode Active — No promotional nudges until stress resolved
+        </div>
+
+        <div class="section-title">Trigger Behavioral Signals</div>
         
-        <button class="scenario-btn" onclick="triggerScenario('friction')">
-          <span class="scenario-icon">🏛️</span>
+        <button type="button" class="scenario-btn" onclick="triggerScenario('friction')">
+          <span id="scenarioIconFriction" class="scenario-icon" aria-hidden="true">🏛️</span>
           <div class="scenario-details">
-            <span class="scenario-name">1. Branch Friction Signal</span>
-            <span class="scenario-desc">User physically visits branch to deposit check/open FD</span>
+            <span id="scenarioNameFriction" class="scenario-name">1. Branch Friction Signal</span>
+            <span id="scenarioDescFriction" class="scenario-desc">User physically visits branch to deposit check/open FD</span>
           </div>
         </button>
 
-        <button class="scenario-btn" onclick="triggerScenario('opportunity')">
-          <span class="scenario-icon">💡</span>
+        <button type="button" class="scenario-btn" onclick="triggerScenario('opportunity')">
+          <span id="scenarioIconOpportunity" class="scenario-icon" aria-hidden="true">💡</span>
           <div class="scenario-details">
-            <span class="scenario-name">2. Opportunity Signal</span>
-            <span class="scenario-desc">High idle balance & paying high credit card interest rates</span>
+            <span id="scenarioNameOpportunity" class="scenario-name">2. Opportunity Signal</span>
+            <span id="scenarioDescOpportunity" class="scenario-desc">High idle balance &amp; paying high credit card interest rates</span>
           </div>
         </button>
 
-        <button class="scenario-btn" onclick="triggerScenario('lifeevent')">
-          <span class="scenario-icon">🚀</span>
+        <button type="button" class="scenario-btn" onclick="triggerScenario('lifeevent')">
+          <span id="scenarioIconLifeEvent" class="scenario-icon" aria-hidden="true">🚀</span>
           <div class="scenario-details">
-            <span class="scenario-name">3. Life-Event Signal</span>
-            <span class="scenario-desc">Salary jump pattern detected in monthly credits</span>
+            <span id="scenarioNameLifeEvent" class="scenario-name">3. Life-Event Signal</span>
+            <span id="scenarioDescLifeEvent" class="scenario-desc">Salary jump pattern detected in monthly credits</span>
           </div>
         </button>
 
-        <button id="revokeBtn" class="revoke-btn" onclick="toggleConsent()">
-          Revoke Consent (DPDP Right to Erasure)
+        <button type="button" class="scenario-btn stress" onclick="triggerScenario('stress')">
+          <span id="scenarioIconStress" class="scenario-icon" aria-hidden="true">⚠️</span>
+          <div class="scenario-details">
+            <span id="scenarioNameStress" class="scenario-name">4. Financial Stress Signal</span>
+            <span id="scenarioDescStress" class="scenario-desc">Missed EMI after salary disruption detected</span>
+          </div>
+        </button>
+
+        <button id="revokeBtn" type="button" class="revoke-btn" onclick="toggleConsent()">
+          Revoke Personalisation Consent
         </button>
 
       </div>
     </section>
 
     <!-- COLUMN 2: YONO PHONE EMULATOR -->
-    <section class="phone-wrapper">
+    <section class="phone-wrapper" aria-label="Synthetic YONO mobile application preview">
       <div class="phone-frame">
-        <div class="phone-notch"></div>
+        <div class="phone-notch" aria-hidden="true"></div>
         <div class="phone-screen">
           
           <!-- App Header -->
           <div class="yono-header">
-            <div class="yono-logo" onclick="navigateToView('home')" style="cursor: pointer;">yono</div>
-            <div onclick="navigateToView('services')" style="cursor: pointer; display: flex; align-items: center; gap: 4px;">Hi, <span id="yonoUser">Priya</span> 👤</div>
+            <button id="yonoHomeBtn" type="button" class="yono-header-button yono-logo" onclick="navigateToView('home')" aria-label="YONO home">yono</button>
+            <button type="button" class="yono-header-button" onclick="navigateToView('services')">Hi, <span id="yonoUser">Priya</span> <span aria-hidden="true">👤</span></button>
           </div>
 
           <!-- Dynamic View Header (Breadcrumb / Back) -->
           <div id="yonoSubHeader" style="display: none; background: #00254d; color: white; padding: 0.4rem 0.75rem; align-items: center; gap: 0.5rem; font-size: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: system-ui, -apple-system, sans-serif;">
-            <button onclick="navigateToView('home')" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; cursor: pointer; border-radius: 4px; padding: 2px 6px; font-weight: 600; font-size: 0.65rem; display: flex; align-items: center; gap: 2px;">
-              ← Back
+            <button id="yonoBackBtn" type="button" onclick="navigateToView('home')" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; cursor: pointer; border-radius: 4px; padding: 2px 6px; font-weight: 600; font-size: 0.65rem; display: flex; align-items: center; gap: 2px;">
+              <span aria-hidden="true">←</span> Back
             </button>
             <span id="yonoViewTitle" style="font-weight: 600; font-size: 0.75rem; letter-spacing: 0.3px;">View</span>
           </div>
@@ -130,30 +170,34 @@
 
             <!-- Grid Items (Router Buttons) -->
             <div class="yono-grid">
-              <div class="yono-grid-item" onclick="navigateToView('pay')">
-                <div class="grid-icon">💸</div>
-                <div class="grid-label">YONO Pay</div>
-              </div>
-              <div class="yono-grid-item" onclick="navigateToView('investments')">
-                <div class="grid-icon">📈</div>
-                <div class="grid-label">Investments</div>
-              </div>
-              <div class="yono-grid-item" onclick="navigateToView('cards')">
-                <div class="grid-icon">💳</div>
-                <div class="grid-label">Cards</div>
-              </div>
-              <div class="yono-grid-item" onclick="navigateToView('loans')">
-                <div class="grid-icon">🤝</div>
-                <div class="grid-label">Loans</div>
-              </div>
-              <div class="yono-grid-item" onclick="navigateToView('insurance')">
-                <div class="grid-icon">🛡️</div>
-                <div class="grid-label">Insurance</div>
-              </div>
-              <div class="yono-grid-item" onclick="navigateToView('services')">
-                <div class="grid-icon">⚙️</div>
-                <div class="grid-label">Services</div>
-              </div>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('pay')">
+                <span class="grid-icon" aria-hidden="true">💸</span>
+                <span class="grid-label">YONO Pay</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('investments')">
+                <span class="grid-icon" aria-hidden="true">📈</span>
+                <span class="grid-label">Investments</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('cards')">
+                <span class="grid-icon" aria-hidden="true">💳</span>
+                <span class="grid-label">Cards</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('loans')">
+                <span class="grid-icon" aria-hidden="true">🤝</span>
+                <span class="grid-label">Loans</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('insurance')">
+                <span class="grid-icon" aria-hidden="true">🛡️</span>
+                <span class="grid-label">Insurance</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
+                <span class="grid-icon" aria-hidden="true">⚙️</span>
+                <span class="grid-label">Services</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('impact')">
+                <span class="grid-icon" aria-hidden="true">📊</span>
+                <span class="grid-label">My Saarthi</span>
+              </button>
             </div>
 
             <!-- Static Banners -->
@@ -190,19 +234,19 @@
               
               <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 <!-- Transaction 1: Branch counter friction indicator -->
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9; cursor: pointer;" onclick="triggerScenario('friction')">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.1rem; background: #fee2e2; border-radius: 50%; padding: 4px; display: inline-flex;">🏛️</span>
-                    <div style="display: flex; flex-direction: column;">
+                <button type="button" class="phone-scenario-trigger" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9; cursor: pointer;" onclick="triggerScenario('friction')" aria-label="Run branch cash deposit friction scenario">
+                  <span style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.1rem; background: #fee2e2; border-radius: 50%; padding: 4px; display: inline-flex;" aria-hidden="true">🏛️</span>
+                    <span style="display: flex; flex-direction: column;">
                       <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">BRANCH CASH DEPOSIT</span>
                       <span style="font-size: 0.55rem; color: #ef4444; font-weight: bold;">Counter Manual - Branch 0032</span>
-                    </div>
-                  </div>
-                  <div style="text-align: right;">
-                    <div style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">+₹20,000.00</div>
-                    <div style="font-size: 0.5rem; color: #94a3b8;">Today, 10:15 AM</div>
-                  </div>
-                </div>
+                    </span>
+                  </span>
+                  <span style="text-align: right;">
+                    <span style="display: block; font-size: 0.7rem; font-weight: bold; color: #1e293b;">+₹20,000.00</span>
+                    <span style="display: block; font-size: 0.5rem; color: #64748b;">Today, 10:15 AM</span>
+                  </span>
+                </button>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9;">
                   <div style="display: flex; align-items: center; gap: 8px;">
@@ -214,7 +258,7 @@
                   </div>
                   <div style="text-align: right;">
                     <div style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">-₹1,240.00</div>
-                    <div style="font-size: 0.5rem; color: #94a3b8;">Yesterday</div>
+                    <div style="font-size: 0.5rem; color: #64748b;">Yesterday</div>
                   </div>
                 </div>
 
@@ -228,7 +272,7 @@
                   </div>
                   <div style="text-align: right;">
                     <div id="salaryTransAmount" style="font-size: 0.7rem; font-weight: bold; color: var(--success);">+₹1,45,000.00</div>
-                    <div style="font-size: 0.5rem; color: #94a3b8;">28th Jun</div>
+                    <div style="font-size: 0.5rem; color: #64748b;">28th Jun</div>
                   </div>
                 </div>
 
@@ -242,7 +286,7 @@
                   </div>
                   <div style="text-align: right;">
                     <div id="ccInterestTransAmount" style="font-size: 0.7rem; font-weight: bold; color: #ef4444;">-₹4,200.00</div>
-                    <div style="font-size: 0.5rem; color: #94a3b8;">25th Jun</div>
+                    <div style="font-size: 0.5rem; color: #64748b;">25th Jun</div>
                   </div>
                 </div>
               </div>
@@ -251,7 +295,6 @@
 
           <!-- YONO View: Investments -->
           <div id="yono-view-investments" class="yono-content" style="display: none;">
-            <!-- Portfolio Summary -->
             <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem;">
               <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">My Investment Portfolio</div>
               <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
@@ -268,17 +311,15 @@
               </div>
             </div>
             
-            <!-- Idle Wealth Leak Card -->
-            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; padding: 0.65rem; display: flex; flex-direction: column; gap: 0.25rem; cursor: pointer;" onclick="triggerScenario('lifeevent')">
-              <div style="font-size: 0.7rem; font-weight: bold; color: #b45309; display: flex; align-items: center; gap: 4px;">
-                ⚠️ Wealth Leak Detected
-              </div>
-              <div style="font-size: 0.65rem; color: #78350f; line-height: 1.35;">
-                Your savings account balance of <strong id="investSavingsBalance">₹2,80,000.00</strong> earns only 2.70%. Setup Auto-Sweep to Recurring Deposit (7.10%) to optimize.
-              </div>
-            </div>
+            <button type="button" class="phone-scenario-trigger" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; padding: 0.65rem; display: flex; flex-direction: column; gap: 0.25rem; cursor: pointer;" onclick="triggerScenario('lifeevent')">
+              <span style="font-size: 0.7rem; font-weight: bold; color: #b45309; display: flex; align-items: center; gap: 4px;">
+                <span aria-hidden="true">⚠️</span> Savings Review Opportunity
+              </span>
+              <span style="font-size: 0.65rem; color: #78350f; line-height: 1.35;">
+                Your savings account balance is <strong id="investSavingsBalance">₹2,80,000.00</strong>. A live SBI rate and suitability feed is required before comparing savings or deposit options.
+              </span>
+            </button>
 
-            <!-- Investment Options -->
             <div style="display: flex; flex-direction: column; gap: 0.4rem;">
               <div style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Explore Markets</div>
               <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
@@ -286,27 +327,26 @@
                   <span style="font-size: 1.1rem;">🚀</span>
                   <div style="display: flex; flex-direction: column;">
                     <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">SBI Mutual Fund (SIP)</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Top performing funds from 12% p.a.</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Live scheme, risk and performance feed required</span>
                   </div>
                 </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
               </div>
               <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <span style="font-size: 1.1rem;">🔒</span>
                   <div style="display: flex; flex-direction: column;">
-                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Fixed & Recurring Deposit</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Guaranteed returns up to 7.10% p.a.</span>
+                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Fixed &amp; Recurring Deposit</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Live SBI tenure and rate feed required</span>
                   </div>
                 </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
               </div>
             </div>
           </div>
 
           <!-- YONO View: Cards -->
           <div id="yono-view-cards" class="yono-content" style="display: none;">
-            <!-- Credit Card UI -->
             <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px; padding: 0.85rem; color: white; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1.58/1; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden;">
               <div style="position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; background: rgba(0, 160, 228, 0.12); border-radius: 50%;"></div>
               <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
@@ -328,31 +368,29 @@
               </div>
             </div>
 
-            <!-- Card Statement Summary -->
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; cursor: pointer;" onclick="triggerScenario('opportunity')">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Card Statement</div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+            <button type="button" class="phone-scenario-trigger" style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; cursor: pointer;" onclick="triggerScenario('opportunity')">
+              <span style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Card Statement</span>
+              <span style="display: flex; justify-content: space-between; font-size: 0.75rem;">
                 <span style="color: #64748b;">Total Outstanding:</span>
                 <span id="cardOutstanding" style="font-weight: 700; color: var(--error);">₹85,000.00</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+              </span>
+              <span style="display: flex; justify-content: space-between; font-size: 0.75rem;">
                 <span style="color: #64748b;">Minimum Due:</span>
                 <span id="cardMinDue" style="font-weight: 600; color: #334155;">₹4,250.00</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-                <span style="color: #64748b;">Interest Rate:</span>
-                <span style="font-weight: 600; color: #334155;">42% p.a. (3.5%/mo)</span>
-              </div>
-              <div id="cardInterestRow" style="display: flex; justify-content: space-between; font-size: 0.75rem; padding-top: 0.25rem; border-top: 1px dashed #e2e8f0; color: var(--error);">
+              </span>
+              <span style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                <span style="color: #64748b;">Pricing:</span>
+                <span style="font-weight: 600; color: #334155;">Live statement feed required</span>
+              </span>
+              <span id="cardInterestRow" style="display: flex; justify-content: space-between; font-size: 0.75rem; padding-top: 0.25rem; border-top: 1px dashed #e2e8f0; color: var(--error);">
                 <span style="font-weight: 600;">Monthly Interest Cost:</span>
                 <span id="cardInterestPaid" style="font-weight: 700;">₹4,200.00</span>
-              </div>
-            </div>
+              </span>
+            </button>
           </div>
 
           <!-- YONO View: Loans -->
           <div id="yono-view-loans" class="yono-content" style="display: none;">
-            <!-- Active Loans -->
             <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.25rem;">
               <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Active Loans</div>
               <div id="activeLoansContainer">
@@ -369,21 +407,16 @@
               </div>
             </div>
 
-            <!-- Pre-Approved Loan Offers -->
             <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Pre-Approved Offers</div>
-              <div id="loanOffersContainer">
-                <!-- Loan Offer Details dynamically generated -->
-              </div>
+              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Offer Preview — Live Eligibility Required</div>
+              <div id="loanOffersContainer"></div>
             </div>
           </div>
 
           <!-- YONO View: Insurance -->
           <div id="yono-view-insurance" class="yono-content" style="display: none;">
-            <!-- Active Policies -->
             <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.25rem;">
               <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">My Policies</div>
-              
               <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #10b981; padding-left: 6px; margin: 4px 0;">
                 <div style="display: flex; flex-direction: column;">
                   <span style="font-weight: bold; color: #1e293b;">SBI General Health</span>
@@ -396,7 +429,6 @@
               </div>
             </div>
 
-            <!-- Insurance Products to Buy -->
             <div style="display: flex; flex-direction: column; gap: 0.4rem;">
               <div style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Explore Coverages</div>
               <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
@@ -404,10 +436,10 @@
                   <span style="font-size: 1.1rem;">🚗</span>
                   <div style="display: flex; flex-direction: column;">
                     <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Motor Insurance</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Instant cover for car & two-wheeler</span>
+                    <span style="font-size: 0.6rem; color: #64748b;">Instant cover for car &amp; two-wheeler</span>
                   </div>
                 </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
               </div>
               <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -417,79 +449,153 @@
                     <span style="font-size: 0.6rem; color: #64748b;">Secure your family's future</span>
                   </div>
                 </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;">→</span>
+                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
               </div>
             </div>
           </div>
 
-          <!-- YONO View: Services (DPDP Privacy Centre) -->
+          <!-- YONO View: Services (Privacy-Control Prototype) -->
           <div id="yono-view-services" class="yono-content" style="display: none;">
-            <!-- DPDP Center -->
             <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: auto;">
               <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b; display: flex; align-items: center; gap: 4px;">
-                🛡️ DPDP Act Privacy Centre
+                🛡️ Saarthi Privacy-Control Prototype
               </div>
               
               <div style="font-size: 0.65rem; color: #64748b; line-height: 1.35;">
-                Under the Digital Personal Data Protection (DPDP) Act, you have full control over how YONO and your AI assistant Saarthi processes your financial patterns.
+                This screen demonstrates purpose consent, a prototype data export and eligible Saarthi-data erasure. Legal scope and production workflow require SBI approval.
               </div>
 
-              <!-- Inner Consent Toggle -->
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
-                <div style="display: flex; flex-direction: column; max-width: 75%;">
+                <label for="yonoConsentToggle" style="display: flex; flex-direction: column; max-width: 75%; cursor: pointer;">
                   <span style="font-size: 0.7rem; font-weight: bold; color: #334155;">Active Profiling Consent</span>
-                  <span style="font-size: 0.52rem; color: #64748b;">Allow Saarthi to analyze transaction history for pre-approved savings offers.</span>
-                </div>
-                <!-- Custom Checkbox -->
+                  <span style="font-size: 0.52rem; color: #64748b;">Allow the synthetic Saarthi demo to evaluate contextual recommendation signals.</span>
+                </label>
                 <input type="checkbox" id="yonoConsentToggle" onchange="syncConsentFromApp()" style="width: 16px; height: 16px; cursor: pointer;">
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.2rem;">
-                <button class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" onclick="triggerDataExport()">
-                  📥 Data Portability Export (PDF/JSON)
+                <button type="button" class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" onclick="triggerDataExport()">
+                  <span aria-hidden="true">📦</span> Export My Data (JSON)
                 </button>
-                <button class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; color: #ef4444; background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.1); border-radius: 6px;" onclick="triggerDataErasure()">
-                  🗑️ Request Complete Data Erasure
+                <button id="erasureRequestBtn" type="button" class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; color: #b91c1c; background: rgba(239,68,68,0.05); border: 1px solid rgba(185,28,28,0.25); border-radius: 6px;" onclick="triggerDataErasure()">
+                  <span aria-hidden="true">🗑️</span> Request Eligible-Data Erasure
                 </button>
+                <!-- Inline erasure confirmation -->
+                <div id="erasureConfirm" class="erasure-confirm" role="alertdialog" aria-modal="true" aria-labelledby="erasureConfirmText" aria-hidden="true" inert>
+                  <div id="erasureConfirmText" class="erasure-confirm-text"><span aria-hidden="true">⚠️</span> This prototype removes eligible Saarthi-derived personalisation data and opts you out. Regulated banking records are outside this workflow.</div>
+                  <div class="erasure-confirm-actions">
+                    <button type="button" class="erasure-cancel-btn" onclick="cancelErasure()">Cancel</button>
+                    <button type="button" class="erasure-confirm-btn" onclick="confirmErasure()">Confirm Erasure</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
+          <!-- YONO View: My Saarthi Impact -->
+          <div id="yono-view-impact" class="yono-content" style="display: none;">
+            <div class="impact-header">📊 This Month with Saarthi</div>
+            <div class="impact-metric">
+              <div class="impact-icon">🏦</div>
+              <div>
+                <div id="impactTask" class="impact-metric-title">2 Tasks Completed Digitally</div>
+                <div id="impactTaskSub" class="impact-metric-sub">Saved ~2 hours of branch waiting time</div>
+              </div>
+            </div>
+            <div class="impact-metric">
+              <div class="impact-icon">💰</div>
+              <div>
+                <div id="impactSavings" class="impact-metric-title">₹2,100 Saved This Month</div>
+                <div id="impactSavingsSub" class="impact-metric-sub">From debt consolidation recommendation</div>
+              </div>
+            </div>
+            <div class="impact-metric">
+              <div class="impact-icon">📍</div>
+              <div>
+                <div id="impactBranch" class="impact-metric-title">1 Branch Visit Avoided</div>
+                <div id="impactBranchSub" class="impact-metric-sub">Using YONO Pay instead of counter deposit</div>
+              </div>
+            </div>
+            <div class="impact-bar-container">
+              <div class="impact-bar-title">30-Day Digital Engagement</div>
+              <div class="impact-bar-row">
+                <span class="impact-bar-label">30d</span>
+                <div class="impact-bar-track"><div id="impactBar30" class="impact-bar-fill" style="width: 40%;" role="progressbar" aria-label="30-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"></div></div>
+              </div>
+              <div class="impact-bar-row">
+                <span class="impact-bar-label">60d</span>
+                <div class="impact-bar-track"><div id="impactBar60" class="impact-bar-fill" style="width: 65%;" role="progressbar" aria-label="60-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65"></div></div>
+              </div>
+              <div class="impact-bar-row">
+                <span class="impact-bar-label">90d</span>
+                <div class="impact-bar-track"><div id="impactBar90" class="impact-bar-fill" style="width: 82%;" role="progressbar" aria-label="90-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="82"></div></div>
+              </div>
+              <div class="impact-confidence">Your digital confidence is growing 📈</div>
+            </div>
+            <div class="impact-footer">Powered by Saarthi — your proactive financial co-pilot</div>
+          </div>
+
 
           <!-- Slide-Up Nudge Card -->
-          <div id="nudgeCard" class="saarthi-nudge-container">
+          <div id="nudgeCard" class="saarthi-nudge-container" role="region" aria-labelledby="nudgeTitle" aria-live="polite" aria-hidden="true" inert>
             <div class="nudge-header">
               <span class="nudge-logo">SAARTHI</span>
               <span>PROACTIVE RECOMMENDATION</span>
             </div>
             <div class="nudge-body">
-              <div id="nudgeTitle" class="nudge-title">Consolidate Debt & Save</div>
+              <div id="nudgeTitle" class="nudge-title">Consolidate Debt &amp; Save</div>
               <div id="nudgeText" class="nudge-text">
-                You've paid ₹4,200 in card interest across two credit cards. Consolidation pre-approved at half the rate.
+                A governed recommendation will appear here only after the connected backend returns persisted product-bound evidence.
+              </div>
+              <!-- Explainability Accordion -->
+              <button id="explainToggle" type="button" class="nudge-explainability-toggle" onclick="toggleExplainability()" aria-expanded="false" aria-controls="explainContent">ⓘ Why am I seeing this?</button>
+              <div id="explainContent" class="nudge-explainability-content" aria-hidden="true">
+                <div id="explainBox" class="nudge-explain-box"></div>
               </div>
               <div class="nudge-actions">
-                <button class="nudge-btn nudge-btn-secondary" onclick="dismissNudge()">Skip</button>
-                <button id="nudgeActionBtn" class="nudge-btn nudge-btn-primary" onclick="acceptNudge()">Apply Now</button>
+                <button type="button" class="nudge-btn nudge-btn-secondary" onclick="dismissNudge()">Skip</button>
+                <button id="nudgeActionBtn" type="button" class="nudge-btn nudge-btn-primary" onclick="acceptNudge()">Apply Now</button>
               </div>
             </div>
           </div>
 
+          <!-- Financial Stress Support Card -->
+          <div id="stressCard" class="stress-nudge-container" role="status" aria-live="polite" aria-labelledby="stressCardTitle" aria-hidden="true" inert>
+            <div id="stressCardTitle" class="stress-header"><span aria-hidden="true">🛡️</span> SAARTHI SUPPORT MODE</div>
+            <div id="stressBodyText" class="stress-body-text">
+              Hi Priya, we noticed your recent EMI payment was missed. We're here to help — not to sell.
+            </div>
+            <div id="stressOfflineActions">
+              <button type="button" class="stress-action-btn outline" onclick="dismissStressCard()">📋 View Repayment Options</button>
+              <button type="button" class="stress-action-btn filled" onclick="connectToRM()">📞 Connect to Relationship Manager</button>
+              <button type="button" class="stress-action-btn outline" onclick="dismissStressCard()">📅 Request EMI Restructuring</button>
+            </div>
+          </div>
+
+          <!-- RM Connection In-Phone Toast -->
+          <div id="rmToast" class="rm-toast" role="status" aria-live="polite" aria-hidden="true">
+            <div class="rm-pulse" aria-hidden="true"></div>
+            <span>Connecting you to your SBI Relationship Manager... Expected wait: 2 minutes</span>
+          </div>
+
           <!-- Consent Flow Screen -->
-          <div id="consentScreen" class="yono-consent-screen">
-            <div class="consent-icon">📝</div>
-            <div class="consent-title">Confirm Pre-Approved Offer</div>
-            <div id="consentText" class="consent-desc">
-              To proceed with the pre-approved consolidation loan, please confirm your consent.
-            </div>
-            <div class="consent-terms">
-              <strong>DPDP Act & FPC Gating Terms:</strong><br>
-              1. The data used for this nudge is strictly purpose-limited.<br>
-              2. Explicit one-time consent is required to execute.<br>
-              3. You have the right to revoke processing or request erasure of this transaction's history at any point.
-            </div>
-            <div class="nudge-actions" style="margin-top: auto;">
-              <button class="nudge-btn nudge-btn-secondary" onclick="closeConsentScreen()">Cancel</button>
-              <button class="nudge-btn nudge-btn-primary" onclick="confirmAction()">Authorize & Execute</button>
+          <div id="consentScreen" class="yono-consent-screen" role="dialog" aria-modal="true" aria-labelledby="consentDialogTitle" aria-describedby="consentText" aria-hidden="true" inert>
+            <div id="consentScreenContent">
+              <div class="consent-icon" aria-hidden="true">📝</div>
+              <div id="consentDialogTitle" class="consent-title" tabindex="-1">Confirm Governed Action</div>
+              <div id="consentText" class="consent-desc">
+                To proceed, first load a governed recommendation or use explicit offline simulation mode.
+              </div>
+              <div class="consent-terms">
+                <strong>Prototype Consent &amp; Policy Terms:</strong><br>
+                1. The data used for this nudge is strictly purpose-limited.<br>
+                2. Explicit one-time consent is required to execute.<br>
+                3. Revocation and erasure apply to eligible Saarthi-derived data; regulated banking records follow SBI retention requirements.
+              </div>
+              <div class="nudge-actions" style="margin-top: auto;">
+                <button type="button" class="nudge-btn nudge-btn-secondary" onclick="closeConsentScreen()">Cancel</button>
+                <button id="confirmActionBtn" type="button" class="nudge-btn nudge-btn-primary" onclick="confirmAction()">Authorize &amp; Execute</button>
+              </div>
             </div>
           </div>
 
@@ -497,34 +603,67 @@
       </div>
     </section>
 
-    <!-- COLUMN 3: LIVE AGENTIC TRACE CONSOLE -->
-    <section class="glass-card">
+    <!-- COLUMN 3: LIVE DECISION TRACE CONSOLE -->
+    <section class="glass-card" aria-labelledby="traceHeading">
       <div class="card-header">
-        <span>Saarthi Backend Agentic Orchestrator (LangGraph Trace)</span>
+        <h2 id="traceHeading" class="card-heading">Saarthi Governed Decision Orchestrator (LangGraph Trace)</h2>
         <span style="font-size: 0.8rem; color: var(--text-muted); font-family: monospace;">status: active</span>
       </div>
       <div class="trace-layout">
+
+        <!-- YONO Ji vs Saarthi Comparison Callout -->
+        <div class="comparison-callout">
+          <div class="comparison-col grey">
+            <div class="comparison-date">Local pilot prototype</div>
+            <div class="comparison-title grey-text">YONO Ji</div>
+            <div class="comparison-sub">Reactive — answers when asked</div>
+          </div>
+          <div class="comparison-col highlight">
+            <div class="comparison-date">Hackathon Prototype</div>
+            <div class="comparison-title green-text">Saarthi ✦</div>
+            <div class="comparison-sub">Proactive — notices before you ask</div>
+          </div>
+        </div>
         
         <div class="pipeline-status">
           <div class="status-item">
-            <span id="dot1" class="status-dot"></span>
+            <span id="dot1" class="status-dot" aria-hidden="true"></span>
+            <span>Redis Streams</span>
+            <span id="dot1Text" class="sr-only">pending</span>
+          </div>
+          <div class="status-item">
+            <span id="dot2" class="status-dot" aria-hidden="true"></span>
             <span>Input Guardian</span>
+            <span id="dot2Text" class="sr-only">pending</span>
           </div>
           <div class="status-item">
-            <span id="dot2" class="status-dot"></span>
+            <span id="dot3" class="status-dot" aria-hidden="true"></span>
             <span>Signal Detection</span>
+            <span id="dot3Text" class="sr-only">pending</span>
           </div>
           <div class="status-item">
-            <span id="dot3" class="status-dot"></span>
+            <span id="dot4" class="status-dot" aria-hidden="true"></span>
+            <span>Product + Policy Evidence</span>
+            <span id="dot4Text" class="sr-only">pending</span>
+          </div>
+          <div class="status-item">
+            <span id="dot5" class="status-dot" aria-hidden="true"></span>
             <span>Recommendation</span>
+            <span id="dot5Text" class="sr-only">pending</span>
           </div>
           <div class="status-item">
-            <span id="dot4" class="status-dot"></span>
-            <span>Compliance Gating</span>
+            <span id="dot6" class="status-dot" aria-hidden="true"></span>
+            <span>Compliance Gate</span>
+            <span id="dot6Text" class="sr-only">pending</span>
+          </div>
+          <div class="status-item">
+            <span id="dot7" class="status-dot" aria-hidden="true"></span>
+            <span>Output Guardian</span>
+            <span id="dot7Text" class="sr-only">pending</span>
           </div>
         </div>
 
-        <div id="logsArea" class="logs-area">
+        <div id="logsArea" class="logs-area" role="log" aria-live="polite" aria-relevant="additions text">
           <div style="color: var(--text-muted); text-align: center; margin-top: 3rem;">
             Select a customer profile and trigger a behavioral signal to view the real-time agent workflow execution.
           </div>
@@ -532,19 +671,31 @@
 
         <div id="tokenBox" class="token-box">
           <div class="token-header">
-            <span>🛡️ Decision Token Generated & Signed</span>
+            <span>🛡️ Execution Credential Fingerprint</span>
           </div>
           <div style="font-size: 0.75rem; color: #d1fae5;">
-            Cryptographically signed gating token stored on the immutable ledger.
+            Cryptographically scoped token; governance evidence is recorded in the local tamper-evident audit chain.
           </div>
           <div id="tokenHash" class="token-hash">
             SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
           </div>
         </div>
 
+        <!-- Compliance Framework Badges -->
+        <div class="compliance-badges">
+          <div class="compliance-badge-item dpdp">
+            <div class="compliance-badge-title">🛡️ Privacy-Control Prototype</div>
+            <div class="compliance-badge-detail">Purpose consent · common identifier masking · erasure workflow demonstration</div>
+          </div>
+          <div class="compliance-badge-item rbi">
+            <div class="compliance-badge-title">🏦 Production Controls Pending</div>
+            <div class="compliance-badge-detail">SBI-approved residency, incident response, retention and security validation are still required</div>
+          </div>
+        </div>
+
         <div class="audit-trail-container">
-          <label class="section-title">Immutable Audit Trail (Local DB & DPDP Logs)</label>
-          <div id="auditList" class="audit-trail-list">
+          <div class="section-title">Append-Only Local Audit Trail (HMAC Integrity Checks)</div>
+          <div id="auditList" class="audit-trail-list" role="log" aria-live="polite" aria-relevant="additions">
             <div class="audit-item"><span class="audit-ts">[10:56:25]</span> <span class="audit-text">Saarthi Backend Engine Initialized</span></div>
           </div>
         </div>
@@ -553,6 +704,9 @@
     </section>
 
   </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-relevant="additions"></div>
 
   <script src="app.js"></script>
 </body>

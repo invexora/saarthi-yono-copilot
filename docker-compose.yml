@@ -1,0 +1,176 @@
+version: '3.8'
+
+services:
+  saarthi-app:
+    build: .
+    ports:
+      - "5050:5050"
+    environment:
+      - PORT=5050
+      - SAARTHI_DB_PATH=/data/saarthi.db
+      - SAARTHI_DEPLOYMENT_MODE=${SAARTHI_DEPLOYMENT_MODE:-integrated-demo}
+      - SAARTHI_DATA_RESIDENCY=${SAARTHI_DATA_RESIDENCY:-not-configured}
+      - SAARTHI_DATABASE_URL=postgresql+psycopg://saarthi:${POSTGRES_PASSWORD:-local-postgres-development-only}@postgres:5432/saarthi
+      - SAARTHI_EVENT_STREAM_MODE=redis
+      - SAARTHI_REDIS_URL=redis://redis:6379/0
+      - SAARTHI_EVENT_CONSUMER_GROUP=${SAARTHI_EVENT_CONSUMER_GROUP:-saarthi-workers}
+      - SAARTHI_EVENT_LAG_SLO_MAX=${SAARTHI_EVENT_LAG_SLO_MAX:-1000}
+      - SAARTHI_EVENT_PENDING_SLO_MAX=${SAARTHI_EVENT_PENDING_SLO_MAX:-100}
+      - SAARTHI_PRODUCT_CATALOG_MODE=neo4j
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:-local-neo4j-development-only}
+      - SAARTHI_ALLOWED_ORIGIN=${SAARTHI_ALLOWED_ORIGIN:-http://localhost:8000}
+      - SAARTHI_AUTH_MODE=${SAARTHI_AUTH_MODE:-development}
+      - SAARTHI_OIDC_JWKS_URL=${SAARTHI_OIDC_JWKS_URL:-}
+      - SAARTHI_OIDC_ALGORITHMS=${SAARTHI_OIDC_ALGORITHMS:-RS256}
+      - SAARTHI_DECISION_SECRET=${SAARTHI_DECISION_SECRET:-local-development-only-change-me}
+      - SAARTHI_AUDIT_SECRET=${SAARTHI_AUDIT_SECRET:-local-audit-secret-change-me-32chars}
+      - SAARTHI_AUDIT_KEY_VERSION=${SAARTHI_AUDIT_KEY_VERSION:-v1}
+      - SAARTHI_POLICY_MINIMUM_APPROVAL=${SAARTHI_POLICY_MINIMUM_APPROVAL:-approved}
+      - SAARTHI_ARTIFACT_FEED_MODE=${SAARTHI_ARTIFACT_FEED_MODE:-local}
+      - SAARTHI_ARTIFACT_SIGNING_PUBLIC_KEY=${SAARTHI_ARTIFACT_SIGNING_PUBLIC_KEY:-}
+      - SAARTHI_ARTIFACT_SIGNING_KEY_ID=${SAARTHI_ARTIFACT_SIGNING_KEY_ID:-}
+      - SAARTHI_HIGH_RISK_REVIEW_MODE=${SAARTHI_HIGH_RISK_REVIEW_MODE:-required}
+      - SAARTHI_SIGNAL_DETECTION_MODE=${SAARTHI_SIGNAL_DETECTION_MODE:-rules}
+      - SAARTHI_SIGNAL_DETECTION_URL=${SAARTHI_SIGNAL_DETECTION_URL:-}
+      - SAARTHI_SIGNAL_DETECTION_TOKEN=${SAARTHI_SIGNAL_DETECTION_TOKEN:-}
+      - SAARTHI_SIGNAL_DETECTION_MINIMUM_CONFIDENCE=${SAARTHI_SIGNAL_DETECTION_MINIMUM_CONFIDENCE:-0.60}
+      - SAARTHI_CUSTOMER_CONTEXT_MODE=${SAARTHI_CUSTOMER_CONTEXT_MODE:-synthetic}
+      - SAARTHI_CUSTOMER_CONTEXT_URL=${SAARTHI_CUSTOMER_CONTEXT_URL:-}
+      - SAARTHI_CUSTOMER_CONTEXT_TOKEN=${SAARTHI_CUSTOMER_CONTEXT_TOKEN:-}
+      - SAARTHI_FULFILLMENT_MODE=${SAARTHI_FULFILLMENT_MODE:-synthetic}
+      - SAARTHI_FULFILLMENT_URL=${SAARTHI_FULFILLMENT_URL:-}
+      - SAARTHI_FULFILLMENT_TOKEN=${SAARTHI_FULFILLMENT_TOKEN:-}
+      - SAARTHI_FULFILLMENT_RECONCILIATION_RETRY_SECONDS=${SAARTHI_FULFILLMENT_RECONCILIATION_RETRY_SECONDS:-60}
+      - SAARTHI_FULFILLMENT_RECONCILIATION_BATCH_SIZE=${SAARTHI_FULFILLMENT_RECONCILIATION_BATCH_SIZE:-25}
+      - SAARTHI_CASE_MANAGEMENT_MODE=${SAARTHI_CASE_MANAGEMENT_MODE:-synthetic}
+      - SAARTHI_CASE_MANAGEMENT_URL=${SAARTHI_CASE_MANAGEMENT_URL:-}
+      - SAARTHI_CASE_MANAGEMENT_TOKEN=${SAARTHI_CASE_MANAGEMENT_TOKEN:-}
+      - SAARTHI_CASE_RETRY_SECONDS=${SAARTHI_CASE_RETRY_SECONDS:-60}
+      - SAARTHI_CASE_SYNC_INTERVAL_SECONDS=${SAARTHI_CASE_SYNC_INTERVAL_SECONDS:-300}
+      - SAARTHI_CASE_WORKER_BATCH_SIZE=${SAARTHI_CASE_WORKER_BATCH_SIZE:-25}
+      - SAARTHI_MONITORING_POLICY_ID=${SAARTHI_MONITORING_POLICY_ID:-draft-segment-outcomes-v1}
+      - SAARTHI_MONITORING_POLICY_STATUS=${SAARTHI_MONITORING_POLICY_STATUS:-draft}
+      - SAARTHI_MONITORING_MINIMUM_SAMPLE_SIZE=${SAARTHI_MONITORING_MINIMUM_SAMPLE_SIZE:-30}
+      - SAARTHI_MONITORING_MAXIMUM_COMPLAINT_RATE=${SAARTHI_MONITORING_MAXIMUM_COMPLAINT_RATE:-0.05}
+      - SAARTHI_MONITORING_MAXIMUM_HARM_RATE=${SAARTHI_MONITORING_MAXIMUM_HARM_RATE:-0.02}
+      - SAARTHI_MONITORING_MINIMUM_CONVERSION_RATIO=${SAARTHI_MONITORING_MINIMUM_CONVERSION_RATIO:-0.80}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+    volumes:
+      - saarthi-data:/data
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5050/api/v1/ready', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  saarthi-web:
+    image: nginx:1.27-alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./app.js:/usr/share/nginx/html/app.js:ro
+      - ./style.css:/usr/share/nginx/html/style.css:ro
+    depends_on:
+      saarthi-app:
+        condition: service_healthy
+
+  saarthi-worker:
+    build: .
+    command: ["python3", "-m", "backend.worker"]
+    environment:
+      - SAARTHI_DEPLOYMENT_MODE=${SAARTHI_DEPLOYMENT_MODE:-integrated-demo}
+      - SAARTHI_DATA_RESIDENCY=${SAARTHI_DATA_RESIDENCY:-not-configured}
+      - SAARTHI_DATABASE_URL=postgresql+psycopg://saarthi:${POSTGRES_PASSWORD:-local-postgres-development-only}@postgres:5432/saarthi
+      - SAARTHI_EVENT_STREAM_MODE=redis
+      - SAARTHI_REDIS_URL=redis://redis:6379/0
+      - SAARTHI_EVENT_CONSUMER_GROUP=${SAARTHI_EVENT_CONSUMER_GROUP:-saarthi-workers}
+      - SAARTHI_EVENT_MAX_DELIVERY_ATTEMPTS=${SAARTHI_EVENT_MAX_DELIVERY_ATTEMPTS:-3}
+      - SAARTHI_EVENT_CLAIM_IDLE_MS=${SAARTHI_EVENT_CLAIM_IDLE_MS:-60000}
+      - SAARTHI_EVENT_WORKER_BLOCK_MS=${SAARTHI_EVENT_WORKER_BLOCK_MS:-1000}
+      - SAARTHI_EVENT_WORKER_BATCH_SIZE=${SAARTHI_EVENT_WORKER_BATCH_SIZE:-25}
+      - SAARTHI_EVENT_WORKER_HEARTBEAT_TIMEOUT_SECONDS=${SAARTHI_EVENT_WORKER_HEARTBEAT_TIMEOUT_SECONDS:-30}
+      - SAARTHI_AUTH_MODE=${SAARTHI_AUTH_MODE:-development}
+      - SAARTHI_DECISION_SECRET=${SAARTHI_DECISION_SECRET:-local-development-only-change-me}
+      - SAARTHI_AUDIT_SECRET=${SAARTHI_AUDIT_SECRET:-local-audit-secret-change-me-32chars}
+      - SAARTHI_AUDIT_KEY_VERSION=${SAARTHI_AUDIT_KEY_VERSION:-v1}
+      - SAARTHI_FULFILLMENT_MODE=${SAARTHI_FULFILLMENT_MODE:-synthetic}
+      - SAARTHI_FULFILLMENT_URL=${SAARTHI_FULFILLMENT_URL:-}
+      - SAARTHI_FULFILLMENT_TOKEN=${SAARTHI_FULFILLMENT_TOKEN:-}
+      - SAARTHI_FULFILLMENT_RECONCILIATION_RETRY_SECONDS=${SAARTHI_FULFILLMENT_RECONCILIATION_RETRY_SECONDS:-60}
+      - SAARTHI_FULFILLMENT_RECONCILIATION_BATCH_SIZE=${SAARTHI_FULFILLMENT_RECONCILIATION_BATCH_SIZE:-25}
+      - SAARTHI_CASE_MANAGEMENT_MODE=${SAARTHI_CASE_MANAGEMENT_MODE:-synthetic}
+      - SAARTHI_CASE_MANAGEMENT_URL=${SAARTHI_CASE_MANAGEMENT_URL:-}
+      - SAARTHI_CASE_MANAGEMENT_TOKEN=${SAARTHI_CASE_MANAGEMENT_TOKEN:-}
+      - SAARTHI_CASE_RETRY_SECONDS=${SAARTHI_CASE_RETRY_SECONDS:-60}
+      - SAARTHI_CASE_SYNC_INTERVAL_SECONDS=${SAARTHI_CASE_SYNC_INTERVAL_SECONDS:-300}
+      - SAARTHI_CASE_WORKER_BATCH_SIZE=${SAARTHI_CASE_WORKER_BATCH_SIZE:-25}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-m", "backend.worker", "--healthcheck"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=saarthi
+      - POSTGRES_USER=saarthi
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-local-postgres-development-only}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saarthi -d saarthi"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-local-neo4j-development-only}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:-local-neo4j-development-only}
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_PASSWORD}\" 'RETURN 1;' >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  saarthi-data:
+  redis-data:
+  neo4j-data:
+  postgres-data:

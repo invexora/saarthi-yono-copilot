@@ -1,33 +1,42 @@
 # Saarthi — Proactive Digital Engagement Co-Pilot for YONO SBI
 
-Saarthi is an intelligent, agentic co-pilot integrated into the **YONO SBI** experience. It proactively identifies customer friction events, financial optimization opportunities, and life-stage events, delivering contextual recommendations while adhering to strict regulatory guardrails.
+Saarthi is a governed proactive-engagement reference prototype designed for a future **YONO SBI** integration. It detects synthetic customer signals and demonstrates policy-controlled recommendations; it is not currently connected to SBI systems or approved for customers.
 
-Built for the **YONO Copilot Hackathon**, Saarthi showcases a production-ready design that couples interactive frontend simulation with a multi-agent backend orchestrator compliant with the **Digital Personal Data Protection (DPDP) Act 2023** and **RBI Fair Practices Code (FPC)**.
+Built for the **YONO Copilot Hackathon**, Saarthi currently provides a high-fidelity experience prototype and a pilot-oriented backend foundation. It demonstrates privacy and fair-engagement controls inspired by the **Digital Personal Data Protection (DPDP) Act 2023** and RBI guidance; formal compliance remains subject to SBI legal, security, risk, and architecture review.
 
 ---
 
-## 🚀 Live Demo & Video Walkthrough
+## 🚀 Demo & Video Walkthrough
 
-*   **Live Web Prototype:** [https://invexora.github.io/saarthi-yono-copilot/](https://invexora.github.io/saarthi-yono-copilot/)
-*   **Video Demo:** The walkthrough screen recording has been saved to your local downloads folder as `yono_emulator_demo.mp4`.
+*   **Current checked-out prototype:** [http://127.0.0.1:8000](http://127.0.0.1:8000) while the local services are running.
+*   **Prior published prototype:** [https://invexora.github.io/saarthi-yono-copilot/](https://invexora.github.io/saarthi-yono-copilot/) may differ from this finalization branch.
+*   **Local video asset:** `presentation-final/saarthi_demo_video.mp4` is intentionally excluded from the source checkpoint and should be distributed through an approved artefact store or release attachment.
+*   **SBI technical-review walkthrough:** [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md) gives the repeatable four-journey script, evidence matrix and explicit non-integration limits.
 
 ---
 
 ## 🛠️ Repository Architecture
 
-The project has been refactored into a modular, clean, and enterprise-grade repository:
+The project is organized as a modular, pilot-oriented reference implementation:
 
 ```
 saarthi-yono-copilot/
 ├── index.html               # YONO Simulator UI Layout (Mobile Simulator + Agent Trace)
 ├── style.css                # Extracted visual styles (glassmorphism & dark mode)
 ├── app.js                   # Interactive client-side simulation, states & routing
-├── backend/                 # Agentic Layer (Backend Orchestrator Mockup)
+├── backend/                 # Governed decision-orchestration reference backend
 │   ├── requirements.txt     # Python backend dependencies
 │   ├── data_synthesis.py   # Synthetic customer profiles & transaction logs
-│   ├── vector_ingestion.py  # Ingestion pipeline for RBI & internal policies to Pinecone
-│   ├── guardrails.py        # PII regex masking (PAN/Aadhaar/Emails) & compliance checks
-│   └── orchestrator.py      # LangGraph DAG state-machine node orchestrator
+│   ├── database.py          # Consent, nudge budgets, recommendations and audit persistence
+│   ├── dpdp_engine.py       # Consent lifecycle and scoped action authorization
+│   ├── vector_ingestion.py  # Local TF-IDF policy retrieval prototype
+│   ├── guardrails.py        # PII regex masking and outbound policy checks
+│   ├── orchestrator.py      # Sequential state-machine reference implementation
+│   └── server.py            # Versioned HTTP API
+├── contracts/               # 28 transport-neutral synthetic SBI-boundary contracts
+├── docs/                    # Architecture, API, AI-governance and finalization evidence
+├── tests/                   # Trust-control unit and API integration tests
+├── .github/workflows/       # Repeatable Python/frontend CI checks
 └── README.md                # Premium architectural description (this file)
 ```
 
@@ -35,61 +44,110 @@ saarthi-yono-copilot/
 
 ## ⚙️ Core Technical Features
 
-### 1. Agentic Orchestrator (LangGraph State Machine)
-The orchestrator manages customer signals through a modular Directed Acyclic Graph (DAG) using a defined `GraphState` context:
-*   **Input Guardian Node:** Detects and masks PII (PAN, Aadhaar, Email) to ensure data minimization before sending queries downstream.
+### 1. Governed Orchestrator Reference Implementation
+The orchestrator manages customer signals through modular processing nodes using a typed `GraphState` and a compiled LangGraph workflow:
+*   **Input Guardian Node:** Recursively masks eight identifier classes across supported text and structured fields before downstream prototype processing.
 *   **Signal Detection Node:** Scans transaction streams for trigger events (e.g. cash deposits, recurring card interest fees, salary credit jumps).
-*   **Neo4j Recommender Node:** Queries dynamic eligibility relationships to map customers to tailored solutions (e.g. debt consolidation loans, recurring deposit auto-sweeps).
-*   **Compliance Node:** Audits recommendations against RBI guidelines to ensure rate correctness and transparent terms.
+*   **Product Recommender Node:** Uses 20 versioned signal/segment mappings across 16 synthetic demo actions, with interchangeable in-memory and Neo4j adapters. These are not approved SBI SKUs.
+*   **Policy Node:** Applies deterministic prototype disclosure, consent, affordability and vulnerability rules. SBI policy mapping and control-owner approval remain pending.
 
-### 2. DPDP Act Compliance Gating
-Saarthi implements active privacy controls to respect customer data rights under the Indian Digital Personal Data Protection (DPDP) Act:
-*   **Right to Erasure (Revoke Consent):** Toggling consent off immediately purges local caches, removes customer logs from the console, and prevents downstream LLM processing.
-*   **Right to Data Portability:** Allows customers to download their processed transaction profiling history as a standardized JSON structure.
+### 2. Privacy and Consent Gating Prototype
+Saarthi implements technical privacy controls inspired by the Indian Digital Personal Data Protection framework. Formal applicability, notices, retention and legal compliance require SBI review:
+*   **Consent Revocation:** Disables profiling and promotional engagement without conflating revocation with erasure.
+*   **Erasure Workflow:** Removes eligible Saarthi-derived local personalization, recommendation, budget, and operational-audit data while retaining a minimal revoked-consent tombstone and integrity-ledger evidence. It does not claim to erase unrelated SBI records.
+*   **Data Export:** Allows customers to download the prototype's stored profiling history as JSON. The legal basis and final export schema require SBI review.
+*   **Scoped Authorization:** Recommendations follow a durable `pending_review → approved → presented → authorized → executing → fulfilled` lifecycle. Explicit action consent produces a short-lived, single-use server authorization token only after presentation.
 
 ### 3. Dynamic YONO Emulator
 The web interface features a fully functional phone simulator running an interactive YONO UI:
 *   **YONO Pay:** Tracks transfers and UPI logs.
 *   **Investments:** Displays savings balances and portfolio values.
-*   **Cards:** Displays outstanding dues, minimum payments, and interest savings calculations.
-*   **Loans & Insurance:** Renders active and pre-approved personal product offers.
-*   **Services:** Control center for managing DPDP privacy settings, consent toggles, and data downloads.
+*   **Cards:** Displays synthetic outstanding and minimum-due fixtures while marking live pricing as an SBI feed dependency.
+*   **Loans & Insurance:** Renders synthetic product and service fixtures for the prototype; these are not live or pre-approved SBI offers.
+*   **Services:** Prototype control center for purpose consent, eligible-data erasure and data export.
 
 ---
 
 ## 💻 Running the Project Locally
 
 ### Running the Web Simulator
-To launch the interactive YONO simulator dashboard locally, run a simple web server from the repository root:
+To launch the interface without the API, run a simple web server from the repository root and opt into explicit simulation mode:
 
 ```bash
 # Start Python's built-in HTTP server
 python3 -m http.server 8000
 ```
-Then navigate to [http://localhost:8000](http://localhost:8000) in your web browser.
+Then navigate to [http://localhost:8000/?mode=offline-demo](http://localhost:8000/?mode=offline-demo). The status bar marks this mode as simulation-only and no banking action occurs. Opening the UI without this flag requires the governed API; an API outage fails closed instead of silently simulating success.
 
-### Running the Python Backend Scripts
+### Running the integrated container stack
+
+The Compose stack starts the FastAPI service, independently health-checked event worker, YONO web simulator, PostgreSQL, Redis Streams, and Neo4j:
+
+```bash
+docker compose up --build
+```
+
+Open [http://localhost:8000](http://localhost:8000). Local Compose defaults are deliberately marked development-only; use secrets supplied by an approved secret manager outside local development.
+
+### Running the Python Backend
 The `/backend` directory contains functional code simulating the agent pipeline.
 
 1.  **Install dependencies:**
     ```bash
     pip install -r backend/requirements.txt
     ```
-2.  **Generate Synthetic Customer Transaction Logs:**
+2.  **Start the versioned API in local development identity mode:**
+    ```bash
+    SAARTHI_AUTH_MODE=development \
+    SAARTHI_DECISION_SECRET=local-development-secret-at-least-32-chars \
+    PORT=5050 \
+    python3 -m backend.server
+    ```
+    Production requires OIDC/JWKS authentication with an HTTPS key-set URL, asymmetric algorithm allowlist, issuer, and audience configuration. HS256 remains available only for non-production compatibility. The API derives the customer ID from the verified identity; request bodies cannot select another customer.
+    Generated OpenAPI documentation is available at [http://localhost:5050/docs](http://localhost:5050/docs); the identity and endpoint contract is summarized in [docs/API.md](docs/API.md).
+3.  **Run the automated trust-control and browser-contract suites:**
+    ```bash
+    python3 -m pytest -q
+    node --test tests/frontend/*.test.mjs
+    ```
+4.  **Generate Synthetic Customer Transaction Logs:**
     ```bash
     python3 backend/data_synthesis.py
     ```
-3.  **Run Vector Document Ingestion (Pinecone Simulation):**
+5.  **Validate the local manifest-backed policy catalogue:**
     ```bash
     python3 backend/vector_ingestion.py
     ```
-4.  **Run the LangGraph Agent Orchestrator Pipeline:**
+6.  **Run the orchestrator pipeline directly:**
     ```bash
     python3 backend/orchestrator.py
     ```
 
 ---
 
-## 🔒 Security & Privacy Assertions
-*   **PII Masking:** Output logs are scrubbed of structural Aadhaar (12-digit) and PAN (10-character alphanumeric) formats.
-*   **Immutable Logs:** System and compliance logs are written in real-time to an unmodifiable local trace console for audit transparency.
+## 🔒 Implemented Trust Controls
+*   **Production OIDC/JWKS contract:** The verifier supports rotating asymmetric keys, issuer/audience validation, required claims, and role extraction; production configuration rejects shared-secret identity mode. No SBI identity tenant is connected.
+*   **Server-authoritative purpose consent:** Profiling is blocked before signal processing when personalization consent is absent.
+*   **PII response boundary:** Raw inbound details are never returned by the orchestration API.
+*   **Atomic nudge budget:** At most two promotional nudges are reserved per 14-day cycle; support interventions do not consume the budget.
+*   **Retry-safe orchestration:** Required idempotency keys deduplicate both the API result and Redis event publication.
+*   **Single-use action authorization:** Presented recommendations must be explicitly authorized before a server HMAC token is issued; only its digest is persisted or shown in trace output.
+*   **Revocation/erasure separation:** The two customer actions have distinct backend semantics.
+*   **Governed policy evidence:** Retrieval uses a hash-validated manifest and returns policy ID, version, approval owner, effective dates, source, and content digest.
+*   **Tamper-evident integrity ledger:** Governance events use pseudonymous customer references and an append-only HMAC hash chain that survives customer-data erasure.
+*   **Independent high-risk review:** Deployments can require durable reviewer approval before a high-risk recommendation becomes customer-authorizable.
+*   **Deterministic decision envelope:** Product eligibility, policy provenance, rate caps, vulnerability routing, and human oversight produce reproducible outcomes and reason codes.
+*   **Trusted customer context:** Production uses an SBI-owned context API; local development uses visibly synthetic records. Segment binding, freshness, affordability, and vulnerability checks run on server-sourced data without returning raw financial values.
+*   **Governed offer delivery:** Approved high-risk offers remain hidden until customer retrieval atomically reserves engagement budget. Replays, cross-customer access, expiry, revocation, and concurrent delivery are enforced server-side.
+*   **Confirmed fulfilment contract:** Customer authorization and downstream execution are separate states. A token-bound, idempotent fulfilment adapter must return a downstream reference before the UI reports success; local development labels the synthetic provider and only token hashes are retained.
+*   **Downstream reconciliation:** Every completed action creates a durable verification record. The worker re-queries the provider, distinguishes matched, pending, unavailable, reversed, failed, and reference-mismatch outcomes, and keeps discrepancies open even after an administrator acknowledges them.
+*   **Four-eyes case escalation:** A reconciliation mismatch can become an SBI operations case only after one authenticated operator requests it and a different administrator approves it. Submission and status synchronization are idempotent, retry-safe, data-minimized, and never execute financial compensation.
+*   **Controlled rollout:** Durable global, channel, segment, signal, product, and exact model-version controls provide deterministic cohorts, non-customer-visible shadow evaluation, four-eyes activation, and an immediate administrator kill switch. Active controls are rechecked before presentation, authorization, and fulfilment so in-flight offers cannot bypass containment.
+*   **Outcome monitoring:** Idempotent, pseudonymous feedback observations measure conversion, complaints, opt-outs, false positives, benefit, and harm. Aggregate segment/signal/product reports enforce minimum samples and surface threshold breaches without exposing customer or raw source-event identifiers.
+*   **Versioned signal detection:** Masked signals flow through an evaluated detector contract with confidence, model/schema versions, reason codes, and input-digest binding. Production requires the SBI adapter and fails closed on low confidence, unapproved models, schema mismatch, or dependency failure.
+*   **Signed product and policy artifacts:** Product rules and policy registries can be submitted only as Ed25519-signed canonical envelopes from the configured SBI trust anchor. Activation is four-eyes, durable, restart-safe, and rolls back runtime materialization if activation cannot be committed.
+*   **Server-owned customer presentation:** Connected-mode product, action, consent, and success copy is persisted with the governed recommendation. The browser verifies the recommendation/product identity through presentation, authorization, fulfilment, and success; local scenario copy is restricted to explicit offline simulation.
+*   **Recoverable event processing:** Redis consumer groups provide explicit acknowledgements, stale-message claims, bounded retries, privacy-safe dead-letter views, idempotent admin replay, and lag/pending/dead-letter SLO metrics.
+*   **Durable event evidence:** A separately deployable worker validates approved event schemas and writes exactly-once receipts containing only a pseudonymous customer reference and payload digest. Worker heartbeats participate in readiness so a configured-but-dead consumer cannot appear healthy.
+
+The container stack supports PostgreSQL persistence, recoverable Redis Streams event delivery, continuous fulfilment reconciliation, Neo4j product rules, signed governed policy/product artifacts, mandatory high-risk review, compiled LangGraph decision execution, OIDC/JWKS verification, and typed SBI customer-context and fulfilment adapters. Local development retains SQLite/in-memory and explicitly synthetic adapters. SBI environment connection/certification, production trust-key custody, CBS/CRM/fulfilment integration, outcome feeds, and an independently operated WORM audit sink remain pending. See the [technical-review demo runbook](docs/DEMO_RUNBOOK.md), [production roadmap](docs/PRODUCTION_ROADMAP.md), [AI/model governance baseline](docs/AI_MODEL_GOVERNANCE.md), and [operations runbook](docs/OPERATIONS_RUNBOOK.md).

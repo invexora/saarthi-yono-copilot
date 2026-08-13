@@ -1,0 +1,70 @@
+{
+  "manifest_version": "2026.08.2",
+  "policies": [
+    {
+      "policy_id": "DEMO-CREDIT-DISCLOSURE",
+      "title": "Prototype Credit Disclosure Rule",
+      "version": "2026.08.1",
+      "category": "Compliance",
+      "source_system": "Invexora synthetic policy fixture; SBI mapping TBD",
+      "approval_status": "approved",
+      "approved_by": "Prototype Policy Fixture Owner",
+      "effective_from": "2026-08-01T00:00:00+00:00",
+      "effective_to": null,
+      "content_sha256": "493813b88b0a950ec21984a462d2ee6ec81230fd70f5fda76d3f43fc10275b55",
+      "content": "Demo control only: display product terms and a Key Fact Statement reference before a simulated credit action; live SBI policy mapping is pending."
+    },
+    {
+      "policy_id": "DEMO-PURPOSE-CONSENT",
+      "title": "Prototype Purpose Consent Rule",
+      "version": "2026.08.1",
+      "category": "Compliance",
+      "source_system": "Invexora synthetic policy fixture; SBI mapping TBD",
+      "approval_status": "approved",
+      "approved_by": "Prototype Policy Fixture Owner",
+      "effective_from": "2026-08-01T00:00:00+00:00",
+      "effective_to": null,
+      "content_sha256": "df5fd2d48c2c680aef170e5de4579f543f985287886d8ab39a097eae03e44960",
+      "content": "Demo control only: require one-time purpose consent before a simulated action. SBI-approved consent and privacy mappings are pending."
+    },
+    {
+      "policy_id": "DEMO-PRIVACY-MINIMIZATION",
+      "title": "Prototype Privacy Minimization Rule",
+      "version": "2026.08.1",
+      "category": "Compliance",
+      "source_system": "Invexora synthetic policy fixture; SBI mapping TBD",
+      "approval_status": "approved",
+      "approved_by": "Prototype Policy Fixture Owner",
+      "effective_from": "2026-08-01T00:00:00+00:00",
+      "effective_to": null,
+      "content_sha256": "c7b1e976814ce35301da7c1b326f1d571f49b23478151d590407c82bb13594ed",
+      "content": "Demo control only: mask common identifier shapes before prototype processing and expose a synthetic erasure workflow; regulated retention and production DLP are pending."
+    },
+    {
+      "policy_id": "DEMO-TAX-SERVICE",
+      "title": "Prototype Tax Service Rule",
+      "version": "2026.08.1",
+      "category": "Compliance",
+      "source_system": "Invexora synthetic policy fixture; SBI mapping TBD",
+      "approval_status": "approved",
+      "approved_by": "Prototype Policy Fixture Owner",
+      "effective_from": "2026-08-01T00:00:00+00:00",
+      "effective_to": null,
+      "content_sha256": "fde6c3136928dc36c91935c40cf0a20c4094c67d7fbc526c54f52d999b30a4db",
+      "content": "Demo control only: present tax-payment service as a synthetic fixture and require current SBI and statutory terms before any live use."
+    },
+    {
+      "policy_id": "DEMO-SME-CREDIT-REVIEW",
+      "title": "Prototype SME Credit Review Rule",
+      "version": "2026.08.1",
+      "category": "Operations",
+      "source_system": "Invexora synthetic policy fixture; SBI mapping TBD",
+      "approval_status": "approved",
+      "approved_by": "Prototype Policy Fixture Owner",
+      "effective_from": "2026-08-01T00:00:00+00:00",
+      "effective_to": null,
+      "content_sha256": "48324509f54f4201067a1c5ab779d5690193479c9f7abf289f0cb75a21d02d21",
+      "content": "Demo control only: require policy and human-review gates for higher-risk SME credit actions; live eligibility and credit policy remain in SBI systems."
+    }
+  ]
+}

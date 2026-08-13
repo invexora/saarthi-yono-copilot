@@ -20,6 +20,29 @@
   padding: 0;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:where(button, select, input, [tabindex]):focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 2px #111827;
+}
+
+:where(button, select, input):disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   background: radial-gradient(circle at 50% 0%, #152238 0%, var(--bg-dark) 70%);
@@ -153,7 +176,6 @@ header {
   font-family: inherit;
   font-size: 0.9rem;
   margin-bottom: 1.25rem;
-  outline: none;
   cursor: pointer;
   transition: border-color 0.2s;
 }
@@ -265,6 +287,9 @@ header {
 }
 
 .phone-screen {
+  --primary-sbi: #006ca8;
+  --success: #047857;
+  --error: #b91c1c;
   flex-grow: 1;
   background: var(--sbi-light);
   color: #333;
@@ -285,6 +310,18 @@ header {
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
+}
+.yono-header-button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font: inherit;
+  padding: 0.2rem;
 }
 .yono-logo {
   font-weight: 800;
@@ -344,6 +381,8 @@ header {
   gap: 0.5rem;
 }
 .yono-grid-item {
+  appearance: none;
+  border: 0;
   background: white;
   border-radius: 8px;
   padding: 0.6rem;
@@ -351,6 +390,7 @@ header {
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   cursor: pointer;
   transition: background 0.15s;
+  font: inherit;
 }
 .yono-grid-item:hover {
   background: #f8fafc;
@@ -360,9 +400,18 @@ header {
   margin-bottom: 2px;
 }
 .grid-label {
+  display: block;
   font-size: 0.65rem;
   font-weight: 600;
   color: #444;
+}
+
+.phone-scenario-trigger {
+  appearance: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  width: 100%;
 }
 
 /* Dynamic Saarthi Nudge - Inside YONO App UI */
@@ -376,15 +425,17 @@ header {
   border-top-right-radius: 16px;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
   transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
   z-index: 20;
   border-top: 3px solid var(--primary-sbi);
   display: flex;
   flex-direction: column;
+  visibility: hidden;
 }
 
 .saarthi-nudge-container.visible {
   transform: translateY(0);
+  visibility: visible;
 }
 
 .nudge-header {
@@ -503,7 +554,7 @@ header {
 /* Column 3: Saarthi Agent Trace Console */
 .trace-layout {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto auto;
   height: 100%;
 }
 
@@ -698,4 +749,576 @@ header {
 }
 .revoke-btn:hover {
   background: rgba(239, 68, 68, 0.2);
+}
+
+/* ===== Toast Notification System ===== */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 3px solid var(--success);
+}
+.toast.warning { border-left-color: var(--warning); }
+.toast.blocked { border-left-color: var(--error); }
+.toast-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+.toast-body { display: flex; flex-direction: column; gap: 2px; }
+.toast-title { font-weight: 600; font-size: 0.85rem; color: var(--text-main); }
+.toast-subtitle { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; }
+.toast.removing { animation: toastOut 0.3s ease-in forwards; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* ===== Explainability Accordion ===== */
+.nudge-explainability-toggle {
+  font-size: 11px;
+  color: #5b6472;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 4px;
+  user-select: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+}
+.nudge-explainability-toggle:hover { color: #374151; }
+.nudge-explainability-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.nudge-explainability-content.expanded {
+  max-height: 80px;
+  opacity: 1;
+}
+.nudge-explain-box {
+  background: rgba(59, 130, 246, 0.08);
+  border-left: 2px solid #3b82f6;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #4b5563;
+  line-height: 1.35;
+}
+
+/* ===== Financial Stress Support Card ===== */
+.stress-nudge-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  z-index: 20;
+  border-top: 3px solid #f59e0b;
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem;
+  visibility: hidden;
+}
+.stress-nudge-container.visible {
+  transform: translateY(0);
+  visibility: visible;
+}
+.stress-header {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #b45309;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stress-body-text {
+  font-size: 0.75rem;
+  color: #78350f;
+  line-height: 1.4;
+  margin-bottom: 0.65rem;
+}
+.stress-action-btn {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 0.35rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.stress-action-btn.outline {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid #d97706;
+  color: #92400e;
+}
+.stress-action-btn.outline:hover { background: rgba(255,255,255,0.9); }
+.stress-action-btn.filled {
+  background: #b45309;
+  border: none;
+  color: white;
+}
+.stress-action-btn.filled:hover { background: #92400e; }
+
+/* ===== Customer Assistance Profile Badge ===== */
+.assistance-profile-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.assistance-profile-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+.assistance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.assistance-badge.green { background: rgba(16,185,129,0.12); color: #10b981; }
+.assistance-badge.blue { background: rgba(59,130,246,0.12); color: #3b82f6; }
+.assistance-badge.amber { background: rgba(245,158,11,0.12); color: #f59e0b; }
+.assistance-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ===== Nudge Budget ===== */
+.nudge-budget {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.4rem 0.6rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+.nudge-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.nudge-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  transition: all 0.3s;
+}
+.nudge-dot.filled {
+  background: var(--primary-sbi);
+  border-color: var(--primary-sbi);
+}
+.nudge-budget-text {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+.nudge-budget-warning {
+  font-size: 0.6rem;
+  color: var(--warning);
+  display: none;
+  width: 100%;
+  text-align: right;
+  margin-top: 3px;
+}
+.nudge-budget-warning.visible { display: block; }
+
+/* ===== Stress Mode Banner ===== */
+.stress-banner {
+  display: none;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.7rem;
+  color: #f59e0b;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+.stress-banner.visible { display: block; }
+
+/* ===== Status Dot Amber ===== */
+.status-dot.amber {
+  background: var(--warning);
+  box-shadow: 0 0 8px var(--warning);
+}
+
+/* ===== Scenario Button Stress Variant ===== */
+.scenario-btn.stress {
+  border-color: rgba(245,158,11,0.3);
+  background: rgba(245,158,11,0.06);
+}
+.scenario-btn.stress:hover {
+  background: rgba(245,158,11,0.12);
+  border-color: rgba(245,158,11,0.4);
+}
+
+/* ===== YONO Ji vs Saarthi Comparison ===== */
+.comparison-callout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  background: rgba(255,255,255,0.015);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.7rem;
+}
+.comparison-col {
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+}
+.comparison-col.grey {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-color);
+}
+.comparison-col.highlight {
+  background: rgba(16,185,129,0.06);
+  border: 1px solid rgba(16,185,129,0.15);
+}
+.comparison-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+  font-size: 0.7rem;
+}
+.comparison-title.grey-text { color: var(--text-muted); }
+.comparison-title.green-text { color: var(--success); }
+.comparison-sub { font-size: 0.6rem; color: var(--text-muted); font-style: italic; }
+.comparison-date { font-size: 0.55rem; color: #9ca3af; margin-bottom: 2px; }
+
+/* ===== My Impact View ===== */
+.impact-header {
+  background: linear-gradient(135deg, var(--sbi-dark), #00509d);
+  color: white;
+  padding: 0.65rem;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.impact-metric {
+  background: white;
+  border-radius: 10px;
+  padding: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.impact-icon {
+  font-size: 1.3rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.impact-metric-title { font-size: 0.75rem; font-weight: 700; color: #1e293b; }
+.impact-metric-sub { font-size: 0.6rem; color: #64748b; }
+.impact-bar-container {
+  background: white;
+  border-radius: 10px;
+  padding: 0.65rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.impact-bar-title { font-size: 0.7rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
+.impact-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.6rem;
+  color: #64748b;
+}
+.impact-bar-label { min-width: 36px; }
+.impact-bar-track {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.impact-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-sbi), #10b981);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.impact-confidence {
+  font-size: 0.65rem;
+  color: #047857;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+.impact-footer {
+  font-size: 0.6rem;
+  color: #64748b;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* ===== In-App Success Screen ===== */
+.success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  height: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+.success-checkmark {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(16,185,129,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+.success-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sbi-dark);
+  margin-bottom: 0.35rem;
+}
+.success-text {
+  font-size: 0.75rem;
+  color: #4a5568;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.success-token-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  text-align: left;
+}
+.success-token-label {
+  font-size: 0.55rem;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.success-token-hash {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  color: #047857;
+  word-break: break-all;
+}
+.success-back-btn {
+  margin-top: auto;
+  padding: 0.5rem 1.5rem;
+  background: var(--primary-sbi);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.success-back-btn:hover { opacity: 0.9; }
+
+/* ===== Erasure Confirmation Card ===== */
+.erasure-confirm {
+  display: none;
+  background: rgba(239,68,68,0.04);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin-top: 0.4rem;
+  animation: fadeIn 0.3s ease-out;
+}
+.erasure-confirm.visible { display: block; }
+.erasure-confirm-text {
+  font-size: 0.65rem;
+  color: #991b1b;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+.erasure-confirm-actions { display: flex; gap: 0.4rem; }
+.erasure-cancel-btn, .erasure-confirm-btn {
+  flex: 1;
+  padding: 0.35rem;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.erasure-cancel-btn {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #4b5563;
+}
+.erasure-confirm-btn {
+  background: #b91c1c;
+  border: none;
+  color: white;
+}
+
+/* ===== RM Connection In-Phone Toast ===== */
+.rm-toast {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  background: #065f46;
+  color: white;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.65rem;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  z-index: 25;
+  animation: fadeIn 0.3s ease-out;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  line-height: 1.3;
+}
+.rm-toast.visible { display: flex; }
+.rm-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  flex-shrink: 0;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* API Status Indicator */
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.api-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.api-dot.online { background: #10b981; box-shadow: 0 0 6px #10b981; }
+.api-dot.offline { background: #f59e0b; }
+
+/* Compliance Framework Badges */
+.compliance-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+.compliance-badge-item {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.65rem;
+}
+.compliance-badge-item.dpdp {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.compliance-badge-item.rbi {
+  background: rgba(0, 160, 228, 0.06);
+  border: 1px solid rgba(0, 160, 228, 0.2);
+}
+.compliance-badge-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+.compliance-badge-detail {
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(button, select, input, [tabindex]):focus-visible {
+    outline: 3px solid Highlight;
+    box-shadow: none;
+  }
+
+  .status-dot,
+  .nudge-dot,
+  .api-dot {
+    border: 1px solid CanvasText;
+  }
 }
