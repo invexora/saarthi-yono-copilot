@@ -40,8 +40,8 @@
 
         <label class="section-title" for="profileSelect">Select Customer Profile</label>
         <select id="profileSelect" class="profile-select" onchange="changeProfile()">
-          <option value="aiwin" selected>Aiwin Vinu (Behance Profile)</option>
-          <option value="priya">Priya Sharma (Corporate Tech Lead)</option>
+          <option value="priya" selected>Priya Sharma (Corporate Tech Lead)</option>
+          <option value="aiwin">Aiwin Vinu (Behance Profile)</option>
           <option value="ramesh">Ramesh Kumar (Retired Pensioner)</option>
           <option value="amit">Amit Patel (SME / Retail Shop Owner)</option>
           <option value="sneha">Sneha Patel (Salaried — Financial Stress)</option>
@@ -51,19 +51,19 @@
         <div class="profile-info-box">
           <div class="profile-info-row">
             <span class="profile-info-label">Customer ID:</span>
-            <span id="profId">SBI-036910</span>
+            <span id="profId">SBI-772910</span>
           </div>
           <div class="profile-info-row">
             <span class="profile-info-label">Monthly Salary:</span>
-            <span id="profSalary">₹85,000</span>
+            <span id="profSalary">₹1,45,000</span>
           </div>
           <div class="profile-info-row">
             <span class="profile-info-label">Savings Balance:</span>
-            <span id="profBalance">₹68,526</span>
+            <span id="profBalance">₹2,80,000</span>
           </div>
           <div class="profile-info-row">
             <span class="profile-info-label">CC Interest paid:</span>
-            <span id="profInterest">₹1,850/mo (across 1 card)</span>
+            <span id="profInterest">₹4,200/mo (across 2 cards)</span>
           </div>
         </div>
 
@@ -179,8 +179,8 @@
 
               <div class="login-center-prompt">
                 <div id="loginPromptTitle" class="login-prompt-title">Enter MPIN</div>
-                <div id="loginPromptUser" class="login-prompt-sub">Aiwin Vinu</div>
-                <div id="loginPromptCrn" class="login-prompt-crn">CRN : *****0369</div>
+                <div id="loginPromptUser" class="login-prompt-sub">Priya Sharma</div>
+                <div id="loginPromptCrn" class="login-prompt-crn">CRN : *****7291</div>
               </div>
             </div>
 
@@ -246,13 +246,13 @@
                 <div class="login-form-area">
                   <div class="login-input-group">
                     <label for="loginUsernameInput" class="login-input-label">Username</label>
-                    <input id="loginUsernameInput" type="text" class="login-text-input" value="aiwinvinu" readonly>
+                    <input id="loginUsernameInput" type="text" class="login-text-input" value="priyasharma" readonly>
                   </div>
 
                   <div class="login-input-group">
                     <label for="loginPasswordInput" class="login-input-label">Password</label>
                     <div class="login-password-wrapper">
-                      <input id="loginPasswordInput" type="password" class="login-text-input" value="aiwinvinu123@sbi" readonly>
+                      <input id="loginPasswordInput" type="password" class="login-text-input" value="priyasharma123@sbi" readonly>
                       <button type="button" class="input-eye-btn" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">👁️</button>
                     </div>
                   </div>
@@ -338,11 +338,11 @@
             <!-- Authentic Redesigned Top Header -->
             <div class="behance-header">
               <button type="button" class="behance-avatar-btn" onclick="openProfileModal()" aria-label="Open customer profile">
-                <span id="userInitialsBadge" class="avatar-circle">AV</span>
+                <span id="userInitialsBadge" class="avatar-circle">PS</span>
               </button>
 
               <div class="behance-user-greeting">
-                <span class="greeting-sub">Hello <span id="yonoUser">Aiwin</span>,</span>
+                <span class="greeting-sub">Hello <span id="yonoUser">Priya</span>,</span>
                 <span class="greeting-main">Let's get started!</span>
               </div>
 
@@ -404,7 +404,7 @@
                     <div class="card-row-top">
                       <div>
                         <span class="card-balance-label">Combined Balance</span>
-                        <div id="yonoBalance" class="card-balance-val">₹68,526.00</div>
+                        <div id="yonoBalance" class="card-balance-val">₹2,80,000.00</div>
                       </div>
                       <button type="button" class="sbi-card-tag-btn" onclick="navigateToView('cards')" aria-label="Open SBI Card Details">
                         <span>SBI Card</span>
@@ -414,21 +414,21 @@
                     </div>
 
                     <div class="card-row-middle">
-                      <span id="maskedCardNum" class="card-masked-num">XXXX XXXX XXXX 0369</span>
+                      <span id="maskedCardNum" class="card-masked-num">XXXX XXXX XXXX 4921</span>
                       <button id="balanceToggleBtn" type="button" class="card-eye-btn" onclick="toggleBalanceVisibility()" aria-label="Toggle balance visibility">
                         <span id="balanceEyeIcon" aria-hidden="true">👁️</span>
                       </button>
                     </div>
 
                     <div class="card-row-bottom">
-                      <span id="cardHolderName" class="card-holder-name">AIWIN VINU</span>
+                      <span id="cardHolderName" class="card-holder-name">PRIYA SHARMA</span>
                       <span class="card-visa-brand" aria-hidden="true">VISA</span>
                     </div>
                   </div>
 
                   <!-- UPI Lite Pill Strip -->
                   <div class="upi-lite-strip">
-                    <span class="upi-handle-text">UPI : <span id="userUpiHandle">aiwinvinu@sbi</span></span>
+                    <span class="upi-handle-text">UPI : <span id="userUpiHandle">priyasharma@sbi</span></span>
                     <button type="button" class="enable-lite-btn" onclick="showToast('success', 'UPI LITE', 'Enabled on device with PIN-less transactions')">
                       Enable UPI LITE
                     </button>
@@ -1255,11 +1255,11 @@
 
               <div class="profile-avatar-center-box">
                 <div class="avatar-large-circle">
-                  <span id="profileModalInitials">AV</span>
+                  <span id="profileModalInitials">PS</span>
                   <span class="avatar-qr-badge" aria-hidden="true">⛶</span>
                 </div>
-                <div id="profileModalTitle" class="profile-user-fullname">Aiwin Vinu</div>
-                <span class="profile-welcome-note">Congratulations on your first login!</span>
+                <div id="profileModalTitle" class="profile-user-fullname">Priya Sharma</div>
+                <span class="profile-welcome-note">Corporate Tech Lead • SBI Wealth Tier</span>
               </div>
 
               <div class="account-details-box">
@@ -1271,23 +1271,23 @@
                 </div>
                 <div class="acc-detail-row">
                   <span class="acc-detail-label">CNR</span>
-                  <span class="acc-detail-val">******369 👁️</span>
+                  <span class="acc-detail-val">******910 👁️</span>
                 </div>
                 <div class="acc-detail-row">
                   <span class="acc-detail-label">Account No.</span>
-                  <span class="acc-detail-val">0123456789</span>
+                  <span class="acc-detail-val">38910472910</span>
                 </div>
                 <div class="acc-detail-row">
                   <span class="acc-detail-label">IFSC Code</span>
-                  <span class="acc-detail-val">SBIN0000369</span>
+                  <span class="acc-detail-val">SBIN0000421</span>
                 </div>
                 <div class="acc-detail-row">
                   <span class="acc-detail-label">Home Branch</span>
-                  <span class="acc-detail-val">KOCHI-KAKKANAD</span>
+                  <span class="acc-detail-val">MUMBAI-NARIMAN POINT</span>
                 </div>
                 <div class="acc-detail-row">
                   <span class="acc-detail-label">UPI ID</span>
-                  <span class="acc-detail-val">aiwinvinu@sbi 📋</span>
+                  <span class="acc-detail-val">priyasharma@sbi 📋</span>
                 </div>
               </div>
 

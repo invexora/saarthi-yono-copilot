@@ -34,19 +34,17 @@ Comprehensive architectural blueprints, Small Language Model (SLM) training/infe
 | **6. Cryptographic Audit Merkle Ledger** | [docs/ARCHITECTURE.md#6-cryptographic-audit-ledger--single-use-decision-tokens](docs/ARCHITECTURE.md#6-cryptographic-audit-ledger--single-use-decision-tokens) | ![Audit Ledger](docs/images/cryptographic_audit_merkle_ledger.jpg) |
 | **7. Neo4j Knowledge Graph RAG Matrix** | [docs/ARCHITECTURE.md#7-neo4j-knowledge-graph-rag--product-matrix](docs/ARCHITECTURE.md#7-neo4j-knowledge-graph-rag--product-matrix) | ![Graph RAG](docs/images/neo4j_graph_rag_product_matrix.jpg) |
 
----
+## 🎯 Proactive Solutions & LangGraph Orchestrator Gallery
 
-## 📱 Banking App & In-App Nudge Screenshot Gallery
+A visual evidence gallery featuring **Priya Sharma (Corporate Tech Lead)** with full 3-panel live Co-Pilot decision traces, proactive in-app nudges, and DPDP compliance is documented in **[docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)**:
 
-A comprehensive visual gallery containing **19 high-resolution screenshots** across all screens, sub-views, and proactive nudge states is documented in **[docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)**:
-
-| MPIN & Biometrics Login | Magenta Wave Card Dashboard | Governed Opportunity Nudge |
+| Opportunity Nudge & LangGraph Trace | In-Phone Explainability & Governance | Branch Friction: Direct Tax Digitization |
 | :---: | :---: | :---: |
-| [![MPIN](docs/screenshots/01_login_mpin_keypad.png)](docs/SCREENSHOTS.md) | [![Dashboard](docs/screenshots/03_dashboard_banking_card.png)](docs/SCREENSHOTS.md) | [![Nudge](docs/screenshots/12_nudge_opportunity_debt_consolidation.png)](docs/SCREENSHOTS.md) |
-| **Account Details / Profile** | **Financial Stress Mode** | **Explainability Accordion** |
-| [![Profile](docs/screenshots/11_profile_account_details_modal.png)](docs/SCREENSHOTS.md) | [![Stress](docs/screenshots/16_financial_stress_support_card.png)](docs/SCREENSHOTS.md) | [![Explain](docs/screenshots/13_nudge_explainability_expanded.png)](docs/SCREENSHOTS.md) |
+| [![Opportunity](docs/screenshots/01_priya_solution_opportunity_nudge_trace.png)](docs/SCREENSHOTS.md) | [![Explainability](docs/screenshots/02_priya_solution_explainability_governance.png)](docs/SCREENSHOTS.md) | [![Direct Tax](docs/screenshots/03_priya_solution_branch_friction_direct_tax.png)](docs/SCREENSHOTS.md) |
+| **Financial Stress Protection Mode** | **Cryptographic Token Authorization** | **DPDP Privacy & Consent Center** |
+| [![Stress Mode](docs/screenshots/05_priya_solution_financial_stress_support_override.png)](docs/SCREENSHOTS.md) | [![Token Auth](docs/screenshots/06_priya_solution_single_use_token_authorization.png)](docs/SCREENSHOTS.md) | [![DPDP](docs/screenshots/08_priya_solution_dpdp_privacy_consent_erasure.png)](docs/SCREENSHOTS.md) |
 
-👉 **[View all 19 Full-Resolution Screenshots in docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)**
+👉 **[Explore the full Solution & Behavioral Trace Gallery in docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)**
 
 ---
 

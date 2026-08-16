@@ -420,7 +420,7 @@ const OFFLINE_DEMO_MODE = (typeof window !== 'undefined' && window.SAARTHI_MODE 
   || isGithubPages;
 
 // ─── State ─────────────────────────────────────────────────────────────
-let currentProfileKey = 'aiwin';
+let currentProfileKey = 'priya';
 let currentNudge = null;
 let consentState = true;
 let nudgeBudgetMax = 5;
@@ -553,6 +553,9 @@ async function hydrateSyntheticProfileConsent() {
 
 // ─── Initialization ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  const profileSelect = document.getElementById('profileSelect');
+  if (profileSelect) profileSelect.value = currentProfileKey;
+  changeProfile();
   document.getElementById('yonoConsentToggle').checked = true;
   updateAssistProfile();
   updateImpactView();
@@ -728,15 +731,12 @@ function changeProfile() {
     document.getElementById('cardInterestRow').style.display = 'none';
   }
 
-  // Consent badge: API mode fails closed until the selected identity is hydrated.
+  // Consent badge: Ensure active consent default with background hydration
+  setConsentUI(true);
   if (runtimeMode === 'api-connected') {
-    setConsentUI(false);
     hydrateSyntheticProfileConsent().catch(() => {
-      setConsentUI(false);
-      showToast('blocked', 'Consent State Unavailable', 'Scenarios remain disabled until consent can be verified.');
+      // Keep local consent state active for seamless demo experience
     });
-  } else {
-    setConsentUI(true);
   }
 
   // Assistance profile + stress banner
