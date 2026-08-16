@@ -449,9 +449,7 @@ SCENE_DEFS = [
 
 print(f"Silent Video Duration: {TOTAL_DURATION}s ({TOTAL_DURATION:.1f} secs) | Total Frames: {TOTAL_FRAMES}")
 
-OUTPUT_MP4 = "docs/saarthi_demo_presentation_5min.mp4"
-FINAL_COPY = "presentation-final/saarthi_demo_presentation_5min.mp4"
-FAST_COPY = "docs/saarthi_demo_presentation_fast.mp4"
+OUTPUT_MP4 = "docs/saarthi_demo_presentation_fast.mp4"
 
 # RENDER SILENT VIDEO (NO AUDIO TRACK / NO SFX)
 ffmpeg_cmd = [
@@ -494,8 +492,4 @@ for scene_idx, (s_title, s_dur, s_render) in enumerate(SCENE_DEFS, start=1):
 proc.stdin.close()
 proc.wait()
 
-print(f"Silent video created successfully at: {OUTPUT_MP4}")
-os.makedirs("presentation-final", exist_ok=True)
-subprocess.run(["cp", OUTPUT_MP4, FINAL_COPY])
-subprocess.run(["cp", OUTPUT_MP4, FAST_COPY])
-print(f"Copied to: {FINAL_COPY} & {FAST_COPY}")
+print(f"Silent fast video created successfully at: {OUTPUT_MP4}")

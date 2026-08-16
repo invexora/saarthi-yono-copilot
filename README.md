@@ -10,14 +10,14 @@ Built for the **YONO Copilot Hackathon**, Saarthi provides a high-fidelity exper
 
 ---
 
-## 🌐 Live Deployed Application & Video Walkthrough
+## 🌐 Live Deployed Application & Walkthrough
 
 *   🚀 **Live Deployed Prototype:** [**https://invexora.github.io/saarthi-yono-copilot/**](https://invexora.github.io/saarthi-yono-copilot/)
-*   🎬 **Official 5-Minute Demo Video Presentation:** [`docs/saarthi_demo_presentation_5min.mp4`](docs/saarthi_demo_presentation_5min.mp4) *(High-definition 1080p director-style video covering the live mobile screen, 3B SLM benchmark scores, LangGraph trace, DPDP Act 2023 guardrails, and +₹1,250 Cr business ROI)*
+*   🎬 **Fast-Paced Demo Video (No Audio):** [`docs/saarthi_demo_presentation_fast.mp4`](docs/saarthi_demo_presentation_fast.mp4)
 *   💻 **Local Web Server:** `http://127.0.0.1:8000`
 *   ⚙️ **Backend Decision Engine:** `http://127.0.0.1:5050` (FastAPI / LangGraph)
 *   📖 **Interactive Runbook:** [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md)
-*   📊 **Presentation Pack:** `presentation.html` & `presentation-final/`
+*   📊 **Presentation Pack:** `presentation.html`
 
 ---
 
@@ -34,6 +34,13 @@ Comprehensive architectural blueprints, Small Language Model (SLM) training/infe
 | **5. Dynamic Nudge Budget & Fatigue Controller** | [docs/ARCHITECTURE.md#5-dynamic-nudge-budget--decline-fatigue-control-system](docs/ARCHITECTURE.md#5-dynamic-nudge-budget--decline-fatigue-control-system) | ![Nudge Budget](docs/images/dynamic_nudge_budget_fatigue_controller.jpg) |
 | **6. Cryptographic Audit Merkle Ledger** | [docs/ARCHITECTURE.md#6-cryptographic-audit-ledger--single-use-decision-tokens](docs/ARCHITECTURE.md#6-cryptographic-audit-ledger--single-use-decision-tokens) | ![Audit Ledger](docs/images/cryptographic_audit_merkle_ledger.jpg) |
 | **7. Neo4j Knowledge Graph RAG Matrix** | [docs/ARCHITECTURE.md#7-neo4j-knowledge-graph-rag--product-matrix](docs/ARCHITECTURE.md#7-neo4j-knowledge-graph-rag--product-matrix) | ![Graph RAG](docs/images/neo4j_graph_rag_product_matrix.jpg) |
+
+### 🎬 Fast Video Walkthrough (Architecture & Solutions)
+
+> 📹 **Watch the fast 42s silent demo presentation video:** [`docs/saarthi_demo_presentation_fast.mp4`](docs/saarthi_demo_presentation_fast.mp4)
+> *A high-definition 1080p fast-paced walkthrough (3.5s per diagram/scene) covering the end-to-end architecture, 3B SLM benchmarks, 6-Node LangGraph trace, DPDP Act 2023 privacy guardrails, and quantified ROI.*
+
+---
 
 ## 🎯 Proactive Solutions & LangGraph Orchestrator Gallery
 
