@@ -10,13 +10,14 @@ Built for the **YONO Copilot Hackathon**, Saarthi provides a high-fidelity exper
 
 ---
 
-## 🌐 Live Deployed Application & Walkthrough
+## 🌐 Live Deployed Application & Video Walkthrough
 
 *   🚀 **Live Deployed Prototype:** [**https://invexora.github.io/saarthi-yono-copilot/**](https://invexora.github.io/saarthi-yono-copilot/)
+*   🎬 **Official 5-Minute Demo Video Presentation:** [`docs/saarthi_demo_presentation_5min.mp4`](docs/saarthi_demo_presentation_5min.mp4) *(High-definition 1080p director-style video covering the live mobile screen, 3B SLM benchmark scores, LangGraph trace, DPDP Act 2023 guardrails, and +₹1,250 Cr business ROI)*
 *   💻 **Local Web Server:** `http://127.0.0.1:8000`
 *   ⚙️ **Backend Decision Engine:** `http://127.0.0.1:5050` (FastAPI / LangGraph)
 *   📖 **Interactive Runbook:** [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md)
-*   📊 **Presentation Pack:** `presentation.html`
+*   📊 **Presentation Pack:** `presentation.html` & `presentation-final/`
 
 ---
 
