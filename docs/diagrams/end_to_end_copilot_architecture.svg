@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06090e"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="layerGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#831843"/>
+      <stop offset="100%" stop-color="#500724"/>
+    </linearGradient>
+    <linearGradient id="layerGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="layerGrad3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b0764"/>
+      <stop offset="100%" stop-color="#2e1065"/>
+    </linearGradient>
+    <linearGradient id="layerGrad4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="6" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 0 L 5 8 L 9 0 z" fill="#38bdf8"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-family: system-ui, -apple-system, sans-serif; font-size: 24px; font-weight: 800; fill: #f8fafc; }
+    .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #94a3b8; }
+    .layer-label { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
+    .box-title { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; font-weight: 700; fill: #f8fafc; }
+    .box-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #94a3b8; }
+  </style>
+
+  <rect width="1200" height="740" rx="16" fill="url(#bgGrad)" stroke="#334155" stroke-width="1.5"/>
+
+  <text x="50" y="42" class="title">State Bank of India — Saarthi YONO Co-Pilot</text>
+  <text x="50" y="62" class="subtitle">End-to-End Enterprise Architecture: Mobile Client, Security Edge, Agentic Core, and Core Banking Integrations</text>
+
+  <!-- LAYER 1 -->
+  <g transform="translate(50, 85)">
+    <rect width="1100" height="120" rx="10" fill="url(#layerGrad1)" stroke="#f43f5e" stroke-width="1.2"/>
+    <text x="20" y="24" class="layer-label" fill="#fda4af">LAYER 1: CLIENT PRESENTATION (BEHANCE YONO SBI REDESIGN)</text>
+
+    <rect x="20" y="38" width="250" height="68" rx="6" fill="#1e1122" stroke="#f43f5e" stroke-opacity="0.5"/>
+    <text x="35" y="58" class="box-title">🔐 Biometric &amp; MPIN Login</text>
+    <text x="35" y="74" class="box-sub">3x4 Circular Keypad · TouchID / FaceID</text>
+    <text x="35" y="88" class="box-sub">Username + Password with Virtual GBoard</text>
+
+    <rect x="290" y="38" width="250" height="68" rx="6" fill="#1e1122" stroke="#f43f5e" stroke-opacity="0.5"/>
+    <text x="305" y="58" class="box-title">📊 4 Category Dashboard</text>
+    <text x="305" y="74" class="box-sub">Banking · Life Style · Rewards · Others</text>
+    <text x="305" y="88" class="box-sub">Magenta Wave Card (Rs. 68,526) · UPI LITE</text>
+
+    <rect x="560" y="38" width="250" height="68" rx="6" fill="#1e1122" stroke="#f43f5e" stroke-opacity="0.5"/>
+    <text x="575" y="58" class="box-title">💡 Governed In-App Nudge</text>
+    <text x="575" y="74" class="box-sub">Dynamic Nudge Budget (Avg 5)</text>
+    <text x="575" y="88" class="box-sub">Explainability Accordion &amp; One-Click Action</text>
+
+    <rect x="830" y="38" width="250" height="68" rx="6" fill="#1e1122" stroke="#f43f5e" stroke-opacity="0.5"/>
+    <text x="845" y="58" class="box-title">📑 Financial Sub-Views</text>
+    <text x="845" y="74" class="box-sub">Loans · Insurance · Investments · Cards</text>
+    <text x="845" y="88" class="box-sub">Profile Modal with Account CNR &amp; IFSC</text>
+  </g>
+
+  <!-- LAYER 2 -->
+  <g transform="translate(50, 225)">
+    <rect width="1100" height="110" rx="10" fill="url(#layerGrad2)" stroke="#3b82f6" stroke-width="1.2"/>
+    <text x="20" y="24" class="layer-label" fill="#93c5fd">LAYER 2: SECURITY EDGE &amp; FASTAPI GATEWAY</text>
+
+    <rect x="20" y="38" width="250" height="58" rx="6" fill="#0b1329" stroke="#3b82f6" stroke-opacity="0.5"/>
+    <text x="35" y="58" class="box-title">🛡️ FastAPI Async Core</text>
+    <text x="35" y="74" class="box-sub">Uvicorn · OpenAPI Docs · /api/v1/health</text>
+
+    <rect x="290" y="38" width="250" height="58" rx="6" fill="#0b1329" stroke="#3b82f6" stroke-opacity="0.5"/>
+    <text x="305" y="58" class="box-title">🔑 Scoped Token Authentication</text>
+    <text x="305" y="74" class="box-sub">Bearer Tokens · Idempotency-Key Header</text>
+
+    <rect x="560" y="38" width="250" height="58" rx="6" fill="#0b1329" stroke="#3b82f6" stroke-opacity="0.5"/>
+    <text x="575" y="58" class="box-title">⏱️ Rate Limiting &amp; DDoS Shield</text>
+    <text x="575" y="74" class="box-sub">IP &amp; CRN Throttling · CORS Whitelist</text>
+
+    <rect x="830" y="38" width="250" height="58" rx="6" fill="#0b1329" stroke="#3b82f6" stroke-opacity="0.5"/>
+    <text x="845" y="58" class="box-title">🔒 Cryptographic Verification</text>
+    <text x="845" y="74" class="box-sub">Ed25519 Artifact Proofs · HMAC Integrity</text>
+  </g>
+
+  <!-- LAYER 3 -->
+  <g transform="translate(50, 355)">
+    <rect width="1100" height="195" rx="10" fill="url(#layerGrad3)" stroke="#a855f7" stroke-width="1.2"/>
+    <text x="20" y="24" class="layer-label" fill="#d8b4fe">LAYER 3: AGENTIC TRAFFIC CONTROLLER &amp; GOVERNANCE CORE</text>
+
+    <rect x="20" y="38" width="200" height="140" rx="6" fill="#1b0b2e" stroke="#a855f7" stroke-opacity="0.5"/>
+    <text x="35" y="58" class="box-title">📥 Redis Streams</text>
+    <text x="35" y="74" class="box-sub">Real-Time Ingestion Bus</text>
+    <text x="35" y="90" class="box-sub">Sub-millisecond Queuing</text>
+    <text x="35" y="106" class="box-sub">Dead-Letter Replay Queue</text>
+    <text x="35" y="122" class="box-sub">Consumer Group Scaling</text>
+
+    <rect x="240" y="38" width="200" height="140" rx="6" fill="#1b0b2e" stroke="#a855f7" stroke-opacity="0.5"/>
+    <text x="255" y="58" class="box-title">🧠 3B Signal SLM</text>
+    <text x="255" y="74" class="box-sub">Edge QLoRA Fine-Tuned</text>
+    <text x="255" y="90" class="box-sub">Confidence Gating (tau &gt;= 0.85)</text>
+    <text x="255" y="106" class="box-sub">Deterministic Rule Graph</text>
+    <text x="255" y="122" class="box-sub">Friction / Debt / Stress</text>
+
+    <rect x="460" y="38" width="200" height="140" rx="6" fill="#1b0b2e" stroke="#a855f7" stroke-opacity="0.5"/>
+    <text x="475" y="58" class="box-title">🕸️ Neo4j Graph RAG</text>
+    <text x="475" y="74" class="box-sub">SBI Product Catalog</text>
+    <text x="475" y="90" class="box-sub">Interest Rate Matrix</text>
+    <text x="475" y="106" class="box-sub">Eligibility Cypher Query</text>
+    <text x="475" y="122" class="box-sub">Approved Policy Retrieval</text>
+
+    <rect x="680" y="38" width="200" height="140" rx="6" fill="#1b0b2e" stroke="#ec4899" stroke-opacity="0.8"/>
+    <text x="695" y="58" class="box-title" fill="#f472b6">⚖️ DPDP Compliance Gate</text>
+    <text x="695" y="74" class="box-sub">Purpose Consent Check</text>
+    <text x="695" y="90" class="box-sub">Dynamic Nudge Budget (Avg 5)</text>
+    <text x="695" y="106" class="box-sub">Decline Fatigue Cooldown</text>
+    <text x="695" y="122" class="box-sub">Vulnerable Support Override</text>
+
+    <rect x="900" y="38" width="180" height="140" rx="6" fill="#1b0b2e" stroke="#10b981" stroke-opacity="0.8"/>
+    <text x="915" y="58" class="box-title" fill="#6ee7b7">📜 Tamper Audit Trail</text>
+    <text x="915" y="74" class="box-sub">SHA-256 HMAC Ledger</text>
+    <text x="915" y="90" class="box-sub">Single-Use Decision Token</text>
+    <text x="915" y="106" class="box-sub">Four-Eyes Review Queue</text>
+    <text x="915" y="122" class="box-sub">Cryptographic Receipts</text>
+  </g>
+
+  <!-- LAYER 4 -->
+  <g transform="translate(50, 570)">
+    <rect width="1100" height="135" rx="10" fill="url(#layerGrad4)" stroke="#10b981" stroke-width="1.2"/>
+    <text x="20" y="24" class="layer-label" fill="#6ee7b7">LAYER 4: ENTERPRISE BANKING SYSTEMS &amp; FULFILLMENT</text>
+
+    <rect x="20" y="38" width="195" height="80" rx="6" fill="#042017" stroke="#10b981" stroke-opacity="0.4"/>
+    <text x="35" y="58" class="box-title">🏦 Core Banking (CBS)</text>
+    <text x="35" y="74" class="box-sub">Savings / Current Ledger</text>
+    <text x="35" y="88" class="box-sub">Term Deposit Auto-Creation</text>
+
+    <rect x="235" y="38" width="195" height="80" rx="6" fill="#042017" stroke="#10b981" stroke-opacity="0.4"/>
+    <text x="250" y="58" class="box-title">⚡ UPI &amp; UPI LITE</text>
+    <text x="250" y="74" class="box-sub">NPCI Instant Switch</text>
+    <text x="250" y="88" class="box-sub">On-Device Wallet Top-up</text>
+
+    <rect x="450" y="38" width="195" height="80" rx="6" fill="#042017" stroke="#10b981" stroke-opacity="0.4"/>
+    <text x="465" y="58" class="box-title">🏧 Cash Deposit (CDM)</text>
+    <text x="465" y="74" class="box-sub">Branch Kiosk Direct Fleet</text>
+    <text x="465" y="88" class="box-sub">Skip Manual Teller Queues</text>
+
+    <rect x="665" y="38" width="195" height="80" rx="6" fill="#042017" stroke="#10b981" stroke-opacity="0.4"/>
+    <text x="680" y="58" class="box-title">💳 SBI Cards Switch</text>
+    <text x="680" y="74" class="box-sub">Revolving Debt Restructure</text>
+    <text x="680" y="88" class="box-sub">Express Credit Loan Engine</text>
+
+    <rect x="880" y="38" width="200" height="80" rx="6" fill="#042017" stroke="#10b981" stroke-opacity="0.4"/>
+    <text x="895" y="58" class="box-title">👥 RM Case Management</text>
+    <text x="895" y="74" class="box-sub">Relationship Manager Portal</text>
+    <text x="895" y="88" class="box-sub">Compassionate Restructure</text>
+  </g>
+</svg>

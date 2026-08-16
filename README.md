@@ -16,28 +16,41 @@ Built for the **YONO Copilot Hackathon**, Saarthi currently provides a high-fide
 
 ---
 
+## 🏛️ System & SLM Architecture Blueprints
+
+Comprehensive architectural blueprints, Small Language Model (SLM) training/inference pipelines, and Agentic Traffic Controller (ATC) state machine diagrams are documented in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**:
+
+| Architectural Component | Blueprint & Specification | Visual Diagram |
+| :--- | :--- | :--- |
+| **End-to-End System** | [docs/ARCHITECTURE.md#1-end-to-end-system-architecture](docs/ARCHITECTURE.md#1-end-to-end-system-architecture) | ![System Architecture](docs/images/saarthi_full_copilot_architecture.jpg) |
+| **Small Language Model (SLM)** | [docs/ARCHITECTURE.md#2-small-language-model-slm-architecture--signal-detection](docs/ARCHITECTURE.md#2-small-language-model-slm-architecture--signal-detection) | ![SLM Flow](docs/images/slm_architecture_flow.jpg) |
+| **Agentic Traffic Controller (ATC)** | [docs/ARCHITECTURE.md#3-agentic-traffic-controller-atc--decision-orchestrator](docs/ARCHITECTURE.md#3-agentic-traffic-controller-atc--decision-orchestrator) | ![ATC Decision](docs/images/atc_decision_orchestrator.jpg) |
+
+---
+
 ## 🛠️ Repository Architecture
 
 The project is organized as a modular, pilot-oriented reference implementation:
 
 ```
 saarthi-yono-copilot/
-├── index.html               # YONO Simulator UI Layout (Mobile Simulator + Agent Trace)
+├── index.html               # Authentic Behance YONO Simulator UI (Mobile + LangGraph Trace)
 ├── style.css                # Extracted visual styles (glassmorphism & dark mode)
 ├── app.js                   # Interactive client-side simulation, states & routing
 ├── backend/                 # Governed decision-orchestration reference backend
 │   ├── requirements.txt     # Python backend dependencies
-│   ├── data_synthesis.py   # Synthetic customer profiles & transaction logs
+│   ├── api.py               # Versioned FastAPI REST endpoints
 │   ├── database.py          # Consent, nudge budgets, recommendations and audit persistence
 │   ├── dpdp_engine.py       # Consent lifecycle and scoped action authorization
-│   ├── vector_ingestion.py  # Local TF-IDF policy retrieval prototype
-│   ├── guardrails.py        # PII regex masking and outbound policy checks
-│   ├── orchestrator.py      # Sequential state-machine reference implementation
-│   └── server.py            # Versioned HTTP API
-├── contracts/               # 28 transport-neutral synthetic SBI-boundary contracts
-├── docs/                    # Architecture, API, AI-governance and finalization evidence
+│   ├── signal_detection.py  # SLM & rule-based behavioral signal detector
+│   ├── orchestrator.py      # Compiled LangGraph 6-node state-machine
+│   └── ml/                  # SLM dataset generation, fine-tuning and evaluation
+├── docs/                    # Complete Architecture, SLM Roadmaps, Runbooks, SVGs & Images
+│   ├── ARCHITECTURE.md      # Comprehensive Architectural Blueprint
+│   ├── diagrams/            # Vector SVGs (SLM, ATC, Full System)
+│   └── images/              # High-Resolution Architectural Renders
+├── signal-lm-training-kit/  # Standalone PyTorch/Transformers QLoRA Training Kit
 ├── tests/                   # Trust-control unit and API integration tests
-├── .github/workflows/       # Repeatable Python/frontend CI checks
 └── README.md                # Premium architectural description (this file)
 ```
 

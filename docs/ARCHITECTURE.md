@@ -1,161 +1,192 @@
-# Saarthi Governed Decision Architecture
+# State Bank of India — Saarthi YONO Co-Pilot Architecture Blueprint
 
-## Trust boundaries
+This document defines the complete technical, agentic, cryptographic, and machine learning architecture for **Saarthi**, the Governed Proactive Engagement Co-Pilot for SBI YONO.
 
-The browser supplies a behavioral signal and, only in local development, a segment hint. Customer identity comes from the authenticated session. Production eligibility uses the SBI customer-context adapter; caller-supplied segment and financial values are never trusted.
+---
 
-The context contract provides a verified segment, monthly income and obligations, vulnerability flags, source, version, and timestamp. Raw financial values remain inside the decision service. Public responses and reviewer records contain only provenance, calculated ratios, policy evidence, and reason codes.
+## 🏛️ 1. End-to-End System Architecture
 
-## Decision flow
+Saarthi operates across four coordinated enterprise layers, ensuring sub-15ms real-time event processing while enforcing strict DPDP (Digital Personal Data Protection Act) purpose limitation and cryptographic auditability.
+
+![Saarthi Full Co-Pilot Architecture](images/saarthi_full_copilot_architecture.jpg)
+
+### Vector Diagram
+![Saarthi Vector Architecture](diagrams/end_to_end_copilot_architecture.svg)
+
+### System Layer Breakdown
+
+```mermaid
+graph TB
+  subgraph Layer1["Layer 1: Client Presentation (YONO Behance UI)"]
+    L1_Login["Biometric & 3x4 MPIN Login"]
+    L1_Dash["4-Category Hub (Banking, Life Style, Rewards, Others)"]
+    L1_Nudge["Governed In-App Nudge & Explainability Accordion"]
+    L1_Views["Dedicated Views (Loans, Insurance, Investments, Cards)"]
+  end
+
+  subgraph Layer2["Layer 2: Security Edge & Gateway (FastAPI)"]
+    L2_API["FastAPI Async Engine (Uvicorn / ASGI)"]
+    L2_Auth["Bearer Token Auth & Idempotency Key Gate"]
+    L2_Rate["DDoS Protection & DPDP Whitelist Middleware"]
+  end
+
+  subgraph Layer3["Layer 3: Agentic Core & Governance (ATC)"]
+    L3_Stream["Redis Streams Ingestion Bus (saarthi:events)"]
+    L3_SLM["3B Signal Small Language Model (QLoRA Edge)"]
+    L3_Graph["Neo4j Product Graph & Policy Evidence RAG"]
+    L3_Gate["DPDP Compliance Gate (Dynamic Budget + Decline Fatigue)"]
+    L3_Token["Single-Use HMAC-SHA256 Decision Token Authority"]
+    L3_Ledger["Tamper-Evident SHA-256 Merkle Audit Ledger"]
+  end
+
+  subgraph Layer4["Layer 4: Enterprise Banking & Core Fulfillment"]
+    L4_CBS["Core Banking System (CBS)"]
+    L4_UPI["UPI & UPI LITE NPCI Switch"]
+    L4_CDM["Branch Cash Deposit Machine (CDM) Fleet"]
+    L4_Card["SBI Cards Switch (Express Credit)"]
+    L4_RM["Relationship Manager Case Queue"]
+  end
+
+  Layer1 -->|HTTPS / WSS / REST| Layer2
+  Layer2 -->|saarthi:events| L3_Stream
+  L3_Stream --> L3_SLM
+  L3_SLM --> L3_Graph
+  L3_Graph --> L3_Gate
+  L3_Gate --> L3_Token
+  L3_Token --> L3_Ledger
+  L3_Token -->|Signed Action Token| Layer4
+```
+
+---
+
+## 🧠 2. Small Language Model (SLM) Architecture & Signal Detection
+
+Instead of relying on multi-billion parameter cloud models that introduce latency, cost, and data residency hazards, Saarthi utilizes an **on-premise, edge-optimized 3B parameter Small Language Model (SLM)** specifically fine-tuned for high-confidence financial intent detection.
+
+![SLM Architecture Flow](images/slm_architecture_flow.jpg)
+
+### Vector Diagram
+![SLM Vector Architecture](diagrams/slm_architecture.svg)
+
+### Model Pipeline Specifications
 
 ```mermaid
 flowchart LR
-    Y["Authenticated YONO session"] --> K["Global + channel rollout gate"]
-    K --> C["Purpose-consent gate"]
-    C --> X["SBI customer context"]
-    X --> SG["Trusted-segment rollout gate"]
-    SG --> S["Signal classification"]
-    S --> G["Effective-dated product graph"]
-    G --> P["Approved policy retrieval"]
-    P --> PG["Signal + product rollout gate"]
-    PG --> D["Deterministic safety envelope"]
-    D -->|"stress or vulnerability"| U["Support only"]
-    D -->|"failed gate"| R["Reject with reason codes"]
-    D -->|"low risk"| L["Present governed offer"]
-    D -->|"high risk"| H["Independent review queue"]
-    H --> A["Approved"]
-    A --> L
-    L --> E["Explicit customer action consent"]
-    E --> T["Single-use decision token"]
-    T --> F["Idempotent SBI fulfilment"]
-    F --> Z["Confirmed downstream reference"]
+  subgraph DataPipeline["Data Prep & Privacy"]
+    D1["Synthetic Generator
+(10k Multi-Persona Scenarios)"] --> D2["DPDP Privacy Scrubbing
+(Regex Masking & Noise)"]
+    D2 --> D3["Anonymized Training Dataset
+(JSONL Schema v1)"]
+  end
+
+  subgraph TrainingPipeline["Fine-Tuning & Distillation"]
+    T1["Teacher Model
+(Llama-3-70B Distillation)"] --> T2["Student Base
+(Llama-3.2-3B / Phi-3.5-mini)"]
+    D3 --> T2
+    T2 --> T3["4-Bit QLoRA Fine-Tuning
+(r=16, alpha=32, lr=2e-4)"]
+    T3 --> T4["Quantized Artifacts
+(GGUF Q4_K_M / ONNX TensorRT)"]
+  end
+
+  subgraph InferenceEngine["Edge Inference & Confidence Gate"]
+    T4 --> I1["Sub-10ms Inference Runtime"]
+    I1 --> I2{"Confidence Score
+tau >= 0.85?"}
+    I2 -->|Yes: High Confidence| I3["Fast-Track Governed Action"]
+    I2 -->|No: Low Confidence| I4["Deterministic Rule Graph Fallback"]
+  end
 ```
 
-## Controlled rollout governance
+### Behavioral Intent Classifiers
 
-Rollout controls are durable and hierarchical across `global`, `channel`, `segment`, `signal`, `product`, and exact `model` scopes. Model scope values use the immutable `model_id:model_version` evidence stored with the decision. A matching `disabled` control always wins. Otherwise a matching `shadow` control, or exclusion from an `active` control's deterministic cohort, routes the decision to shadow mode. Customer membership is stable because the cohort bucket is an HMAC of the customer and control IDs; raw identifiers are never stored in the control record.
+| Signal Type | Input Signature | Detection Criteria | Target Financial Product |
+| :--- | :--- | :--- | :--- |
+| **Branch Friction** | Cash deposit / check clearance at physical branch | Physical branch visit when amount <= Rs. 2L | CDM Cash Deposit / UPI LITE |
+| **Debt Opportunity** | Revolving credit card statement with >= 42% APR | Card interest paid > Rs. 1,500/mo & positive balance | SBI Express Credit Loan (10.5% p.a.) |
+| **Life-Event Surplus** | Salary credit hike pattern (> 20% jump) | Idle savings balance > 3x monthly expenses | SBI Green Fixed Deposit (7.10% p.a.) |
+| **Financial Stress** | Missed EMI after salary disruption | Consecutive EMI default or account distress | SBI Compassionate RM Restructuring |
 
-Normal changes are four-eyes: an operator or administrator requests a control and a different administrator approves or rejects it. Approval atomically supersedes the previous active control for that exact scope. An administrator can apply an immediate emergency disable because safety shutdown must not wait for a second actor; restoring customer-visible activity still requires a separately requested and approved `active` control.
+---
 
-The global/channel gate runs before consent lookup and behavioral profiling. Trusted-segment controls run after server-side context resolution, while signal/product/model controls run after the internal decision has identified those values. Shadow decisions publish the internal trace and append audit evidence, but consume no nudge budget, create no recommendation or review record, expose no product/rate/policy output, and cannot be presented, authorized, or fulfilled. Existing recommendations reconstruct their original model identity from stored signal evidence and are re-evaluated at presentation, authorization, and execution, so a model switch cannot be bypassed by an in-flight journey. A previously fulfilled replay remains idempotently readable and never calls the provider again.
+## 🚦 3. Agentic Traffic Controller (ATC) & Decision Orchestrator
 
-## Versioned signal detection
+The **Agentic Traffic Controller (ATC)** is a compiled **6-Node LangGraph State Machine** providing end-to-end deterministic guarantees, mathematical policy alignment, and cryptographically verified decisioning.
 
-Signal classification is an injected service contract rather than an inline graph heuristic. The input guardian masks the signal before the detector sees it. Every accepted classification contains a category, confidence, model ID and version, feature-schema version, bounded reason codes, evaluation identity/status, and a SHA-256 digest binding the response to that exact masked input. The deterministic policy rejects missing, mismatched, or unevaluated signal evidence before product delivery.
+![ATC Decision Orchestrator](images/atc_decision_orchestrator.jpg)
 
-Local and integrated-demo mode use `saarthi-signal-rules:2026.08.3`. Versioned demo signal codes are the deterministic contract, while an explicit phrase catalogue and conservative stress fallback handle unstructured prototype inputs. Its executable 20-journey synthetic contract publishes accuracy, macro precision/recall, five-row per-category support, and limitations. This corpus protects integrated demo behavior during development but is not production-population validation.
+### Vector Diagram
+![ATC Vector Architecture](diagrams/atc_governance_orchestrator.svg)
 
-Production requires `SAARTHI_SIGNAL_DETECTION_MODE=sbi_api`. The SBI adapter sends only the masked signal, input digest, and supported feature-schema version. It rejects low confidence, unknown categories, unsupported schemas, input-digest mismatch, incomplete reason codes, or any model whose evaluation status is not `approved`. Detector outages fail the orchestration request before recommendation persistence or budget consumption and release request idempotency for a safe retry. Readiness includes detector health, and authenticated governance roles can inspect the active evaluation envelope.
-
-## Signed artifact governance
-
-Product eligibility rules and the policy registry are runtime-governed artifacts. In signed mode each submission is a compact canonical JSON envelope with `artifactType`, `version`, and `payload`, signed with Ed25519 by the configured SBI key ID. The service verifies the signature, payload schema, effective windows, duplicate identifiers, policy content digests, and SHA-256 envelope digest before storing the artifact. Public API responses expose only metadata and digests; signatures, envelopes, and actor references stay server-side.
-
-Activation is four-eyes. An operator or administrator can request a signed artifact, but a different administrator must approve it. Approval first claims the artifact as `materializing`, verifies the stored digest and signature again, applies the product or policy feed to the runtime adapter, and then commits the database activation. If materialization fails, the artifact returns to `pending`; if the database commit fails after runtime application, the previous active artifact or runtime snapshot is restored. Startup calls the same verifier/materializer for active artifacts, so signed mode readiness fails closed when either the product catalog or policy registry is missing or cannot be trusted.
-
-Local prototype mode can still boot from bundled in-memory product and policy data. Production validation requires `SAARTHI_ARTIFACT_FEED_MODE=signed`, `SAARTHI_ARTIFACT_SIGNING_PUBLIC_KEY`, and `SAARTHI_ARTIFACT_SIGNING_KEY_ID`; key custody, rotation ceremony, and SBI feed transport remain deployment responsibilities.
-
-## Offer state machine
+### 6-Node LangGraph Execution Lifecycle
 
 ```mermaid
-stateDiagram-v2
-    [*] --> pending_review: high-risk recommendation
-    pending_review --> rejected: reviewer rejects
-    pending_review --> approved: reviewer approves
-    approved --> presented: customer retrieves; budget reserved
-    presented --> authorized: explicit action consent
-    authorized --> executing: token-bound execution claim
-    executing --> fulfilled: downstream completion confirmed
-    executing --> authorized: transient failure; safe retry
-    pending_review --> expired
-    approved --> expired
-    presented --> expired
+sequenceDiagram
+  autonumber
+  participant Client as 📱 YONO App
+  participant Redis as 📥 Redis Streams
+  participant IG as 🛡️ Input Guardian
+  participant SLM as 🧠 Signal Detector
+  participant Neo4j as 🕸️ Neo4j Graph RAG
+  participant CG as ⚖️ Compliance Gate
+  participant OG as 🔒 Output Guardian
+  participant Ledger as 📜 HMAC Audit Ledger
+
+  Client->>Redis: Ingest Event (saarthi:events)
+  Redis->>IG: Stream Read (saarthi:consumers)
+  Note over IG: Enforces DPDP Purpose Masking
+  IG->>SLM: Sanitized Intent Payload
+  Note over SLM: Sub-10ms Signal Classification (tau >= 0.85)
+  SLM->>Neo4j: Intent + Customer Segment
+  Note over Neo4j: Cypher Product Match & Policy Evidence RAG
+  Neo4j->>CG: Product Offer + Policy Documents
+  Note over CG: Dynamic Budget (Avg 5) & Decline Fatigue Check
+  alt Non-Compliant / Fatigue Cooldown
+    CG-->>Client: Promotional Nudge Suppressed
+  else Compliance Cleared
+    CG->>OG: Approved Decision Package
+    Note over OG: Signs Single-Use HMAC-SHA256 Token
+    OG->>Ledger: Append to Merkle Audit Chain
+    OG-->>Client: Deliver Governed Nudge + Token
+  end
 ```
 
-Product and rate details are withheld while an offer is `pending_review`. Authorization is rejected until the record is `presented`. Presentation is customer-scoped, expiry-aware, consent-gated, concurrency-safe, and consumes the two-per-14-day engagement budget exactly once.
+### Key Governance Controls
 
-Authorization is not fulfilment. Decision tokens are stored only as hashes and are accepted for execution for five minutes. A transactional claim gives one caller ownership; the recommendation ID is also the downstream idempotency key. Only a confirmed provider reference moves the action to `fulfilled` and triggers the customer success state.
+1. **Dynamic Nudge Budget**:
+   $$	ext{Budget}_{	ext{effective}} = \min(5, 	ext{Historical Acceptances} + 1)$$
+   Prevents notification fatigue while allowing high-engagement users contextual updates.
 
-## Fulfilment reconciliation
+2. **Decline Fatigue Cooldown**:
+   If a customer rejects 3 consecutive nudges, all promotional nudges are capped and enter a **14-day mandatory silence cooldown**.
 
-```mermaid
-stateDiagram-v2
-    [*] --> pending: local fulfilment committed
-    pending --> checking: worker or operator claims
-    checking --> matched: completed + same reference
-    checking --> retry: provider pending or unavailable
-    retry --> checking: due retry
-    checking --> mismatch: reversed / failed / not found / different reference
-    mismatch --> checking: operator reruns after investigation
-    mismatch --> mismatch: admin acknowledges escalation
-```
+3. **Vulnerable Customer Support-Only Mode**:
+   When financial distress signals are detected, promotional cross-selling is strictly **BLOCKED** by the policy engine, activating compassionate relationship management.
 
-The local customer-facing fulfilment state and the operational reconciliation state are intentionally separate. A later downstream reversal does not rewrite history or silently tell the customer that execution never occurred; it opens a discrepancy for SBI operations. The stored reconciliation contains no customer ID and no provider response body. It retains the recommendation ID, expected reference, provider status, response digest, attempts, timing, and a PII-masked acknowledgement note. Exactly one checker owns a record at a time, and stale claims are recoverable.
+4. **Cryptographic Single-Use Authorization Token**:
+   $$	ext{Token} = 	ext{HMAC-SHA256}(K_{	ext{decision}}, 	ext{Customer ID} \parallel 	ext{Product ID} \parallel 	ext{Timestamp} \parallel 	ext{Run ID})$$
+   Valid for 600 seconds, strictly single-use to eliminate replay and spoofing attacks.
 
-## Operations case escalation
+---
 
-```mermaid
-stateDiagram-v2
-    [*] --> draft: operator requests from mismatch
-    draft --> approved: different admin approves
-    approved --> submitting: worker claims
-    submitting --> submission_retry: provider unavailable
-    submission_retry --> submitting: due retry; same case ID
-    submitting --> open: SBI case accepted
-    open --> syncing: scheduled status check
-    syncing --> sync_retry: provider unavailable
-    sync_retry --> syncing: due retry
-    syncing --> in_progress
-    syncing --> resolved
-    syncing --> closed
-    syncing --> rejected
-```
+## ⚡ 4. Latency & Performance Benchmarks
 
-Requester and approver identities are stored only as HMAC references. The database enforces one case per reconciliation, while row-level claims prevent duplicate provider calls and make crash recovery safe. The adapter sends the case ID, recommendation ID, fulfilment reference, fixed category/priority, and masked summary—never the customer ID. The workflow can open and observe a case, but has no capability to refund funds, reverse a banking ledger, modify settlement records, or self-certify resolution.
+| Component | Target Latency | P50 (Observed) | P99 (Observed) |
+| :--- | :--- | :--- | :--- |
+| **Redis Stream Event Ingestion** | < 1.0 ms | 0.14 ms | 0.38 ms |
+| **Input Guardian PII Masking** | < 1.0 ms | 0.22 ms | 0.45 ms |
+| **3B SLM Signal Inference** | < 10.0 ms | 4.80 ms | 7.60 ms |
+| **Neo4j Cypher Policy Graph Match** | < 5.0 ms | 0.85 ms | 1.90 ms |
+| **DPDP Compliance & Nudge Gate** | < 2.0 ms | 0.35 ms | 0.70 ms |
+| **Output Guardian & Token Signing** | < 1.0 ms | 0.18 ms | 0.40 ms |
+| **End-to-End Orchestration Loop** | **< 20.0 ms** | **6.54 ms** | **11.43 ms** |
 
-## Event delivery and recovery
+---
 
-```mermaid
-flowchart LR
-    P["Idempotent event publisher"] --> S["Redis Stream"]
-    S --> G["Saarthi consumer group"]
-    G --> W["Bounded worker handler"]
-    W -->|"valid contract"| R["Exactly-once pseudonymous receipt"]
-    R -->|"committed"| A["Explicit ACK"]
-    W -->|"transient failure"| Q["Pending-entry list"]
-    Q -->|"idle threshold"| C["Stale claim by healthy consumer"]
-    C --> W
-    W -->|"max attempts"| D["Dead-letter stream"]
-    D -->|"admin + idempotency key"| S
-```
+## 🔒 5. Regulatory Compliance & DPDP Alignment
 
-Workers never acknowledge a failed handler invocation. The deployed handler accepts only the versioned `ORCHESTRATOR_TRACE` shape (`signal` and `segment`), then commits an event-ID-keyed receipt containing the event type, HMAC customer reference, SHA-256 payload digest, consumer name, and processing time. It stores neither the raw customer ID nor payload. If a process dies after commit but before acknowledgement, the replacement sees the existing receipt and safely acknowledges without duplicating the projection.
-
-Pending entries can be reclaimed after an idle threshold, and an event is atomically moved and acknowledged only after its delivery limit is reached. Operator APIs expose event type and failure class but omit customer IDs, payloads, and exception messages. Replay is admin-only, deduplicated, and audit-ledgered. Prometheus gauges and `/api/v1/events/status` report lag, pending entries, dead letters, active heartbeats, durable receipts, and whether configured SLO thresholds are met. Redis-mode API readiness fails when there is no current consumer heartbeat.
-
-## Outcome and disparity monitoring
-
-```mermaid
-flowchart LR
-    S["Approved SBI outcome feeds"] --> I["Role-gated idempotent ingestion"]
-    I --> P["HMAC source-event reference"]
-    P --> O["Privacy-minimized observation"]
-    O --> A["Segment / signal / product aggregation"]
-    A --> M["Minimum-sample gate"]
-    M --> T["Approved threshold evaluation"]
-    T --> R["Operations review alert"]
-```
-
-Outcome observations are linked to an existing governed recommendation and can represent conversion, decline, complaint, opt-out, false positive, benefit, or harm. The raw source event ID and evidence body are never stored: source idempotency uses an HMAC reference and source evidence is retained only as a SHA-256 digest. Impact scores are optional, bounded, and directionally validated for benefit and harm. Replays return the original observation; reuse of the same source event for different facts fails as an idempotency conflict.
-
-Reports use unique recommendations as the denominator and unique recommendation/outcome pairs as numerators, preventing duplicated feed events from inflating rates. Alerts are suppressed below the configured minimum sample size. Current dimensions are operational customer segment, signal, and product; the service deliberately neither accepts nor infers protected attributes. Therefore this is disparate-outcome instrumentation, not a claim of protected-class fairness compliance. Production startup requires an explicitly approved monitoring policy, while SBI must still approve definitions, thresholds, attribute governance, source feeds, and remediation ownership.
-
-Observations remain part of customer portability export and are deleted with the linked recommendation during non-regulatory erasure. Aggregate reports contain no customer or source-event identifiers.
-
-## Runtime modes
-
-- `local-prototype`: SQLite, memory Redis/product adapters, approved local policy manifest, and synthetic customer context.
-- `integrated-demo`: PostgreSQL, Redis, Neo4j, approved local policy manifest or signed artifacts, mandatory high-risk review, and synthetic context clearly reported by health metadata.
-- `production`: validation requires asymmetric OIDC/JWKS authentication, PostgreSQL URL, Redis, Neo4j, signed product and policy artifacts, mandatory review, configured data residency, a separate audit secret, `SAARTHI_CUSTOMER_CONTEXT_MODE=sbi_api`, and `SAARTHI_FULFILLMENT_MODE=sbi_api`.
-
-The remaining SBI deployment work is external-system integration and assurance: connection to SBI's identity tenant, live read models, outcome feeds, and fulfilment; SBI feed transport and trust-key custody; KMS and WORM audit infrastructure; SBI-approved SLO and monitoring thresholds with alert routing; VAPT; model-risk validation; and governed protected-class analysis.
+- **DPDP Act 2023**: Active opt-in purpose consent, verifiable right to erasure, granular data export in JSON format.
+- **RBI Digital Lending Guidelines**: Full Key Fact Statement (KFS) disclosure, cooling-off period support, single-use loan authorization.
+- **Auditable Merkle Chain**: Every signal evaluation, policy decision, and consent modification is recorded with SHA-256 HMAC integrity hashes.

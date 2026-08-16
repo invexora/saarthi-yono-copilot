@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080c14"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="gateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#701a75"/>
+      <stop offset="100%" stop-color="#4a044e"/>
+    </linearGradient>
+    <marker id="arrow-magenta" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#06b6d4"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-family: system-ui, -apple-system, sans-serif; font-size: 24px; font-weight: 800; fill: #f8fafc; }
+    .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #94a3b8; }
+    .node-title { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 700; fill: #f1f5f9; }
+    .node-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; fill: #94a3b8; }
+    .code { font-family: "SF Mono", Consolas, monospace; font-size: 10px; fill: #38bdf8; }
+    .stage-label { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; font-weight: 700; fill: #a855f7; letter-spacing: 1px; }
+  </style>
+
+  <rect width="1200" height="680" rx="16" fill="url(#bgGrad)" stroke="#334155" stroke-width="1.5"/>
+
+  <text x="50" y="48" class="title">Agentic Traffic Controller (ATC) &amp; Decision Orchestrator</text>
+  <text x="50" y="70" class="subtitle">Compiled 6-Node LangGraph State Machine with Multi-Tier DPDP Governance &amp; Single-Use Token Authorization</text>
+
+  <!-- 1. Ingestion Layer -->
+  <g transform="translate(50, 100)">
+    <rect width="180" height="530" rx="10" fill="url(#cardGrad)" stroke="#e11d48" stroke-width="1.5"/>
+    <text x="20" y="30" class="stage-label" fill="#f43f5e">1. EVENT INGESTION</text>
+
+    <rect x="15" y="55" width="150" height="120" rx="8" fill="#0f172a" stroke="#334155"/>
+    <text x="25" y="80" class="node-title">Redis Streams</text>
+    <text x="25" y="98" class="node-sub">• saarthi:events</text>
+    <text x="25" y="114" class="node-sub">• Consumer Groups</text>
+    <text x="25" y="130" class="node-sub">• Latency &lt; 0.2ms</text>
+    <text x="25" y="150" class="code">redis_consumer.py</text>
+
+    <rect x="15" y="195" width="150" height="110" rx="8" fill="#0f172a" stroke="#334155"/>
+    <text x="25" y="220" class="node-title">Event Schema</text>
+    <text x="25" y="238" class="node-sub">• Schema v1 Strict</text>
+    <text x="25" y="254" class="node-sub">• Idempotency Key</text>
+    <text x="25" y="270" class="node-sub">• Dead-Letter Queue</text>
+    <text x="25" y="290" class="code">EventPayload</text>
+
+    <rect x="15" y="325" width="150" height="180" rx="8" fill="#0f172a" stroke="#334155"/>
+    <text x="25" y="350" class="node-title">Input Sources</text>
+    <text x="25" y="370" class="node-sub">📱 YONO Mobile App</text>
+    <text x="25" y="392" class="node-sub">💳 SBI Card Switch</text>
+    <text x="25" y="414" class="node-sub">🏧 ATM / CDM Fleet</text>
+    <text x="25" y="436" class="node-sub">🏦 Core Banking (CBS)</text>
+    <text x="25" y="458" class="node-sub">⚡ UPI LITE Gateway</text>
+  </g>
+
+  <!-- 2. LangGraph State Machine (Center) -->
+  <g transform="translate(260, 100)">
+    <rect width="600" height="530" rx="10" fill="url(#cardGrad)" stroke="#a855f7" stroke-width="1.5"/>
+    <text x="25" y="30" class="stage-label">2. COMPILED LANGGRAPH DECISION PIPELINE (STATE MACHINE)</text>
+
+    <rect x="25" y="55" width="260" height="95" rx="8" fill="#0f172a" stroke="#38bdf8"/>
+    <text x="40" y="80" class="node-title">Node 1: Input Guardian</text>
+    <text x="40" y="98" class="node-sub">• Mask PAN / Aadhaar / CRN</text>
+    <text x="40" y="114" class="node-sub">• Enforce DPDP Purpose Limitation</text>
+    <text x="40" y="132" class="code">input_guardian.py</text>
+
+    <rect x="315" y="55" width="260" height="95" rx="8" fill="#0f172a" stroke="#38bdf8"/>
+    <text x="330" y="80" class="node-title">Node 2: Signal Detector</text>
+    <text x="330" y="98" class="node-sub">• Fine-Tuned 3B SLM / Rule Graph</text>
+    <text x="330" y="114" class="node-sub">• Minimum Confidence: 85%</text>
+    <text x="330" y="132" class="code">signal_detection.py</text>
+
+    <rect x="25" y="175" width="260" height="100" rx="8" fill="#0f172a" stroke="#38bdf8"/>
+    <text x="40" y="200" class="node-title">Node 3: Product Graph RAG</text>
+    <text x="40" y="218" class="node-sub">• Cypher Schema Match</text>
+    <text x="40" y="234" class="node-sub">• Regulatory Disclosure Match</text>
+    <text x="40" y="252" class="code">neo4j_product_graph.py</text>
+
+    <rect x="315" y="175" width="260" height="100" rx="8" fill="#0f172a" stroke="#38bdf8"/>
+    <text x="330" y="200" class="node-title">Node 4: Recommendation Agent</text>
+    <text x="330" y="218" class="node-sub">• Contextual Personalisation</text>
+    <text x="330" y="234" class="node-sub">• Support Mode vs. Growth Mode</text>
+    <text x="330" y="252" class="code">recommendation_agent.py</text>
+
+    <rect x="25" y="300" width="550" height="120" rx="8" fill="url(#gateGrad)" stroke="#ec4899" stroke-width="1.5"/>
+    <text x="45" y="325" class="node-title" fill="#fbcfe8">Node 5: DPDP Compliance Gate &amp; Dynamic Nudge Budget</text>
+    <text x="45" y="345" class="node-sub" fill="#fdf2f8">• Active Purpose Consent Gate (Opt-In Check)</text>
+    <text x="45" y="363" class="node-sub" fill="#fdf2f8">• Dynamic 5-Nudge Budget (Decline Fatigue Cooldown: 14 Days on continuous decline)</text>
+    <text x="45" y="381" class="node-sub" fill="#fdf2f8">• Affordability &amp; Risk Capping (Max 12% APR vs. 42% Card APR)</text>
+    <text x="45" y="401" class="code" fill="#f472b6">compliance_gate.py · reason_codes: [VERIFIED_CONTEXT, DPDP_PURPOSE_CONSENT]</text>
+
+    <rect x="25" y="440" width="550" height="70" rx="8" fill="#0f172a" stroke="#10b981"/>
+    <text x="45" y="465" class="node-title" fill="#6ee7b7">Node 6: Output Guardian &amp; Token Authority</text>
+    <text x="45" y="485" class="node-sub">• Zero-PII Leakage Sanitizer • Single-Use Cryptographic Decision Token Generator</text>
+  </g>
+
+  <!-- 3. Governance & Downstream (Right) -->
+  <g transform="translate(890, 100)">
+    <rect width="260" height="530" rx="10" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="20" y="30" class="stage-label" fill="#10b981">3. SECURE GOVERNANCE</text>
+
+    <rect x="15" y="55" width="230" height="110" rx="8" fill="#0f172a" stroke="#10b981"/>
+    <text x="25" y="80" class="node-title">Single-Use Token</text>
+    <text x="25" y="98" class="node-sub">• HMAC-SHA256 Signed</text>
+    <text x="25" y="114" class="node-sub">• Scoped to Product &amp; Run</text>
+    <text x="25" y="130" class="node-sub">• TTL: 600 seconds</text>
+    <text x="25" y="148" class="code">decisions/authorize</text>
+
+    <rect x="15" y="180" width="230" height="110" rx="8" fill="#0f172a" stroke="#334155"/>
+    <text x="25" y="205" class="node-title">Tamper-Evident Ledger</text>
+    <text x="25" y="223" class="node-sub">• Merkle Chain Verification</text>
+    <text x="25" y="239" class="node-sub">• Ed25519 Artifact Signatures</text>
+    <text x="25" y="255" class="node-sub">• Strict DPDP Audit Log</text>
+    <text x="25" y="273" class="code">backend/audit.py</text>
+
+    <rect x="15" y="305" width="230" height="100" rx="8" fill="#0f172a" stroke="#f59e0b"/>
+    <text x="25" y="330" class="node-title" fill="#fcd34d">Four-Eyes Human Review</text>
+    <text x="25" y="348" class="node-sub">• Required for High-Risk &gt;Rs. 5L</text>
+    <text x="25" y="364" class="node-sub">• Independent Approval Queue</text>
+    <text x="25" y="382" class="code" fill="#fbbf24">api/v1/reviews</text>
+
+    <rect x="15" y="420" width="230" height="95" rx="8" fill="#0f172a" stroke="#334155"/>
+    <text x="25" y="445" class="node-title">Fulfillment Confirmation</text>
+    <text x="25" y="463" class="node-sub">• Idempotent Execution</text>
+    <text x="25" y="479" class="node-sub">• Instant YONO App Feedback</text>
+    <text x="25" y="497" class="code">actions/execute</text>
+  </g>
+</svg>
