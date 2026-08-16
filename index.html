@@ -141,68 +141,122 @@
         <div class="phone-notch" aria-hidden="true"></div>
         <div class="phone-screen">
           
+          <div class="phone-status-bar" aria-hidden="true">
+            <span>9:41</span>
+            <span>5G 100%</span>
+          </div>
+
           <!-- App Header -->
           <div class="yono-header">
-            <button id="yonoHomeBtn" type="button" class="yono-header-button yono-logo" onclick="navigateToView('home')" aria-label="YONO home">yono</button>
-            <button type="button" class="yono-header-button" onclick="navigateToView('services')">Hi, <span id="yonoUser">Priya</span> <span aria-hidden="true">👤</span></button>
+            <button id="yonoHomeBtn" type="button" class="yono-header-button yono-menu-btn" onclick="navigateToView('home')" aria-label="YONO home">☰</button>
+            <button type="button" class="yono-header-button yono-logo" onclick="navigateToView('home')" aria-label="YONO SBI home">
+              <span class="yono-wordmark">yono</span>
+              <span class="sbi-wordmark">SBI</span>
+            </button>
+            <button type="button" class="yono-header-button yono-profile-btn" onclick="navigateToView('services')" aria-label="Open profile and services">
+              <span>Hi, <span id="yonoUser">Priya</span></span>
+              <span aria-hidden="true">◉</span>
+            </button>
           </div>
 
           <!-- Dynamic View Header (Breadcrumb / Back) -->
-          <div id="yonoSubHeader" style="display: none; background: #00254d; color: white; padding: 0.4rem 0.75rem; align-items: center; gap: 0.5rem; font-size: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: system-ui, -apple-system, sans-serif;">
-            <button id="yonoBackBtn" type="button" onclick="navigateToView('home')" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; cursor: pointer; border-radius: 4px; padding: 2px 6px; font-weight: 600; font-size: 0.65rem; display: flex; align-items: center; gap: 2px;">
+          <div id="yonoSubHeader" class="yono-sub-header" style="display: none; font-family: system-ui, -apple-system, sans-serif;">
+            <button id="yonoBackBtn" type="button" class="yono-back-btn" onclick="navigateToView('home')">
               <span aria-hidden="true">←</span> Back
             </button>
-            <span id="yonoViewTitle" style="font-weight: 600; font-size: 0.75rem; letter-spacing: 0.3px;">View</span>
+            <span id="yonoViewTitle" class="yono-view-title">View</span>
           </div>
 
           <!-- YONO View: Home Dashboard -->
           <div id="yono-view-home" class="yono-content">
-            <div class="yono-welcome">
-              Welcome back to YONO SBI. Your digital assistant Saarthi is watching over.
+            <div class="yono-search-shell">
+              <button type="button" class="yono-search-pill" onclick="navigateToView('services')" aria-label="Search YONO services">
+                <span>I'm looking for</span>
+                <span aria-hidden="true">⌕</span>
+              </button>
             </div>
+
+            <button type="button" class="yono-view-balance" onclick="navigateToView('pay')">
+              View Balance
+            </button>
 
             <!-- Savings Balance Card -->
             <div class="yono-balance-card">
-              <div class="balance-label">Savings Account Balance</div>
-              <div id="yonoBalance" class="balance-amount">₹2,80,000.00</div>
-              <div style="font-size: 0.65rem; color: #666;">A/c No: XXXXXXX4812</div>
+              <div>
+                <div class="balance-label">Savings Account</div>
+                <div id="yonoBalance" class="balance-amount">₹2,80,000.00</div>
+                <div class="balance-account">A/c No: XXXXXXX4812</div>
+              </div>
+              <button type="button" class="balance-mini-action" onclick="navigateToView('pay')">Pay</button>
             </div>
 
             <!-- Grid Items (Router Buttons) -->
             <div class="yono-grid">
               <button type="button" class="yono-grid-item" onclick="navigateToView('pay')">
-                <span class="grid-icon" aria-hidden="true">💸</span>
+                <span class="grid-icon" aria-hidden="true">▤</span>
+                <span class="grid-label">Accounts</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('pay')">
+                <span class="grid-icon" aria-hidden="true">₹</span>
                 <span class="grid-label">YONO Pay</span>
               </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
+                <span class="grid-icon" aria-hidden="true">⌁</span>
+                <span class="grid-label">YONO Cash</span>
+              </button>
               <button type="button" class="yono-grid-item" onclick="navigateToView('investments')">
-                <span class="grid-icon" aria-hidden="true">📈</span>
+                <span class="grid-icon" aria-hidden="true">◫</span>
+                <span class="grid-label">Deposits</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('investments')">
+                <span class="grid-icon" aria-hidden="true">⌁</span>
                 <span class="grid-label">Investments</span>
               </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('cards')">
-                <span class="grid-icon" aria-hidden="true">💳</span>
-                <span class="grid-label">Cards</span>
-              </button>
               <button type="button" class="yono-grid-item" onclick="navigateToView('loans')">
-                <span class="grid-icon" aria-hidden="true">🤝</span>
+                <span class="grid-icon" aria-hidden="true">₹</span>
                 <span class="grid-label">Loans</span>
               </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('cards')">
+                <span class="grid-icon" aria-hidden="true">▭</span>
+                <span class="grid-label">Cards</span>
+              </button>
               <button type="button" class="yono-grid-item" onclick="navigateToView('insurance')">
-                <span class="grid-icon" aria-hidden="true">🛡️</span>
+                <span class="grid-icon" aria-hidden="true">⌂</span>
                 <span class="grid-label">Insurance</span>
               </button>
               <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
-                <span class="grid-icon" aria-hidden="true">⚙️</span>
+                <span class="grid-icon" aria-hidden="true">🛒</span>
+                <span class="grid-label">Shop &amp; Order</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
+                <span class="grid-icon" aria-hidden="true">%</span>
+                <span class="grid-label">Best Offers</span>
+              </button>
+              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
+                <span class="grid-icon" aria-hidden="true">⚙</span>
                 <span class="grid-label">Services</span>
               </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('impact')">
-                <span class="grid-icon" aria-hidden="true">📊</span>
-                <span class="grid-label">My Saarthi</span>
+              <button type="button" class="yono-grid-item yono-grid-item-saarthi" onclick="navigateToView('impact')">
+                <span class="grid-icon" aria-hidden="true">✦</span>
+                <span class="grid-label">Saarthi</span>
               </button>
             </div>
 
             <!-- Static Banners -->
-            <div style="background: #e2e8f0; border-radius: 8px; padding: 0.75rem; font-size: 0.7rem; color: #475569; text-align: center; border: 1px dashed #cbd5e1; margin-top: auto;">
-              SBI Quick: Call or SMS to check balance without login
+            <div class="yono-offer-strip">
+              <div class="offer-strip-copy">
+                <span>Best Offers</span>
+                <strong>Get exclusive YONO deals and banking shortcuts</strong>
+              </div>
+              <button type="button" onclick="navigateToView('services')">Explore</button>
+            </div>
+
+            <div class="saarthi-home-card">
+              <span class="saarthi-home-mark">✦</span>
+              <div>
+                <strong>Saarthi watches signals quietly</strong>
+                <span>Only governed nudges appear here after consent and policy checks.</span>
+              </div>
             </div>
           </div>
 
@@ -577,6 +631,25 @@
             <div class="rm-pulse" aria-hidden="true"></div>
             <span>Connecting you to your SBI Relationship Manager... Expected wait: 2 minutes</span>
           </div>
+
+          <nav class="yono-bottom-nav" aria-label="YONO app sections">
+            <button type="button" class="yono-bottom-nav-btn active" data-view="home" onclick="navigateToView('home')" aria-current="page">
+              <span aria-hidden="true">⌂</span>
+              <span>Home</span>
+            </button>
+            <button type="button" class="yono-bottom-nav-btn" data-view="pay" onclick="navigateToView('pay')">
+              <span aria-hidden="true">₹</span>
+              <span>Pay</span>
+            </button>
+            <button type="button" class="yono-bottom-nav-btn" data-view="cards" onclick="navigateToView('cards')">
+              <span aria-hidden="true">▭</span>
+              <span>Cards</span>
+            </button>
+            <button type="button" class="yono-bottom-nav-btn" data-view="impact" onclick="navigateToView('impact')">
+              <span aria-hidden="true">✦</span>
+              <span>Saarthi</span>
+            </button>
+          </nav>
 
           <!-- Consent Flow Screen -->
           <div id="consentScreen" class="yono-consent-screen" role="dialog" aria-modal="true" aria-labelledby="consentDialogTitle" aria-describedby="consentText" aria-hidden="true" inert>

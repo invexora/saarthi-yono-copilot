@@ -1,17 +1,19 @@
 :root {
-  --bg-dark: #090d16;
-  --bg-card: rgba(17, 25, 40, 0.75);
-  --border-color: rgba(255, 255, 255, 0.08);
+  --bg-dark: #070b14;
+  --bg-card: rgba(11, 20, 34, 0.78);
+  --border-color: rgba(255, 255, 255, 0.10);
   --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --primary-sbi: #00a0e4;
-  --sbi-dark: #003366;
-  --sbi-light: #f1f7fc;
+  --text-muted: #a1aab8;
+  --primary-sbi: #0098e5;
+  --sbi-dark: #002f62;
+  --sbi-light: #f2f7fb;
+  --sbi-darker: #001d46;
   --saffron: #ff9933;
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
-  --glow-color: rgba(0, 160, 228, 0.15);
+  --glow-color: rgba(0, 152, 229, 0.2);
+  --border: var(--border-color);
 }
 
 * {
@@ -45,7 +47,10 @@
 
 body {
   font-family: 'Outfit', sans-serif;
-  background: radial-gradient(circle at 50% 0%, #152238 0%, var(--bg-dark) 70%);
+  background:
+    radial-gradient(circle at 0% -15%, rgba(0, 152, 229, 0.35), transparent 45%),
+    radial-gradient(circle at 100% 10%, rgba(255, 153, 51, 0.16), transparent 30%),
+    linear-gradient(160deg, #082049 0%, #0e1324 45%, #08131e 100%);
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
@@ -57,9 +62,9 @@ body {
 header {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  background: rgba(9, 13, 22, 0.5);
+  background: rgba(4, 13, 26, 0.55);
   border-bottom: 1px solid var(--border-color);
-  padding: 1.25rem 2.5rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -75,15 +80,15 @@ header {
 }
 
 .logo-badge {
-  background: linear-gradient(135deg, var(--primary-sbi), #0055b8);
+  background: linear-gradient(140deg, #007fc5 0%, #004e95 100%);
   color: white;
   font-weight: 700;
-  padding: 0.25rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.22rem 0.72rem;
+  border-radius: 8px;
   font-family: 'Space Grotesk', sans-serif;
   letter-spacing: 0.5px;
   font-size: 1.1rem;
-  box-shadow: 0 4px 12px rgba(0, 160, 228, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 91, 160, 0.35);
 }
 
 .project-title {
@@ -110,7 +115,7 @@ header {
 
 .main-container {
   display: grid;
-  grid-template-columns: 340px 380px 1fr;
+  grid-template-columns: minmax(300px, 1fr) minmax(340px, 410px) minmax(360px, 1.25fr);
   gap: 1.5rem;
   padding: 1.5rem 2rem;
   flex-grow: 1;
@@ -262,10 +267,10 @@ header {
 .phone-frame {
   width: 100%;
   height: 100%;
-  background: #000;
+  background: linear-gradient(145deg, #111827 0%, #000 55%, #080a12 100%);
   border-radius: 40px;
-  border: 12px solid #27272a;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 14px solid #191d2b;
+  box-shadow: 0 30px 60px -16px rgba(0, 0, 0, 0.8);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -280,36 +285,86 @@ header {
   transform: translateX(-50%);
   width: 130px;
   height: 25px;
-  background: #27272a;
+  background: #151924;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
   z-index: 10;
 }
 
+#yonoSubHeader,
+.yono-sub-header {
+  background: var(--yono-purple);
+  color: white;
+  padding: 0.45rem 0.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#yonoBackBtn,
+.yono-back-btn {
+  background: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-weight: 600;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#yonoViewTitle,
+.yono-view-title {
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.3px;
+}
+
 .phone-screen {
-  --primary-sbi: #006ca8;
+  --primary-sbi: #005ba8;
+  --yono-purple: #7a1c86;
+  --yono-magenta: #b3137b;
+  --yono-line: #ead3ea;
   --success: #047857;
   --error: #b91c1c;
   flex-grow: 1;
-  background: var(--sbi-light);
+  background: #f7f4fb;
   color: #333;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  padding-top: 25px;
   font-family: system-ui, -apple-system, sans-serif;
+}
+
+.phone-status-bar {
+  height: 25px;
+  padding: 0.4rem 1rem 0.1rem;
+  background: #ffffff;
+  color: #1f2937;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 /* YONO Mobile App Header */
 .yono-header {
-  background: linear-gradient(135deg, var(--sbi-dark) 0%, #00509d 100%);
-  color: white;
-  padding: 0.75rem 1rem;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 0.45rem 0.78rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.85rem;
+  gap: 0.45rem;
+  font-size: 0.76rem;
+  border-bottom: 1px solid #ead3ea;
 }
 .yono-header-button {
   appearance: none;
@@ -325,29 +380,62 @@ header {
 }
 .yono-logo {
   font-weight: 800;
-  letter-spacing: 0.5px;
-  font-size: 1rem;
+  font-size: 1.08rem;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  margin-right: auto;
 }
-.yono-logo::after {
-  content: 'SBI';
-  font-size: 0.65rem;
-  background: var(--primary-sbi);
-  padding: 1px 4px;
-  border-radius: 3px;
-  font-weight: bold;
+
+.yono-wordmark {
+  color: var(--yono-purple);
+  line-height: 1;
+}
+
+.sbi-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #003f7f;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.sbi-wordmark::before {
+  content: '';
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, white 0 2px, transparent 2.3px),
+    #0098da;
+}
+
+.yono-menu-btn {
+  color: var(--yono-purple);
+  font-size: 1.05rem;
+  width: 28px;
+  height: 28px;
+  justify-content: center;
+}
+
+.yono-profile-btn {
+  color: #5b6472;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 /* YONO User Dashboard Content */
 .yono-content {
-  padding: 0.75rem;
+  padding: 0.72rem 0.72rem 4.5rem;
   flex-grow: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.66rem;
+  background:
+    linear-gradient(180deg, var(--yono-purple) 0 70px, #f8f4fb 70px 100%);
 }
 
 .yono-welcome {
@@ -355,18 +443,79 @@ header {
   color: #555;
 }
 
+#yono-view-home .yono-welcome {
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+
+.yono-search-shell {
+  background: var(--yono-purple);
+  margin: -0.72rem -0.72rem 0;
+  padding: 0.58rem 0.72rem 0.16rem;
+}
+
+.yono-search-pill {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-radius: 6px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0.48rem 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.yono-view-balance {
+  appearance: none;
+  border: 1px solid var(--yono-line);
+  background: #ffffff;
+  color: var(--yono-purple);
+  border-radius: 5px;
+  min-height: 38px;
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(99, 22, 112, 0.08);
+  flex-shrink: 0;
+}
+
 .yono-balance-card {
   background: white;
-  border-radius: 12px;
-  padding: 0.85rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  border-left: 4px solid var(--primary-sbi);
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 3px 12px rgba(99, 22, 112, 0.08);
+  border: 1px solid #ead3ea;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.yono-balance-card::after {
+  content: '';
+  position: absolute;
+  right: -46px;
+  top: -38px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(179, 19, 123, 0.15), transparent 72%);
 }
 .balance-label {
-  font-size: 0.7rem;
-  color: #666;
+  font-size: 0.64rem;
+  color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 .balance-amount {
   font-size: 1.3rem;
@@ -375,35 +524,168 @@ header {
   margin: 2px 0;
 }
 
+.balance-account {
+  font-size: 0.64rem;
+  color: #666;
+}
+
+.balance-mini-action {
+  appearance: none;
+  border: 0;
+  background: var(--primary-sbi);
+  color: white;
+  border-radius: 999px;
+  padding: 0.4rem 0.72rem;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  cursor: pointer;
+  z-index: 1;
+}
+
 .yono-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--yono-line);
+  border-radius: 8px;
+  background: var(--yono-line);
+  box-shadow: 0 3px 12px rgba(99, 22, 112, 0.08);
+  flex-shrink: 0;
 }
 .yono-grid-item {
   appearance: none;
   border: 0;
   background: white;
-  border-radius: 8px;
-  padding: 0.6rem;
+  border-radius: 0;
+  min-height: 68px;
+  padding: 0.48rem 0.28rem;
   text-align: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
   font: inherit;
 }
 .yono-grid-item:hover {
-  background: #f8fafc;
+  background: #fff8ff;
 }
 .grid-icon {
-  font-size: 1.2rem;
-  margin-bottom: 2px;
+  width: 26px;
+  height: 26px;
+  margin: 0 auto 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--yono-magenta);
+  font-size: 1.05rem;
+  line-height: 1;
 }
 .grid-label {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 600;
-  color: #444;
+  color: #4b5563;
+  line-height: 1.18;
+}
+
+.yono-grid-item-saarthi {
+  background: #fbf7ff;
+}
+
+.yono-grid-item-saarthi .grid-icon,
+.yono-grid-item-saarthi .grid-label {
+  color: var(--primary-sbi);
+}
+
+.yono-offer-strip,
+.saarthi-home-card {
+  border-radius: 8px;
+  border: 1px solid #ead3ea;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(99, 22, 112, 0.07);
+  flex-shrink: 0;
+}
+
+.yono-offer-strip {
+  padding: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  background:
+    linear-gradient(135deg, rgba(122, 28, 134, 0.1), rgba(0, 152, 218, 0.08)),
+    #ffffff;
+}
+
+.offer-strip-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.offer-strip-copy span {
+  color: var(--yono-purple);
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.offer-strip-copy strong {
+  color: #1f2937;
+  font-size: 0.68rem;
+  line-height: 1.22;
+}
+
+.yono-offer-strip button {
+  appearance: none;
+  border: 0;
+  background: var(--yono-purple);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.36rem 0.62rem;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.saarthi-home-card {
+  padding: 0.65rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-top: auto;
+}
+
+.saarthi-home-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8f5ff;
+  color: var(--primary-sbi);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.saarthi-home-card strong,
+.saarthi-home-card span {
+  display: block;
+}
+
+.saarthi-home-card strong {
+  color: #1f2937;
+  font-size: 0.7rem;
+}
+
+.saarthi-home-card div > span {
+  color: #64748b;
+  font-size: 0.62rem;
+  line-height: 1.28;
 }
 
 .phone-scenario-trigger {
@@ -412,6 +694,8 @@ header {
   font: inherit;
   text-align: left;
   width: 100%;
+  border: 0;
+  background: transparent;
 }
 
 /* Dynamic Saarthi Nudge - Inside YONO App UI */
@@ -439,7 +723,7 @@ header {
 }
 
 .nudge-header {
-  background: #f8fafc;
+  background: #f8fbff;
   padding: 0.65rem 0.85rem;
   border-top-left-radius: 13px;
   border-top-right-radius: 13px;
@@ -465,7 +749,7 @@ header {
 .nudge-title {
   font-weight: 700;
   font-size: 0.85rem;
-  color: #1a202c;
+  color: #0f172a;
   margin-bottom: 0.35rem;
 }
 .nudge-text {
@@ -1113,6 +1397,26 @@ header {
   margin-top: auto;
 }
 
+.log-badge.node {
+  background: rgba(96, 165, 250, 0.14);
+  color: #93c5fd;
+  border-radius: 999px;
+  padding: 0.08rem 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.log-badge.pass {
+  background: rgba(16, 185, 129, 0.14);
+  color: #34d399;
+  border-radius: 999px;
+  padding: 0.08rem 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
 /* ===== In-App Success Screen ===== */
 .success-content {
   display: flex;
@@ -1249,6 +1553,46 @@ header {
   50% { opacity: 0.4; transform: scale(0.85); }
 }
 
+.yono-bottom-nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 58px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid #ead3ea;
+  box-shadow: 0 -6px 18px rgba(99, 22, 112, 0.08);
+  z-index: 18;
+}
+
+.yono-bottom-nav-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #697386;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font: inherit;
+  font-size: 0.58rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.yono-bottom-nav-btn span:first-child {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.yono-bottom-nav-btn.active {
+  color: var(--yono-purple);
+}
+
 /* API Status Indicator */
 .api-status {
   display: flex;
@@ -1258,7 +1602,7 @@ header {
   color: var(--text-muted);
   padding: 4px 10px;
   background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 .api-dot {
@@ -1292,7 +1636,7 @@ header {
 .compliance-badge-title {
   font-weight: 700;
   margin-bottom: 2px;
-  color: var(--text-primary);
+  color: #e2e8f0;
 }
 .compliance-badge-detail {
   color: var(--text-muted);
@@ -1307,6 +1651,64 @@ header {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 1280px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "phone"
+      "sim"
+      "trace";
+    padding: 1rem;
+    height: auto;
+    max-height: none;
+  }
+
+  .phone-wrapper {
+    grid-area: phone;
+    justify-self: center;
+    max-width: 410px;
+    width: min(96vw, 410px);
+  }
+
+  .glass-card {
+    min-height: 300px;
+  }
+
+  .main-container > .glass-card:first-of-type {
+    grid-area: sim;
+  }
+
+  .main-container > .glass-card:last-of-type {
+    grid-area: trace;
+  }
+}
+
+@media (max-width: 640px) {
+  header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+  }
+
+  .main-container {
+    padding: 0.8rem;
+    gap: 0.85rem;
+  }
+
+  .phone-wrapper {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .glass-card {
+    min-height: 260px;
   }
 }
 

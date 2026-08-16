@@ -6,12 +6,13 @@ Built for the **YONO Copilot Hackathon**, Saarthi currently provides a high-fide
 
 ---
 
-## 🚀 Demo & Video Walkthrough
+## 🚀 Demo & Technical Walkthrough
 
-*   **Current checked-out prototype:** [http://127.0.0.1:8000](http://127.0.0.1:8000) while the local services are running.
-*   **Prior published prototype:** [https://invexora.github.io/saarthi-yono-copilot/](https://invexora.github.io/saarthi-yono-copilot/) may differ from this finalization branch.
-*   **Local video asset:** `presentation-final/saarthi_demo_video.mp4` is intentionally excluded from the source checkpoint and should be distributed through an approved artefact store or release attachment.
-*   **SBI technical-review walkthrough:** [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md) gives the repeatable four-journey script, evidence matrix and explicit non-integration limits.
+*   **Current checked-out prototype:** `http://127.0.0.1:8000` while the local services are running.
+*   **Connected/production-mode walkthrough:** open the prototype without `?mode=offline-demo` against API `5050` and follow [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md).
+*   **UI/UX rehearsal mode:** `http://127.0.0.1:8000/?mode=offline-demo` (simulation-only, no real action).
+*   **Deck:** `presentation.html` contains the final presentation pack.
+*   **Local media assets:** `presentation-final/` (for slide renders/video artifacts; distribution depends on your packaging policy).
 
 ---
 

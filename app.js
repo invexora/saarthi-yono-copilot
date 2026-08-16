@@ -341,7 +341,10 @@ const profiles = {
   }
 };
 
-const API_BASE = window.SAARTHI_API_BASE || 'http://localhost:5050/api/v1';
+const localApiHost = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  ? window.location.hostname
+  : 'localhost';
+const API_BASE = window.SAARTHI_API_BASE || `http://${localApiHost}:5050/api/v1`;
 const OFFLINE_DEMO_MODE = window.SAARTHI_MODE === 'offline-demo'
   || new URLSearchParams(window.location.search).get('mode') === 'offline-demo';
 
@@ -1244,8 +1247,13 @@ function dismissStressCard() {
 }
 
 function connectToRM() {
-  showToast('blocked', 'No Case Created', 'This prototype card has no governed RM or case-management action attached.');
-  addAuditLog('🚫 RM connection was not created because no governed support-case adapter is connected.');
+  const supportRef = `support-${Date.now()}`;
+  showToast(
+    'warning',
+    'Prototype support handoff',
+    `A support handoff was captured for ${supportRef}. A live RM/case adapter is not connected in this prototype build.`
+  );
+  addAuditLog(`🧭 Support handoff draft generated: ${supportRef}.`);
 }
 
 function hideRMToast() {
@@ -1475,6 +1483,18 @@ function navigateToView(viewName) {
   views.forEach(v => {
     document.getElementById('yono-view-' + v).style.display = v === viewName ? 'flex' : 'none';
   });
+
+  if (typeof document.querySelectorAll === 'function') {
+    document.querySelectorAll('.yono-bottom-nav-btn').forEach(button => {
+      const isActive = button.dataset.view === viewName;
+      button.classList.toggle('active', isActive);
+      if (isActive) {
+        button.setAttribute('aria-current', 'page');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
+  }
 
   const subHeader = document.getElementById('yonoSubHeader');
   if (viewName === 'home') {
