@@ -36,6 +36,20 @@ Comprehensive architectural blueprints, Small Language Model (SLM) training/infe
 
 ---
 
+## 📱 Banking App & In-App Nudge Screenshot Gallery
+
+A comprehensive visual gallery containing **19 high-resolution screenshots** across all screens, sub-views, and proactive nudge states is documented in **[docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)**:
+
+| MPIN & Biometrics Login | Magenta Wave Card Dashboard | Governed Opportunity Nudge |
+| :---: | :---: | :---: |
+| [![MPIN](docs/screenshots/01_login_mpin_keypad.png)](docs/SCREENSHOTS.md) | [![Dashboard](docs/screenshots/03_dashboard_banking_card.png)](docs/SCREENSHOTS.md) | [![Nudge](docs/screenshots/12_nudge_opportunity_debt_consolidation.png)](docs/SCREENSHOTS.md) |
+| **Account Details / Profile** | **Financial Stress Mode** | **Explainability Accordion** |
+| [![Profile](docs/screenshots/11_profile_account_details_modal.png)](docs/SCREENSHOTS.md) | [![Stress](docs/screenshots/16_financial_stress_support_card.png)](docs/SCREENSHOTS.md) | [![Explain](docs/screenshots/13_nudge_explainability_expanded.png)](docs/SCREENSHOTS.md) |
+
+👉 **[View all 19 Full-Resolution Screenshots in docs/SCREENSHOTS.md](docs/SCREENSHOTS.md)**
+
+---
+
 ## 🛠️ Repository Architecture
 
 The project is organized as a modular, pilot-oriented reference implementation:
