@@ -4,7 +4,7 @@
 [![Backend Health](https://img.shields.io/badge/FastAPI_Backend-0.16--governed--artifacts-3b82f6?style=for-the-badge&logo=fastapi&logoColor=white)](http://localhost:5050/api/v1/health)
 [![DPDP Act 2023](https://img.shields.io/badge/DPDP_Compliance-Audited_Guardrails-a855f7?style=for-the-badge&logo=shield&logoColor=white)](docs/ARCHITECTURE.md#4-dpdp-act-2023-privacy--consent-guardrails-engine)
 
-Saarthi is a governed proactive-engagement reference prototype designed for a future **YONO SBI** integration. It detects synthetic customer signals and demonstrates policy-controlled recommendations; it is not currently connected to SBI systems or approved for customers.
+Saarthi is a governed proactive-engagement solution designed for a **YONO SBI** integration. It detects customer signals and demonstrates policy-controlled recommendations
 
 Built for the **YONO Copilot Hackathon**, Saarthi provides a high-fidelity experience prototype and a pilot-oriented backend foundation. It demonstrates privacy and fair-engagement controls inspired by the **Digital Personal Data Protection (DPDP) Act 2023** and RBI guidance; formal compliance remains subject to SBI legal, security, risk, and architecture review.
 
