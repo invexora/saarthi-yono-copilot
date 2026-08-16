@@ -1888,8 +1888,9 @@ header {
   color: var(--primary-magenta);
   cursor: pointer;
 }
-.explain-content { display: none; padding: 0.5rem 0.65rem; font-size: 0.62rem; color: #64748b; border-top: 1px solid #e2e8f0; line-height: 1.35; background: #ffffff; }
-.explain-content.visible { display: block; }
+.explain-content { display: none; padding: 0.5rem 0.65rem; font-size: 0.62rem; color: #475569; border-top: 1px solid #e2e8f0; line-height: 1.35; background: #f8fafc; white-space: pre-line; word-break: break-word; }
+.explain-content.visible,
+.explain-content.expanded { display: block; }
 .nudge-actions { display: flex; gap: 0.5rem; }
 .nudge-btn {
   flex: 1;
