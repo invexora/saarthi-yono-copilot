@@ -19,6 +19,10 @@
     <div class="team-badge">
       Developed by <strong>Team Invexora</strong> (Gaurav Mahajan & Kishore Jadhav)
     </div>
+    <button id="videoBtn" type="button" class="video-btn" onclick="openVideoModal()" title="Watch 42s Fast Architecture & Solution Video Presentation">
+      <span aria-hidden="true">🎬</span>
+      <span>Watch Demo Video</span>
+    </button>
     <button id="apiStatus" type="button" class="api-status" onclick="enableDemoMode()" role="status" aria-live="polite" title="Click to activate Interactive Demo Simulation">
       <span id="apiStatusDot" class="api-dot online" aria-hidden="true"></span>
       <span id="apiStatusText">Interactive Simulation (Demo Mode)</span>
@@ -1469,6 +1473,22 @@
     </section>
 
   </main>
+
+  <!-- Video Demo Modal Dialog -->
+  <dialog id="videoModal" class="video-modal-dialog" aria-labelledby="videoModalTitle">
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <h2 id="videoModalTitle" style="font-size:1.1rem;margin:0;color:#f3f4f6;font-weight:700;">🎬 Saarthi — 42s Fast Demo Presentation</h2>
+        <button type="button" class="video-modal-close" onclick="closeVideoModal()" aria-label="Close video player">✕</button>
+      </div>
+      <div class="video-modal-body">
+        <video id="demoVideoPlayer" controls width="100%" poster="docs/images/video_presentation_poster.jpg" preload="metadata">
+          <source src="docs/saarthi_demo_presentation_fast.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+    </div>
+  </dialog>
 
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-relevant="additions"></div>

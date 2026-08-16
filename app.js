@@ -1981,3 +1981,34 @@ async function sha256Real(input) {
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
+
+// ─── Video Demo Modal ────────────────────────────────────────────────
+function openVideoModal() {
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('demoVideoPlayer');
+  if (modal) {
+    if (typeof modal.showModal === 'function') {
+      modal.showModal();
+    } else {
+      modal.setAttribute('open', '');
+    }
+    if (player) {
+      player.play().catch(() => {});
+    }
+  }
+}
+
+function closeVideoModal() {
+  const modal = document.getElementById('videoModal');
+  const player = document.getElementById('demoVideoPlayer');
+  if (player) {
+    player.pause();
+  }
+  if (modal) {
+    if (typeof modal.close === 'function') {
+      modal.close();
+    } else {
+      modal.removeAttribute('open');
+    }
+  }
+}

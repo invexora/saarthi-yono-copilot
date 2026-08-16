@@ -17,7 +17,6 @@ Built for the **YONO Copilot Hackathon**, Saarthi provides a high-fidelity exper
 *   💻 **Local Web Server:** `http://127.0.0.1:8000`
 *   ⚙️ **Backend Decision Engine:** `http://127.0.0.1:5050` (FastAPI / LangGraph)
 *   📖 **Interactive Runbook:** [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md)
-*   📊 **Presentation Pack:** `presentation.html`
 
 ---
 
@@ -37,7 +36,9 @@ Comprehensive architectural blueprints, Small Language Model (SLM) training/infe
 
 ### 🎬 Fast Video Walkthrough (Architecture & Solutions)
 
-> 📹 **Watch the fast 42s silent demo presentation video:** [`docs/saarthi_demo_presentation_fast.mp4`](docs/saarthi_demo_presentation_fast.mp4)
+[![Watch 42s Fast Demo Presentation](docs/images/video_presentation_poster.jpg)](https://raw.githubusercontent.com/invexora/saarthi-yono-copilot/main/docs/saarthi_demo_presentation_fast.mp4)
+
+> 📹 **Direct Video Stream:** [`docs/saarthi_demo_presentation_fast.mp4`](docs/saarthi_demo_presentation_fast.mp4)
 > *A high-definition 1080p fast-paced walkthrough (3.5s per diagram/scene) covering the end-to-end architecture, 3B SLM benchmarks, 6-Node LangGraph trace, DPDP Act 2023 privacy guardrails, and quantified ROI.*
 
 ---
