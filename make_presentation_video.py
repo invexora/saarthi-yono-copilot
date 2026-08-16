@@ -1,4 +1,4 @@
-import os, sys, math, time, subprocess, wave
+import os, sys, math, time, subprocess
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
@@ -447,133 +447,13 @@ SCENE_DEFS = [
     ("Grand Finale & Live Deployment", SCENE_DUR, render_scene_12),
 ]
 
-print(f"Fast Video Duration: {TOTAL_DURATION}s ({TOTAL_DURATION:.1f} secs) | Total Frames: {TOTAL_FRAMES}")
+print(f"Silent Video Duration: {TOTAL_DURATION}s ({TOTAL_DURATION:.1f} secs) | Total Frames: {TOTAL_FRAMES}")
 
 OUTPUT_MP4 = "docs/saarthi_demo_presentation_5min.mp4"
 FINAL_COPY = "presentation-final/saarthi_demo_presentation_5min.mp4"
 FAST_COPY = "docs/saarthi_demo_presentation_fast.mp4"
 
-# 1. GENERATE DYNAMIC HIGH-ENERGY SOUNDTRACK WITH SFX
-AUDIO_FILE = "/tmp/saarthi_high_energy_soundtrack.wav"
-print("Synthesizing 124 BPM electronic fintech soundtrack with transition whooshes & chimes...")
-
-SAMPLE_RATE = 44100
-BPM = 124.0
-BEAT_SEC = 60.0 / BPM
-TOTAL_SAMPLES = int(SAMPLE_RATE * TOTAL_DURATION)
-
-left = np.zeros(TOTAL_SAMPLES)
-right = np.zeros(TOTAL_SAMPLES)
-
-num_beats = int(TOTAL_DURATION / BEAT_SEC)
-
-# 1a. Kick Drum (808 style pitch-dropped sine)
-for b in range(num_beats):
-    start_time = b * BEAT_SEC
-    idx_start = int(start_time * SAMPLE_RATE)
-    kick_len = int(0.22 * SAMPLE_RATE)
-    if idx_start + kick_len < TOTAL_SAMPLES:
-        kt = np.linspace(0, 0.22, kick_len, False)
-        k_freq = 45 + 120 * np.exp(-kt * 28)
-        k_phase = 2 * np.pi * np.cumsum(k_freq) / SAMPLE_RATE
-        k_env = np.exp(-kt * 16)
-        kick_wave = 0.55 * np.sin(k_phase) * k_env
-        left[idx_start:idx_start+kick_len] += kick_wave
-        right[idx_start:idx_start+kick_len] += kick_wave
-
-# 1b. Snare / Clap (Beats 2 and 4)
-for b in range(num_beats):
-    if b % 2 == 1:
-        start_time = b * BEAT_SEC
-        idx_start = int(start_time * SAMPLE_RATE)
-        snare_len = int(0.18 * SAMPLE_RATE)
-        if idx_start + snare_len < TOTAL_SAMPLES:
-            st = np.linspace(0, 0.18, snare_len, False)
-            noise = np.random.uniform(-1, 1, snare_len)
-            snare_tone = np.sin(2 * np.pi * 220 * st) * np.exp(-st * 30)
-            snare_env = np.exp(-st * 20)
-            snare_wave = (0.28 * noise + 0.15 * snare_tone) * snare_env
-            left[idx_start:idx_start+snare_len] += snare_wave * 0.95
-            right[idx_start:idx_start+snare_len] += snare_wave * 1.05
-
-# 1c. 16th Note Hi-Hats
-sixteenth = BEAT_SEC / 4.0
-num_16ths = int(TOTAL_DURATION / sixteenth)
-for s in range(num_16ths):
-    start_time = s * sixteenth
-    idx_start = int(start_time * SAMPLE_RATE)
-    hat_len = int(0.045 * SAMPLE_RATE)
-    if idx_start + hat_len < TOTAL_SAMPLES:
-        ht = np.linspace(0, 0.045, hat_len, False)
-        noise = np.random.uniform(-1, 1, hat_len)
-        hat_env = np.exp(-ht * 95)
-        vol = 0.12 if s % 4 == 2 else 0.07
-        hat_wave = noise * hat_env * vol
-        left[idx_start:idx_start+hat_len] += hat_wave * 1.05
-        right[idx_start:idx_start+hat_len] += hat_wave * 0.95
-
-# 1d. Synth Bassline Arpeggio
-freqs = [65.41, 77.78, 87.31, 98.00] # C, Eb, F, G in bass octaves
-for b in range(num_beats * 2):
-    start_time = b * (BEAT_SEC / 2)
-    idx_start = int(start_time * SAMPLE_RATE)
-    bass_len = int((BEAT_SEC / 2) * SAMPLE_RATE)
-    if idx_start + bass_len < TOTAL_SAMPLES:
-        bt = np.linspace(0, BEAT_SEC / 2, bass_len, False)
-        chord_idx = int((b // 8) % len(freqs))
-        f_base = freqs[chord_idx]
-        note_freq = f_base * (1.5 if (b % 4 == 2) else 1.0)
-        saw = 0.20 * (np.sin(2 * np.pi * note_freq * bt) + 0.5 * np.sin(4 * np.pi * note_freq * bt))
-        env = np.exp(-bt * 6)
-        left[idx_start:idx_start+bass_len] += saw * env
-        right[idx_start:idx_start+bass_len] += saw * env
-
-# 1e. Transition SFX: Whoosh & Cyber Chime at every scene boundary
-for s in range(TOTAL_SCENES):
-    t_trans = s * SCENE_DUR
-    idx_start = int(t_trans * SAMPLE_RATE)
-
-    # Cyber Whoosh (0.35s)
-    w_len = int(0.35 * SAMPLE_RATE)
-    if idx_start + w_len < TOTAL_SAMPLES:
-        wt = np.linspace(0, 0.35, w_len, False)
-        noise = np.random.uniform(-1, 1, w_len)
-        w_sweep = np.sin(2 * np.pi * (300 + 1600 * (wt/0.35)**2) * wt)
-        w_env = np.sin(np.pi * wt / 0.35)
-        whoosh = (0.28 * noise + 0.22 * w_sweep) * w_env
-        left[idx_start:idx_start+w_len] += whoosh
-        right[idx_start:idx_start+w_len] += whoosh
-
-    # High-Tech Confirmation Chime
-    ch_len = int(0.28 * SAMPLE_RATE)
-    if idx_start + ch_len < TOTAL_SAMPLES:
-        ct = np.linspace(0, 0.28, ch_len, False)
-        chime1 = np.sin(2 * np.pi * 1760 * ct) * np.exp(-ct * 14)
-        chime2 = np.sin(2 * np.pi * 2640 * ct) * np.exp(-ct * 18)
-        chime = 0.20 * (chime1 + chime2)
-        left[idx_start:idx_start+ch_len] += chime * 0.85
-        right[idx_start:idx_start+ch_len] += chime * 1.15
-
-# Master Limiter
-max_val = max(np.max(np.abs(left)), np.max(np.abs(right)), 1e-6)
-left = (left / max_val) * 0.94
-right = (right / max_val) * 0.94
-
-left_16 = (left * 32767).astype(np.int16)
-right_16 = (right * 32767).astype(np.int16)
-stereo_interleaved = np.empty((TOTAL_SAMPLES * 2,), dtype=np.int16)
-stereo_interleaved[0::2] = left_16
-stereo_interleaved[1::2] = right_16
-
-with wave.open(AUDIO_FILE, "wb") as wf:
-    wf.setnchannels(2)
-    wf.setsampwidth(2)
-    wf.setframerate(SAMPLE_RATE)
-    wf.writeframes(stereo_interleaved.tobytes())
-
-print("Audio track synthesized successfully!")
-
-# 2. RENDER VIDEO WITH SYNCED AUDIO
+# RENDER SILENT VIDEO (NO AUDIO TRACK / NO SFX)
 ffmpeg_cmd = [
     "ffmpeg", "-y",
     "-f", "rawvideo",
@@ -581,14 +461,11 @@ ffmpeg_cmd = [
     "-s", f"{WIDTH}x{HEIGHT}",
     "-r", str(FPS),
     "-i", "-",
-    "-i", AUDIO_FILE,
     "-c:v", "libx264",
     "-preset", "ultrafast",
     "-crf", "18",
     "-pix_fmt", "yuv420p",
-    "-c:a", "aac",
-    "-b:a", "192k",
-    "-shortest",
+    "-an", # Strictly NO AUDIO / Silent
     OUTPUT_MP4
 ]
 
@@ -617,7 +494,7 @@ for scene_idx, (s_title, s_dur, s_render) in enumerate(SCENE_DEFS, start=1):
 proc.stdin.close()
 proc.wait()
 
-print(f"Video created successfully at: {OUTPUT_MP4}")
+print(f"Silent video created successfully at: {OUTPUT_MP4}")
 os.makedirs("presentation-final", exist_ok=True)
 subprocess.run(["cp", OUTPUT_MP4, FINAL_COPY])
 subprocess.run(["cp", OUTPUT_MP4, FAST_COPY])
