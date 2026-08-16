@@ -34,10 +34,14 @@ class Settings:
     audit_secret: str | None = None
     audit_key_version: str = "v1"
     high_risk_review_mode: str = "disabled"
+    signal_model_path: str | None = None
+    signal_detection_model_config: str | None = None
     signal_detection_mode: str = "rules"
+    signal_finetune_base_model: str = "meta-llama/Llama-3.1-8B-Instruct"
     signal_detection_url: str | None = None
     signal_detection_token: str | None = None
     signal_detection_minimum_confidence: float = 0.60
+    signal_detection_finetune_root: str | None = None
     customer_context_mode: str = "synthetic"
     customer_context_url: str | None = None
     customer_context_token: str | None = None
@@ -110,10 +114,17 @@ class Settings:
             audit_secret=os.environ.get("SAARTHI_AUDIT_SECRET"),
             audit_key_version=os.environ.get("SAARTHI_AUDIT_KEY_VERSION", "v1"),
             high_risk_review_mode=os.environ.get("SAARTHI_HIGH_RISK_REVIEW_MODE", "disabled").lower(),
+            signal_model_path=os.environ.get("SAARTHI_SIGNAL_MODEL_PATH"),
+            signal_detection_model_config=os.environ.get("SAARTHI_SIGNAL_DETECTION_MODEL_CONFIG"),
             signal_detection_mode=os.environ.get("SAARTHI_SIGNAL_DETECTION_MODE", "rules").lower(),
+            signal_finetune_base_model=os.environ.get(
+                "SAARTHI_SIGNAL_FINETUNE_BASE_MODEL",
+                "meta-llama/Llama-3.1-8B-Instruct",
+            ),
             signal_detection_url=os.environ.get("SAARTHI_SIGNAL_DETECTION_URL"),
             signal_detection_token=os.environ.get("SAARTHI_SIGNAL_DETECTION_TOKEN"),
             signal_detection_minimum_confidence=float(os.environ.get("SAARTHI_SIGNAL_DETECTION_MINIMUM_CONFIDENCE", "0.60")),
+            signal_detection_finetune_root=os.environ.get("SAARTHI_SIGNAL_DETECTION_FINETUNE_ROOT"),
             customer_context_mode=os.environ.get("SAARTHI_CUSTOMER_CONTEXT_MODE", "synthetic").lower(),
             customer_context_url=os.environ.get("SAARTHI_CUSTOMER_CONTEXT_URL"),
             customer_context_token=os.environ.get("SAARTHI_CUSTOMER_CONTEXT_TOKEN"),
@@ -186,8 +197,8 @@ class Settings:
             raise RuntimeError("SAARTHI_AUDIT_SECRET is required outside local-prototype mode")
         if self.high_risk_review_mode not in {"disabled", "required"}:
             raise RuntimeError("SAARTHI_HIGH_RISK_REVIEW_MODE must be disabled or required")
-        if self.signal_detection_mode not in {"rules", "sbi_api"}:
-            raise RuntimeError("SAARTHI_SIGNAL_DETECTION_MODE must be rules or sbi_api")
+        if self.signal_detection_mode not in {"rules", "model", "sbi_api"}:
+            raise RuntimeError("SAARTHI_SIGNAL_DETECTION_MODE must be rules, model, or sbi_api")
         if not 0 <= self.signal_detection_minimum_confidence <= 1:
             raise RuntimeError("SAARTHI_SIGNAL_DETECTION_MINIMUM_CONFIDENCE must be a probability")
         if self.signal_detection_mode == "sbi_api" and (

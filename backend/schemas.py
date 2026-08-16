@@ -294,9 +294,9 @@ class SignalModelEvaluationReport(ApiModel):
     model_version: str
     feature_schema_version: str
     evaluation_id: str
-    evaluation_status: Literal["demo_approved", "approved"]
+    evaluation_status: Literal["demo_approved", "approved", "pending"]
     dataset_version: str
-    sample_count: int = Field(ge=1)
+    sample_count: int = Field(ge=0)
     accuracy: float = Field(ge=0, le=1)
     macro_precision: float = Field(ge=0, le=1)
     macro_recall: float = Field(ge=0, le=1)

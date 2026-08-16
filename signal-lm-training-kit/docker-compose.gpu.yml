@@ -1,0 +1,19 @@
+services:
+  signal-lm-trainer:
+    image: pytorch/pytorch:2.4.0-cuda12.1-cudnn8-runtime
+    environment:
+      - HF_HOME=/workspace/.cache/hf
+      - TRANSFORMERS_CACHE=/workspace/.cache/hf/transformers
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: |
+      bash -lc "pip install -r signal-lm-training-kit/requirements.txt && \
+      python3 signal-lm-training-kit/scripts/train_signal_lm.py --config signal-lm-training-kit/configs/default_signal_lm_train.yaml --dry-run"

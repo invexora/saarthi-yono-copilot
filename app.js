@@ -4,6 +4,73 @@
 
 // ─── Profile Database ─────────────────────────────────────────────────
 const profiles = {
+  aiwin: {
+    id: "SBI-036910", name: "Aiwin Vinu", firstName: "Aiwin",
+    salary: "₹85,000", balance: "₹68,526", interest: "₹1,850/mo (across 1 card)",
+    rawBalance: 68526, rawCardDebt: 45000,
+    email: "aiwin.vinu@example.com", pan: "AIWIN1234F", aadhaar: "4532 0369 1204",
+    assist: { icon: "🎯", label: "Opportunity Ready", color: "green", desc: "High-value nudges for financial optimization" },
+    impact: {
+      task: "2 Tasks Completed Digitally", taskSub: "Saved ~2 hours of branch waiting time",
+      savings: "₹1,000 Saved This Month", savSub: "From debt consolidation recommendation",
+      branch: "1 Branch Visit Avoided", branchSub: "Using YONO Pay instead of counter deposit",
+      bars: [30, 55, 70]
+    },
+    scenarios: {
+      friction: {
+        icon: "🏛️",
+        name: "1. Branch Cash Deposit Friction",
+        desc: "User physically visits branch to deposit cash at manual counter",
+        title: "Deposit Cash via CDM or UPI",
+        text: "You visited Branch 0032 to deposit cash. Skip branch queues by using SBI Cash Deposit Machines (CDM) or UPI LITE instantly.",
+        actionBtn: "Locate Nearest CDM",
+        consentText: "To view your nearest 24/7 SBI Cash Deposit Machine and enable digital deposits, please confirm below.",
+        explainText: "Branch records show a cash deposit transaction of ₹20,000 at manual counter 0032.",
+        successText: "The prototype recorded digital cash deposit guidance; nearest CDM mapped.",
+        signalLog: "CASH_DEPOSIT_FRICTION — Manual branch counter deposit of ₹20,000 detected",
+        recLog: "SBI Instant Cash Deposit Machine & UPI LITE Guidance"
+      },
+      opportunity: {
+        icon: "💡",
+        name: "2. Credit Card Interest Optimization",
+        desc: "Paying high revolving credit card interest at 42% APR",
+        title: "Consolidate Card Debt & Save ₹1,000/mo",
+        text: "You are paying ₹1,850/mo revolving interest at 42% APR on SBI Card Elite. Convert to 10.5% personal loan or EMI to save interest.",
+        actionBtn: "Review EMI Options",
+        consentText: "To simulate reviewing the synthetic card debt consolidation comparison at 10.5% p.a., confirm one-time consent.",
+        explainText: "Card statement shows ₹45,000 outstanding balance revolving with ₹1,850 finance charges.",
+        successText: "The prototype recorded card debt optimization; comparison generated.",
+        signalLog: "DEBT_OPPORTUNITY — Revolving card interest of ₹1,850/mo exceeds threshold",
+        recLog: "Consolidation into 10.5% personal loan / EMI"
+      },
+      lifeevent: {
+        icon: "🚀",
+        name: "3. Life-Event Savings Potential",
+        desc: "Surplus savings balance detected in savings account",
+        title: "Auto-Create 7.1% Tax-Saver FD",
+        text: "Your savings balance is ₹68,526 earning only 2.70%. Move surplus into a 7.10% SBI Tax-Saver Fixed Deposit.",
+        actionBtn: "Open SBI FD",
+        consentText: "To simulate auto-creating an SBI Green Fixed Deposit at 7.10% p.a. for ₹25,000, confirm consent.",
+        explainText: "Idle balance in savings account has exceeded average monthly expenditure for 60 days.",
+        successText: "The prototype recorded synthetic Fixed Deposit creation at 7.10% p.a.",
+        signalLog: "SURPLUS_SAVINGS — Idle balance of ₹68,526 detected in savings account",
+        recLog: "SBI 7.10% Fixed Deposit allocation"
+      },
+      stress: {
+        icon: "⚠️",
+        name: "4. Compassionate EMI Support",
+        desc: "Upcoming loan EMI due with temporary balance dip",
+        title: "SBI Compassionate Support",
+        text: "We noticed your upcoming EMI is due in 3 days with a tight balance. We're here to assist with flexible restructuring.",
+        actionBtn: "View Restructuring",
+        consentText: "To review flexible EMI restructuring or connect to your Relationship Manager, confirm consent.",
+        explainText: "Account liquidity analysis indicates upcoming debt obligation may exceed projected balance.",
+        successText: "The prototype connected you to your SBI Relationship Manager.",
+        signalLog: "LIQUIDITY_STRESS — Tight liquidity ahead of monthly EMI due date",
+        recLog: "Proactive EMI restructuring assistance"
+      }
+    }
+  },
   priya: {
     id: "SBI-772910", name: "Priya Sharma", firstName: "Priya",
     salary: "₹1,45,000", balance: "₹2,80,000", interest: "₹4,200/mo (across 2 cards)",
@@ -341,18 +408,24 @@ const profiles = {
   }
 };
 
-const localApiHost = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+const localApiHost = (typeof window !== 'undefined' && window.location && ['localhost', '127.0.0.1'].includes(window.location.hostname))
   ? window.location.hostname
   : 'localhost';
-const API_BASE = window.SAARTHI_API_BASE || `http://${localApiHost}:5050/api/v1`;
-const OFFLINE_DEMO_MODE = window.SAARTHI_MODE === 'offline-demo'
-  || new URLSearchParams(window.location.search).get('mode') === 'offline-demo';
+const API_BASE = (typeof window !== 'undefined' && window.SAARTHI_API_BASE) || `http://${localApiHost}:5050/api/v1`;
+const isGithubPages = typeof window !== 'undefined'
+  && Boolean(window.location && window.location.hostname && (window.location.hostname.endsWith('github.io') || window.location.hostname.includes('invexora')));
+
+const OFFLINE_DEMO_MODE = (typeof window !== 'undefined' && window.SAARTHI_MODE === 'offline-demo')
+  || (typeof window !== 'undefined' && window.location && window.location.search && new URLSearchParams(window.location.search).get('mode') === 'offline-demo')
+  || isGithubPages;
 
 // ─── State ─────────────────────────────────────────────────────────────
-let currentProfileKey = 'priya';
+let currentProfileKey = 'aiwin';
 let currentNudge = null;
 let consentState = true;
+let nudgeBudgetMax = 5;
 let nudgeBudgetUsed = 0;
+let consecutiveDeclines = 0;
 let activeScenarioType = null;
 let autoTriggerTimeout = null;
 let successAutoTimeout = null;
@@ -370,6 +443,7 @@ let actionInFlight = false;
 let consentReturnFocus = null;
 let erasureReturnFocus = null;
 let lastScenarioTrigger = null;
+let isBalanceHidden = false;
 
 const DIALOG_FOCUSABLE_SELECTOR = [
   'button:not([disabled])',
@@ -485,11 +559,14 @@ document.addEventListener('DOMContentLoaded', () => {
   updateNudgeBudgetUI();
 
   if (OFFLINE_DEMO_MODE) {
-    document.getElementById('apiStatusText').textContent = 'Offline Demo — Simulation Only';
+    const dot = document.getElementById('apiStatusDot');
+    if (dot) dot.className = 'api-dot online';
+    const txt = document.getElementById('apiStatusText');
+    if (txt) txt.textContent = 'Interactive Simulation (Demo Mode)';
     return;
   }
 
-  // Check backend API connectivity. Network failure never enables simulated execution.
+  // Check backend API connectivity.
   fetch(`${API_BASE}/health`).then(async response => {
     if (!response.ok) throw new Error(`health_${response.status}`);
     await response.json();
@@ -503,9 +580,19 @@ document.addEventListener('DOMContentLoaded', () => {
     backendAvailable = false;
     runtimeMode = 'api-unavailable';
     document.getElementById('apiStatusDot').className = 'api-dot offline';
-    document.getElementById('apiStatusText').textContent = 'API Unavailable — No Action';
+    document.getElementById('apiStatusText').textContent = 'API Offline (Click for Demo)';
   });
 });
+
+function enableDemoMode() {
+  runtimeMode = 'offline-demo';
+  const dot = document.getElementById('apiStatusDot');
+  if (dot) dot.className = 'api-dot online';
+  const txt = document.getElementById('apiStatusText');
+  if (txt) txt.textContent = 'Interactive Simulation (Demo Mode)';
+  showToast('success', 'Simulation Active', 'All behavioral signals and governance flows are enabled.');
+  addAuditLog('⚡ Interactive simulation mode activated.');
+}
 
 // ─── Toast Notification System ────────────────────────────────────────
 function showToast(type, title, subtitle) {
@@ -575,7 +662,9 @@ function changeProfile() {
   hideRMToast();
   closeConsentScreen();
   clearAutoTrigger();
+  nudgeBudgetMax = 5;
   nudgeBudgetUsed = 0;
+  consecutiveDeclines = 0;
   updateNudgeBudgetUI();
   activeScenarioType = null;
   currentRecommendationId = null;
@@ -599,10 +688,28 @@ function changeProfile() {
   document.getElementById('yonoUser').textContent = p.firstName;
 
   // Update phone views
-  document.getElementById('yonoBalance').textContent = '₹' + p.rawBalance.toLocaleString('en-IN') + '.00';
+  if (isBalanceHidden) {
+    document.getElementById('yonoBalance').textContent = '₹ ••••••••';
+  } else {
+    document.getElementById('yonoBalance').textContent = '₹' + p.rawBalance.toLocaleString('en-IN') + '.00';
+  }
   document.getElementById('cardHolderName').textContent = p.name.toUpperCase();
   document.getElementById('investSavingsBalance').textContent = '₹' + p.rawBalance.toLocaleString('en-IN') + '.00';
   document.getElementById('salaryTransAmount').textContent = '+' + p.salary;
+
+  const initials = p.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+  const initialsBadge = document.getElementById('userInitialsBadge');
+  if (initialsBadge) initialsBadge.textContent = initials;
+  const loginUser = document.getElementById('loginUserName');
+  if (loginUser) loginUser.textContent = p.firstName;
+  const loginPromptU = document.getElementById('loginPromptUser');
+  if (loginPromptU) loginPromptU.textContent = p.name;
+  const profModalInitials = document.getElementById('profileModalInitials');
+  if (profModalInitials) profModalInitials.textContent = initials;
+  const profModalTitle = document.getElementById('profileModalTitle');
+  if (profModalTitle) profModalTitle.textContent = p.name;
+  const userUpi = document.getElementById('userUpiHandle');
+  if (userUpi) userUpi.textContent = p.firstName.toLowerCase() + '@sbi';
 
   // Update card values
   if (p.rawCardDebt > 0) {
@@ -681,13 +788,38 @@ function updateImpactView() {
   });
 }
 
-// ─── Nudge Budget ─────────────────────────────────────────────────────
+// ─── Nudge Budget (Dynamic & Adaptive) ──────────────────────────────────
 function updateNudgeBudgetUI() {
-  document.getElementById('nudgeDot1').className = 'nudge-dot' + (nudgeBudgetUsed >= 1 ? ' filled' : '');
-  document.getElementById('nudgeDot2').className = 'nudge-dot' + (nudgeBudgetUsed >= 2 ? ' filled' : '');
-  document.getElementById('nudgeBudgetText').textContent = nudgeBudgetUsed + ' of 2 used';
+  const max = nudgeBudgetMax || 5;
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById(`nudgeDot${i}`);
+    if (dot) {
+      dot.className = 'nudge-dot' + (nudgeBudgetUsed >= i ? ' filled' : '');
+    }
+  }
+  const budgetText = document.getElementById('nudgeBudgetText');
+  if (budgetText) {
+    const fatigueSuffix = consecutiveDeclines >= 2 ? ` • Decline Pacing (${consecutiveDeclines}x)` : '';
+    budgetText.textContent = `${nudgeBudgetUsed} of ${max} used${fatigueSuffix}`;
+  }
   const warn = document.getElementById('nudgeBudgetWarning');
-  if (nudgeBudgetUsed >= 2) { warn.classList.add('visible'); } else { warn.classList.remove('visible'); }
+  if (warn) {
+    if (nudgeBudgetUsed >= max) {
+      warn.classList.add('visible');
+      warn.textContent = `Max reached (${max}/${max}) — cooldown active for 14 days`;
+    } else {
+      warn.classList.remove('visible');
+    }
+  }
+  const fatigueAlert = document.getElementById('nudgeFatigueAlert');
+  if (fatigueAlert) {
+    if (consecutiveDeclines >= 2) {
+      fatigueAlert.style.display = 'block';
+      fatigueAlert.textContent = `⚠️ Continuous decline detected (${consecutiveDeclines}x): Dynamic budget capped at ${max} with fatigue cooldown pacing.`;
+    } else {
+      fatigueAlert.style.display = 'none';
+    }
+  }
 }
 
 // ─── Consent Toggle ───────────────────────────────────────────────────
@@ -750,16 +882,16 @@ function triggerScenario(type) {
     return;
   }
   if (runtimeMode === 'api-unavailable') {
-    showToast('blocked', 'API Unavailable', 'No action was performed. Use ?mode=offline-demo only for an explicit simulation.');
-    return;
+    enableDemoMode();
   }
   if (!consentState) {
     showToast('blocked', 'Nudge Blocked', 'Consent is revoked. Re-grant DPDP consent to continue.');
     return;
   }
 
-  if (runtimeMode === 'offline-demo' && type !== 'stress' && nudgeBudgetUsed >= 2) {
-    showToast('blocked', 'Nudge Budget Reached', 'Promotional engagement is paused until the next cycle.');
+  if (runtimeMode === 'offline-demo' && type !== 'stress' && nudgeBudgetUsed >= nudgeBudgetMax) {
+    showToast('blocked', 'Nudge Budget Reached', `Dynamic engagement budget (${nudgeBudgetMax}/${nudgeBudgetMax}) reached. Promotional engagement is paused until the next cycle.`);
+    addAuditLog(`🚫 Nudge suppressed: Dynamic capacity limit of ${nudgeBudgetMax} reached.`);
     return;
   }
 
@@ -779,7 +911,7 @@ function triggerScenario(type) {
 }
 
 function getSegment(profileKey) {
-  const segments = { priya: 'corporate', ramesh: 'pensioner', amit: 'sme', sneha: 'stressed', rohan: 'student' };
+  const segments = { aiwin: 'corporate', priya: 'corporate', ramesh: 'pensioner', amit: 'sme', sneha: 'stressed', rohan: 'student' };
   return segments[profileKey] || 'corporate';
 }
 
@@ -1264,6 +1396,7 @@ function hideRMToast() {
 
 // ─── Nudge Actions ────────────────────────────────────────────────────
 function dismissNudge() {
+  const hadActiveNudge = Boolean(currentOffer || currentNudge);
   const nudgeCard = document.getElementById('nudgeCard');
   const shouldRestoreFocus = typeof nudgeCard.contains === 'function' && nudgeCard.contains(document.activeElement);
   nudgeCard.classList.remove('visible');
@@ -1272,10 +1405,19 @@ function dismissNudge() {
   currentNudge = null;
   currentOffer = null;
   if (shouldRestoreFocus) focusElement(lastScenarioTrigger);
+
+  if (hadActiveNudge) {
+    consecutiveDeclines++;
+    nudgeBudgetMax = 5; // Capped dynamically to 5 on declines
+    addAuditLog(`📉 Customer declined recommendation (Decline streak: ${consecutiveDeclines}). Dynamic budget capped at ${nudgeBudgetMax} with cooldown spacing.`);
+    updateNudgeBudgetUI();
+  }
 }
 
 function acceptNudge() {
   if (!currentOffer) return;
+  consecutiveDeclines = 0; // Reset decline streak on active engagement
+  updateNudgeBudgetUI();
   document.getElementById('consentText').textContent = currentOffer.presentation.consentText;
   const screen = document.getElementById('consentScreen');
   consentReturnFocus = document.activeElement;
@@ -1453,7 +1595,7 @@ function successBackToHome() {
 // ─── Phone Navigation ─────────────────────────────────────────────────
 const views = ['home', 'pay', 'investments', 'cards', 'loans', 'insurance', 'services', 'impact'];
 const viewTitles = {
-  pay: 'YONO Pay', investments: 'Investments', cards: 'Cards', loans: 'Loans',
+  pay: 'YONO Pay', investments: 'Investments', cards: 'SBI Card Elite', loans: 'Loans',
   insurance: 'Insurance', services: 'Services', impact: 'Saarthi Impact Summary'
 };
 
@@ -1485,7 +1627,7 @@ function navigateToView(viewName) {
   });
 
   if (typeof document.querySelectorAll === 'function') {
-    document.querySelectorAll('.yono-bottom-nav-btn').forEach(button => {
+    document.querySelectorAll('.yono-bottom-nav-btn, .behance-nav-btn').forEach(button => {
       const isActive = button.dataset.view === viewName;
       button.classList.toggle('active', isActive);
       if (isActive) {
@@ -1628,6 +1770,172 @@ function addAuditLog(text) {
   auditText.textContent = ` ${text}`;
   item.append(timestamp, auditText);
   list.prepend(item);
+}
+
+// ─── Balance Eye Visibility Toggle ────────────────────────────────────
+function toggleBalanceVisibility() {
+  isBalanceHidden = !isBalanceHidden;
+  const balanceEl = document.getElementById('yonoBalance');
+  const eyeIcon = document.getElementById('balanceEyeIcon');
+  const p = profiles[currentProfileKey] || profiles['priya'];
+  if (balanceEl) {
+    if (isBalanceHidden) {
+      balanceEl.textContent = '₹ ••••••••';
+      if (eyeIcon) eyeIcon.textContent = '🙈';
+    } else {
+      balanceEl.textContent = '₹' + p.rawBalance.toLocaleString('en-IN') + '.00';
+      if (eyeIcon) eyeIcon.textContent = '👁️';
+    }
+  }
+}
+
+// ─── Behance Simulation Interactions ──────────────────────────────────
+let enteredMpin = '12';
+
+function switchLoginTab(mode) {
+  const isMpin = mode === 'mpin';
+  const tabMpin = document.getElementById('tabMpinBtn');
+  const tabUser = document.getElementById('tabUserBtn');
+  const subMpin = document.getElementById('loginSubMpin');
+  const subUser = document.getElementById('loginSubUsername');
+  const promptTitle = document.getElementById('loginPromptTitle');
+
+  if (tabMpin) {
+    tabMpin.classList.toggle('active', isMpin);
+    tabMpin.setAttribute('aria-selected', isMpin);
+  }
+  if (tabUser) {
+    tabUser.classList.toggle('active', !isMpin);
+    tabUser.setAttribute('aria-selected', !isMpin);
+  }
+  if (subMpin) subMpin.style.display = isMpin ? 'flex' : 'none';
+  if (subUser) subUser.style.display = isMpin ? 'none' : 'flex';
+  if (promptTitle) promptTitle.textContent = isMpin ? 'Enter MPIN' : 'Enter Username';
+}
+
+function updateMpinDotsUI() {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('mpinDot' + i);
+    if (dot) {
+      dot.classList.toggle('filled', i <= enteredMpin.length);
+    }
+  }
+}
+
+function pressMpinDigit(d) {
+  if (enteredMpin.length < 4) {
+    enteredMpin += d;
+    updateMpinDotsUI();
+    if (enteredMpin.length === 4) {
+      setTimeout(() => performLogin(), 250);
+    }
+  }
+}
+
+function deleteMpinDigit() {
+  if (enteredMpin.length > 0) {
+    enteredMpin = enteredMpin.slice(0, -1);
+    updateMpinDotsUI();
+  }
+}
+
+function loginWithBiometrics() {
+  enteredMpin = '1234';
+  updateMpinDotsUI();
+  showToast('success', 'Biometric Verified', 'Welcome back, ' + (profiles[currentProfileKey]?.firstName || 'Priya'));
+  setTimeout(() => performLogin(), 300);
+}
+
+function togglePasswordVisibility() {
+  const input = document.getElementById('loginPasswordInput');
+  if (input) {
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+}
+
+function performLogin() {
+  const loginScreen = document.getElementById('yono-view-login');
+  const appShell = document.getElementById('yono-app-shell');
+  if (loginScreen && appShell) {
+    loginScreen.style.display = 'none';
+    appShell.style.display = 'flex';
+    navigateToView('home');
+  }
+}
+
+function performLogout() {
+  const loginScreen = document.getElementById('yono-view-login');
+  const appShell = document.getElementById('yono-app-shell');
+  closeProfileModal();
+  closeQrScannerModal();
+  enteredMpin = '12';
+  updateMpinDotsUI();
+  if (loginScreen && appShell) {
+    appShell.style.display = 'none';
+    loginScreen.style.display = 'flex';
+  }
+  showToast('warning', 'Logged Out', 'Session terminated securely.');
+}
+
+function switchCategoryTab(cat) {
+  const categories = ['banking', 'lifestyle', 'rewards', 'others'];
+  categories.forEach(c => {
+    const btn = document.getElementById('catTab' + c.charAt(0).toUpperCase() + c.slice(1));
+    const pane = document.getElementById('catPane' + c.charAt(0).toUpperCase() + c.slice(1));
+    const isActive = c === cat;
+    if (btn) {
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive);
+    }
+    if (pane) {
+      pane.style.display = isActive ? 'flex' : 'none';
+    }
+  });
+}
+
+function openProfileModal() {
+  const modal = document.getElementById('profileModal');
+  if (modal) {
+    modal.classList.add('visible');
+    modal.removeAttribute('aria-hidden');
+    modal.removeAttribute('inert');
+  }
+}
+
+function closeProfileModal() {
+  const modal = document.getElementById('profileModal');
+  if (modal) {
+    modal.classList.remove('visible');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.setAttribute('inert', '');
+  }
+}
+
+function openQrScannerModal() {
+  const modal = document.getElementById('qrScannerModal');
+  if (modal) {
+    modal.classList.add('visible');
+    modal.removeAttribute('aria-hidden');
+    modal.removeAttribute('inert');
+  }
+}
+
+function closeQrScannerModal() {
+  const modal = document.getElementById('qrScannerModal');
+  if (modal) {
+    modal.classList.remove('visible');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.setAttribute('inert', '');
+  }
+}
+
+function simulateQrPayment() {
+  closeQrScannerModal();
+  showToast('success', 'Merchant Payment Done', 'Paid ₹250.00 to Chai Point via UPI Lite');
+}
+
+function toggleSearch() {
+  showToast('success', 'Smart Search', 'Type "FD", "Tax", "Loans" or "Cards"');
 }
 
 // ─── SHA-256 Simulation ───────────────────────────────────────────────

@@ -1,8 +1,12 @@
 import hashlib
 import json
 import time
+from pathlib import Path
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+from backend.ml.data_schema import DATASET_VERSION
 
 
 CATEGORIES = ("friction", "opportunity", "lifeevent", "stress")
@@ -222,6 +226,102 @@ class VersionedRuleSignalDetector:
         }
 
 
+
+class ModelSignalDetector:
+    mode = "model"
+    READY_WARNING = "SLM not yet trained or loaded"
+    MODEL_ID_PREFIX = "saarthi-signal-lm"
+    PENDING_MODEL_VERSION = "pending"
+
+    def __init__(
+        self,
+        model_path: str | None,
+        base_model: str | None = None,
+        minimum_confidence: float = 0.60,
+        config: dict[str, Any] | None = None,
+    ):
+        self.model_path = model_path.strip() if model_path else None
+        self.base_model = base_model or "meta-llama/Llama-3.1-8B-Instruct"
+        self.minimum_confidence = minimum_confidence
+        self.config = config or {}
+        self.model_id = f"{self.MODEL_ID_PREFIX}:{self.base_model.split('/')[-1]}"
+
+    @property
+    def model_version(self):
+        return self.PENDING_MODEL_VERSION
+
+    def _ensure_model_available(self):
+        if not self.model_path:
+            raise SignalDetectionError(self.READY_WARNING)
+        model_path = Path(self.model_path)
+        if not model_path.exists():
+            raise SignalDetectionError(f"SLM checkpoint_missing: {self.model_path}")
+        if not (model_path.is_file() or model_path.is_dir()):
+            raise SignalDetectionError(f"SLM checkpoint_invalid: {self.model_path}")
+
+    def classify(self, signal):
+        self._ensure_model_available()
+        raise SignalDetectionError("SLM inference is blocked in readiness-only mode")
+
+    def health(self):
+        checkpoint_ready = (
+            bool(self.model_path)
+            and Path(self.model_path).exists()
+            and (Path(self.model_path).is_file() or Path(self.model_path).is_dir())
+        )
+        detail = self.READY_WARNING
+        if self.model_path:
+            if checkpoint_ready:
+                detail = f"model checkpoint discovered: {self.model_path}"
+            elif not Path(self.model_path).exists():
+                detail = f"model checkpoint not found: {self.model_path}"
+            else:
+                detail = f"model checkpoint path invalid: {self.model_path}"
+        return {
+            "name": "signal_detection", "mode": self.mode, "ready": checkpoint_ready,
+            "detail": detail,
+        }
+
+    def evaluation_report(self):
+        if not self.health()["ready"]:
+            return {
+                "model_id": self.model_id,
+                "model_version": self.model_version,
+                "feature_schema_version": FEATURE_SCHEMA_VERSION,
+                "evaluation_id": "saarthi-signal-lm-ready-2026.08.3",
+                "evaluation_status": "pending",
+                "dataset_version": DATASET_VERSION,
+                "sample_count": 0,
+                "accuracy": 0.0,
+                "macro_precision": 0.0,
+                "macro_recall": 0.0,
+                "per_category": {},
+                "limitations": (
+                    "Model checkpoint not available. Fine-tuning and deployment are deferred until SBI-approved dataset access; "
+                    "run the synthetic dataset/fine-tune dry-run path and install a trained checkpoint."
+                ),
+            }
+
+        return {
+            "model_id": self.model_id,
+            "model_version": self.model_version,
+            "feature_schema_version": FEATURE_SCHEMA_VERSION,
+            "evaluation_id": "saarthi-signal-lm-ready-2026.08.3",
+            "evaluation_status": "pending",
+            "dataset_version": DATASET_VERSION,
+            "sample_count": 0,
+            "accuracy": 0.0,
+            "macro_precision": 0.0,
+            "macro_recall": 0.0,
+            "per_category": {},
+            "limitations": (
+                "Model checkpoint exists but readiness remains deferred. "
+                "Run training and checkpointed deployment before switching model mode to active inference."
+            ),
+        }
+
+
+
 class SbiSignalDetectionClient:
     mode = "sbi_api"
 
@@ -356,11 +456,33 @@ class SbiSignalDetectionClient:
         }
 
 
+def _normalize_model_config(raw_config):
+    if raw_config is None:
+        return {}
+    if isinstance(raw_config, dict):
+        return raw_config
+    if isinstance(raw_config, str):
+        if not raw_config.strip():
+            return {}
+        try:
+            return json.loads(raw_config)
+        except json.JSONDecodeError as error:
+            raise RuntimeError("SAARTHI_SIGNAL_DETECTION_MODEL_CONFIG must be JSON when provided") from error
+    raise RuntimeError("SAARTHI_SIGNAL_DETECTION_MODEL_CONFIG must be a JSON object")
+
+
 def create_signal_detector(settings):
     if settings.signal_detection_mode == "sbi_api":
         return SbiSignalDetectionClient(
             settings.signal_detection_url,
             settings.signal_detection_token,
             settings.signal_detection_minimum_confidence,
+        )
+    if settings.signal_detection_mode == "model":
+        return ModelSignalDetector(
+            settings.signal_model_path,
+            settings.signal_finetune_base_model,
+            settings.signal_detection_minimum_confidence,
+            _normalize_model_config(settings.signal_detection_model_config),
         )
     return VersionedRuleSignalDetector(settings.signal_detection_minimum_confidence)

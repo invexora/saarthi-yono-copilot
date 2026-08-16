@@ -1,0 +1,43 @@
+base:
+  name: saarthi-signal-lm
+  seed: 42
+  model:
+    base_model: "meta-llama/Llama-3.1-8B-Instruct"
+    revision: "main"
+  precision: "bf16"
+
+data:
+  dataset_path: "backend/data/synthetic_training_seed.jsonl"
+  dataset_version: "saarthi-signal-synthetic-seed-v1"
+  max_seq_length: 1024
+  text_field: "customer_signal"
+
+training:
+  output_dir: "backend/ml/model-runs/signal-detector"
+  batch_size: 2
+  gradient_accumulation_steps: 4
+  epochs: 2
+  max_steps: 1200
+  eval_steps: 200
+  logging_steps: 50
+  save_steps: 200
+  warmup_steps: 100
+  learning_rate: 2.0e-4
+  max_grad_norm: 1.0
+  seed: 42
+
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+
+control:
+  model_path_root: "backend/ml"
+  allow_non_dry_run: false
+  require_dataset_validation: true
+  require_budget_validation: true

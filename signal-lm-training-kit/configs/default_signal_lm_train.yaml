@@ -1,0 +1,59 @@
+run_name: saarthi-signal-lm-demo
+dataset:
+  path: data/synthetic_signal_sft.jsonl
+  prompt_field: prompt
+  completion_field: completion
+  max_seq_length: 1024
+  text_field: text
+  split: train
+base:
+  model: meta-llama/Llama-3.1-8B-Instruct
+  revision: main
+  trust_remote_code: false
+  precision:
+    bf16: true
+    fp16: false
+  quantization:
+    enable_4bit: true
+    enable_8bit: false
+    bnb_4bit_quant_type: nf4
+    bnb_4bit_compute_dtype: bfloat16
+    bnb_4bit_use_double_quant: true
+training:
+  output_dir: outputs/default-run
+  train_batch_size: 1
+  eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  num_train_epochs: 1
+  max_steps: 1200
+  learning_rate: 2e-4
+  warmup_steps: 100
+  max_grad_norm: 1.0
+  weight_decay: 0.01
+  lr_scheduler: cosine
+  eval_steps: 200
+  logging_steps: 50
+  save_steps: 200
+  seed: 42
+  optim: paged_adamw_8bit
+  ddp_timeout_seconds: 7200
+  bf16: true
+  fp16: false
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - up_proj
+    - down_proj
+  modules_to_save:
+    - lm_head
+    - embed_tokens
+  bias: none
+control:
+  validate_required_rows: 20
+  allow_cpu: false

@@ -11,6 +11,8 @@ from backend.database import DatabaseManager
 from backend.signal_detection import (
     FEATURE_SCHEMA_VERSION,
     SbiSignalDetectionClient,
+    ModelSignalDetector,
+    create_signal_detector,
     SignalDetectionError,
     VersionedRuleSignalDetector,
     signal_digest,
@@ -52,6 +54,35 @@ class VersionedSignalDetectorTests(unittest.TestCase):
         with self.assertRaisesRegex(SignalDetectionError, "confidence"):
             detector.classify("No recognized feature")
         self.assertFalse(detector.health()["ready"])
+
+
+class ModelSignalDetectorTests(unittest.TestCase):
+    def test_model_detector_mode_reports_readiness_pending_without_checkpoint(self):
+        detector = ModelSignalDetector(
+            model_path=None,
+            base_model="meta-llama/Llama-3.1-8B-Instruct",
+            minimum_confidence=0.60,
+            config={},
+        )
+        self.assertEqual(detector.mode, "model")
+        self.assertFalse(detector.health()["ready"])
+        self.assertEqual(detector.health()["detail"], detector.READY_WARNING)
+        report = detector.evaluation_report()
+        self.assertEqual(report["evaluation_status"], "pending")
+        self.assertEqual(report["sample_count"], 0)
+        self.assertIn("Model checkpoint not available", report["limitations"])
+
+        with self.assertRaisesRegex(SignalDetectionError, detector.READY_WARNING):
+            detector.classify("DEBT_OPPORTUNITY — test signal")
+
+    def test_create_signal_detector_builds_model_detector_for_model_mode(self):
+        settings = Settings(
+            auth_mode="development",
+            decision_secret="test-decision-secret-which-is-valid-32-chars",
+            signal_detection_mode="model",
+        )
+        detector = create_signal_detector(settings)
+        self.assertIsInstance(detector, ModelSignalDetector)
 
 
 class SbiSignalDetectionClientTests(unittest.TestCase):
@@ -264,6 +295,23 @@ class SignalDetectionApiTests(unittest.TestCase):
         self.assertEqual(allowed.status_code, 200)
         self.assertEqual(allowed.json()["evaluation_status"], "demo_approved")
         self.assertIn("Synthetic regression corpus", allowed.json()["limitations"])
+
+    def test_model_mode_governance_returns_pending_state(self):
+        settings = Settings(
+            auth_mode="development",
+            decision_secret="test-decision-secret-which-is-valid-32-chars",
+            signal_detection_mode="model",
+        )
+        with TestClient(create_app(settings, self.db)) as client:
+            response = client.get(
+                "/api/v1/governance/signal-model",
+                headers=self.headers("SBI-SIGNAL-AUDITOR", "auditor"),
+            )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["evaluation_status"], "pending")
+        self.assertEqual(body["sample_count"], 0)
+        self.assertIn("Model checkpoint not available", body["limitations"])
 
 
 if __name__ == "__main__":

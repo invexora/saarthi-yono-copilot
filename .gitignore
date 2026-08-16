@@ -24,3 +24,4 @@ tmp/
 *.pfx
 *.jks
 presentation-final/saarthi_demo_video.mp4
+.gstack/

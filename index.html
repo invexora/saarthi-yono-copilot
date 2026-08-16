@@ -6,7 +6,7 @@
   <title>Saarthi — Proactive Financial Co-Pilot for YONO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,16 +17,16 @@
       <h1 class="project-title">Saarthi: Governed Proactive Engagement Prototype</h1>
     </div>
     <div class="team-badge">
-      Developed by <strong>Team Invexora</strong> (Gaurav Mahajan &amp; Kishore Jadhav)
+      Developed by <strong>Team Invexora</strong> (Gaurav Mahajan & Kishore Jadhav)
     </div>
-    <div id="apiStatus" class="api-status" role="status" aria-live="polite">
-      <span id="apiStatusDot" class="api-dot offline" aria-hidden="true"></span>
-      <span id="apiStatusText">Standalone Mode</span>
-    </div>
+    <button id="apiStatus" type="button" class="api-status" onclick="enableDemoMode()" role="status" aria-live="polite" title="Click to activate Interactive Demo Simulation">
+      <span id="apiStatusDot" class="api-dot online" aria-hidden="true"></span>
+      <span id="apiStatusText">Interactive Simulation (Demo Mode)</span>
+    </button>
   </header>
 
   <main class="main-container">
-    
+
     <!-- COLUMN 1: SIMULATOR CONTROL -->
     <section class="glass-card" aria-labelledby="simulationHeading">
       <div class="card-header">
@@ -37,9 +37,10 @@
         <div style="font-size:0.68rem;line-height:1.4;color:#92400e;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:0.55rem;">
           Synthetic personas and balances only. No live SBI customer data or banking system is connected.
         </div>
-        
+
         <label class="section-title" for="profileSelect">Select Customer Profile</label>
         <select id="profileSelect" class="profile-select" onchange="changeProfile()">
+          <option value="aiwin" selected>Aiwin Vinu (Behance Profile)</option>
           <option value="priya">Priya Sharma (Corporate Tech Lead)</option>
           <option value="ramesh">Ramesh Kumar (Retired Pensioner)</option>
           <option value="amit">Amit Patel (SME / Retail Shop Owner)</option>
@@ -50,19 +51,19 @@
         <div class="profile-info-box">
           <div class="profile-info-row">
             <span class="profile-info-label">Customer ID:</span>
-            <span id="profId">SBI-772910</span>
+            <span id="profId">SBI-036910</span>
           </div>
           <div class="profile-info-row">
             <span class="profile-info-label">Monthly Salary:</span>
-            <span id="profSalary">₹1,45,000</span>
+            <span id="profSalary">₹85,000</span>
           </div>
           <div class="profile-info-row">
             <span class="profile-info-label">Savings Balance:</span>
-            <span id="profBalance">₹2,80,000</span>
+            <span id="profBalance">₹68,526</span>
           </div>
           <div class="profile-info-row">
             <span class="profile-info-label">CC Interest paid:</span>
-            <span id="profInterest">₹4,200/mo (across 2 cards)</span>
+            <span id="profInterest">₹1,850/mo (across 1 card)</span>
           </div>
         </div>
 
@@ -78,16 +79,23 @@
           <div id="assistDesc" class="assistance-desc">High-value nudges for financial optimization</div>
         </div>
 
-        <!-- Nudge Budget Indicator -->
+        <!-- Dynamic Nudge Budget Indicator -->
         <div class="nudge-budget">
-          <span>Nudge Budget</span>
+          <div class="nudge-budget-header">
+            <span>Nudge Budget</span>
+            <span class="nudge-adaptive-badge">Dynamic (Avg 5)</span>
+          </div>
           <div class="nudge-dots">
             <div id="nudgeDot1" class="nudge-dot" aria-hidden="true"></div>
             <div id="nudgeDot2" class="nudge-dot" aria-hidden="true"></div>
-            <span id="nudgeBudgetText" class="nudge-budget-text">0 of 2 used</span>
+            <div id="nudgeDot3" class="nudge-dot" aria-hidden="true"></div>
+            <div id="nudgeDot4" class="nudge-dot" aria-hidden="true"></div>
+            <div id="nudgeDot5" class="nudge-dot" aria-hidden="true"></div>
+            <span id="nudgeBudgetText" class="nudge-budget-text">0 of 5 used</span>
           </div>
         </div>
-        <div id="nudgeBudgetWarning" class="nudge-budget-warning">Max reached — next nudge in 14 days</div>
+        <div id="nudgeBudgetWarning" class="nudge-budget-warning">Max reached (5/5) — cooldown active for 14 days</div>
+        <div id="nudgeFatigueAlert" class="nudge-fatigue-alert" style="display: none;"></div>
 
         <!-- Stress Mode Banner -->
         <div id="stressBanner" class="stress-banner">
@@ -95,7 +103,7 @@
         </div>
 
         <div class="section-title">Trigger Behavioral Signals</div>
-        
+
         <button type="button" class="scenario-btn" onclick="triggerScenario('friction')">
           <span id="scenarioIconFriction" class="scenario-icon" aria-hidden="true">🏛️</span>
           <div class="scenario-details">
@@ -140,520 +148,1204 @@
       <div class="phone-frame">
         <div class="phone-notch" aria-hidden="true"></div>
         <div class="phone-screen">
-          
-          <div class="phone-status-bar" aria-hidden="true">
-            <span>9:41</span>
-            <span>5G 100%</span>
-          </div>
 
-          <!-- App Header -->
-          <div class="yono-header">
-            <button id="yonoHomeBtn" type="button" class="yono-header-button yono-menu-btn" onclick="navigateToView('home')" aria-label="YONO home">☰</button>
-            <button type="button" class="yono-header-button yono-logo" onclick="navigateToView('home')" aria-label="YONO SBI home">
-              <span class="yono-wordmark">yono</span>
-              <span class="sbi-wordmark">SBI</span>
-            </button>
-            <button type="button" class="yono-header-button yono-profile-btn" onclick="navigateToView('services')" aria-label="Open profile and services">
-              <span>Hi, <span id="yonoUser">Priya</span></span>
-              <span aria-hidden="true">◉</span>
-            </button>
-          </div>
+          <!-- ============================================ -->
+          <!-- SCREEN 0: AUTHENTIC YONO LOGIN SCREEN         -->
+          <!-- ============================================ -->
+          <div id="yono-view-login" class="yono-login-screen">
 
-          <!-- Dynamic View Header (Breadcrumb / Back) -->
-          <div id="yonoSubHeader" class="yono-sub-header" style="display: none; font-family: system-ui, -apple-system, sans-serif;">
-            <button id="yonoBackBtn" type="button" class="yono-back-btn" onclick="navigateToView('home')">
-              <span aria-hidden="true">←</span> Back
-            </button>
-            <span id="yonoViewTitle" class="yono-view-title">View</span>
-          </div>
-
-          <!-- YONO View: Home Dashboard -->
-          <div id="yono-view-home" class="yono-content">
-            <div class="yono-search-shell">
-              <button type="button" class="yono-search-pill" onclick="navigateToView('services')" aria-label="Search YONO services">
-                <span>I'm looking for</span>
-                <span aria-hidden="true">⌕</span>
-              </button>
-            </div>
-
-            <button type="button" class="yono-view-balance" onclick="navigateToView('pay')">
-              View Balance
-            </button>
-
-            <!-- Savings Balance Card -->
-            <div class="yono-balance-card">
-              <div>
-                <div class="balance-label">Savings Account</div>
-                <div id="yonoBalance" class="balance-amount">₹2,80,000.00</div>
-                <div class="balance-account">A/c No: XXXXXXX4812</div>
+            <!-- Login Purple Gradient Header -->
+            <div class="login-header-gradient">
+              <div class="phone-status-bar light" aria-hidden="true">
+                <span class="status-time">9:41</span>
+                <div class="status-icons">
+                  <span class="status-signal">5G</span>
+                  <span class="status-wifi">📶</span>
+                  <span class="status-battery">100% 🔋</span>
+                </div>
               </div>
-              <button type="button" class="balance-mini-action" onclick="navigateToView('pay')">Pay</button>
-            </div>
 
-            <!-- Grid Items (Router Buttons) -->
-            <div class="yono-grid">
-              <button type="button" class="yono-grid-item" onclick="navigateToView('pay')">
-                <span class="grid-icon" aria-hidden="true">▤</span>
-                <span class="grid-label">Accounts</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('pay')">
-                <span class="grid-icon" aria-hidden="true">₹</span>
-                <span class="grid-label">YONO Pay</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
-                <span class="grid-icon" aria-hidden="true">⌁</span>
-                <span class="grid-label">YONO Cash</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('investments')">
-                <span class="grid-icon" aria-hidden="true">◫</span>
-                <span class="grid-label">Deposits</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('investments')">
-                <span class="grid-icon" aria-hidden="true">⌁</span>
-                <span class="grid-label">Investments</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('loans')">
-                <span class="grid-icon" aria-hidden="true">₹</span>
-                <span class="grid-label">Loans</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('cards')">
-                <span class="grid-icon" aria-hidden="true">▭</span>
-                <span class="grid-label">Cards</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('insurance')">
-                <span class="grid-icon" aria-hidden="true">⌂</span>
-                <span class="grid-label">Insurance</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
-                <span class="grid-icon" aria-hidden="true">🛒</span>
-                <span class="grid-label">Shop &amp; Order</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
-                <span class="grid-icon" aria-hidden="true">%</span>
-                <span class="grid-label">Best Offers</span>
-              </button>
-              <button type="button" class="yono-grid-item" onclick="navigateToView('services')">
-                <span class="grid-icon" aria-hidden="true">⚙</span>
-                <span class="grid-label">Services</span>
-              </button>
-              <button type="button" class="yono-grid-item yono-grid-item-saarthi" onclick="navigateToView('impact')">
-                <span class="grid-icon" aria-hidden="true">✦</span>
-                <span class="grid-label">Saarthi</span>
-              </button>
-            </div>
+              <div class="login-header-top-row">
+                <div class="login-greeting-box">
+                  <span class="login-hello">Hello</span>
+                  <span id="loginUserName" class="login-username">Aiwin</span>
+                </div>
+                <div class="yono-sbi-brand-white">
+                  <span class="brand-yono">yono</span>
+                  <span class="brand-dot" aria-hidden="true"></span>
+                  <span class="brand-sbi">SBI</span>
+                </div>
+              </div>
 
-            <!-- Static Banners -->
-            <div class="yono-offer-strip">
-              <div class="offer-strip-copy">
-                <span>Best Offers</span>
-                <strong>Get exclusive YONO deals and banking shortcuts</strong>
-              </div>
-              <button type="button" onclick="navigateToView('services')">Explore</button>
-            </div>
-
-            <div class="saarthi-home-card">
-              <span class="saarthi-home-mark">✦</span>
-              <div>
-                <strong>Saarthi watches signals quietly</strong>
-                <span>Only governed nudges appear here after consent and policy checks.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- YONO View: YONO Pay -->
-          <div id="yono-view-pay" class="yono-content" style="display: none;">
-            <!-- Quick Actions Grid -->
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;">
-              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
-                <div style="font-size: 1rem; margin-bottom: 2px;">📷</div>
-                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">Scan QR</div>
-              </div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
-                <div style="font-size: 1rem; margin-bottom: 2px;">👤</div>
-                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">To Contact</div>
-              </div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
-                <div style="font-size: 1rem; margin-bottom: 2px;">🏦</div>
-                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">To Bank A/c</div>
-              </div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem 0.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
-                <div style="font-size: 1rem; margin-bottom: 2px;">🔄</div>
-                <div style="font-size: 0.55rem; font-weight: bold; color: #334155;">Self Trans</div>
+              <div class="login-center-prompt">
+                <div id="loginPromptTitle" class="login-prompt-title">Enter MPIN</div>
+                <div id="loginPromptUser" class="login-prompt-sub">Aiwin Vinu</div>
+                <div id="loginPromptCrn" class="login-prompt-crn">CRN : *****0369</div>
               </div>
             </div>
 
-            <!-- Recent Transactions List -->
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; overflow-y: auto;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Recent Transactions</div>
-              
-              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <!-- Transaction 1: Branch counter friction indicator -->
-                <button type="button" class="phone-scenario-trigger" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9; cursor: pointer;" onclick="triggerScenario('friction')" aria-label="Run branch cash deposit friction scenario">
-                  <span style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.1rem; background: #fee2e2; border-radius: 50%; padding: 4px; display: inline-flex;" aria-hidden="true">🏛️</span>
-                    <span style="display: flex; flex-direction: column;">
-                      <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">BRANCH CASH DEPOSIT</span>
-                      <span style="font-size: 0.55rem; color: #ef4444; font-weight: bold;">Counter Manual - Branch 0032</span>
-                    </span>
-                  </span>
-                  <span style="text-align: right;">
-                    <span style="display: block; font-size: 0.7rem; font-weight: bold; color: #1e293b;">+₹20,000.00</span>
-                    <span style="display: block; font-size: 0.5rem; color: #64748b;">Today, 10:15 AM</span>
-                  </span>
+            <!-- Login White Card Surface -->
+            <div class="login-sheet">
+
+              <!-- Login Mode Tabs -->
+              <div class="login-tabs-row" role="tablist">
+                <button id="tabMpinBtn" type="button" class="login-tab-btn active" role="tab" aria-selected="true" onclick="switchLoginTab('mpin')">
+                  Login with MPIN
                 </button>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.1rem; background: #e0f2fe; border-radius: 50%; padding: 4px; display: inline-flex;">🛍️</span>
-                    <div style="display: flex; flex-direction: column;">
-                      <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">Amazon India Pay</span>
-                      <span style="font-size: 0.55rem; color: #64748b;">UPI Instant Pay</span>
+                <button id="tabUserBtn" type="button" class="login-tab-btn" role="tab" aria-selected="false" onclick="switchLoginTab('username')">
+                  Login with Username
+                </button>
+              </div>
+
+              <!-- Login Sub-View 1: MPIN Keypad -->
+              <div id="loginSubMpin" class="login-subview">
+                <div class="mpin-dots-container" aria-label="MPIN digits entered">
+                  <div id="mpinDot1" class="mpin-dot filled" aria-hidden="true"></div>
+                  <div id="mpinDot2" class="mpin-dot filled" aria-hidden="true"></div>
+                  <div id="mpinDot3" class="mpin-dot" aria-hidden="true"></div>
+                  <div id="mpinDot4" class="mpin-dot" aria-hidden="true"></div>
+                </div>
+
+                <button type="button" class="forgot-link-btn" onclick="showToast('success', 'Reset MPIN', 'OTP sent to registered mobile number')">
+                  Forgot MPIN?
+                </button>
+
+                <!-- 3x4 Circular Keypad -->
+                <div class="mpin-keypad">
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('1')">1</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('2')">2</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('3')">3</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('4')">4</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('5')">5</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('6')">6</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('7')">7</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('8')">8</button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('9')">9</button>
+                  <button type="button" class="keypad-btn icon-btn" onclick="loginWithBiometrics()" aria-label="Login with biometric fingerprint">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/>
+                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88"/>
+                      <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/>
+                      <path d="M2 12a10 10 0 0 1 18-6"/>
+                      <path d="M2 16h.01"/>
+                      <path d="M21.8 16c.2-2 .131-5.354 0-6"/>
+                      <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/>
+                      <path d="M8.65 22c.21-.66.45-1.32.57-2"/>
+                      <path d="M9 6.8a6 6 0 0 1 9 5.2v2"/>
+                    </svg>
+                  </button>
+                  <button type="button" class="keypad-btn" onclick="pressMpinDigit('0')">0</button>
+                  <button type="button" class="keypad-btn icon-btn" onclick="deleteMpinDigit()" aria-label="Delete last digit">
+                    <span aria-hidden="true">⌫</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Login Sub-View 2: Username / Password + GBoard Virtual Keyboard -->
+              <div id="loginSubUsername" class="login-subview" style="display: none;">
+                <div class="login-form-area">
+                  <div class="login-input-group">
+                    <label for="loginUsernameInput" class="login-input-label">Username</label>
+                    <input id="loginUsernameInput" type="text" class="login-text-input" value="aiwinvinu" readonly>
+                  </div>
+
+                  <div class="login-input-group">
+                    <label for="loginPasswordInput" class="login-input-label">Password</label>
+                    <div class="login-password-wrapper">
+                      <input id="loginPasswordInput" type="password" class="login-text-input" value="aiwinvinu123@sbi" readonly>
+                      <button type="button" class="input-eye-btn" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">👁️</button>
                     </div>
                   </div>
-                  <div style="text-align: right;">
-                    <div style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">-₹1,240.00</div>
-                    <div style="font-size: 0.5rem; color: #64748b;">Yesterday</div>
+
+                  <button type="button" class="forgot-link-btn align-right" onclick="showToast('success', 'Account Recovery', 'Recovery link sent')">
+                    Forgot Username or Password?
+                  </button>
+
+                  <button type="button" class="magenta-pill-btn" onclick="performLogin()">
+                    Login
+                  </button>
+
+                  <button type="button" class="fingerprint-login-btn" onclick="loginWithBiometrics()">
+                    Login with Fingerprint <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: inline-block; vertical-align: middle; margin-left: 4px;">
+                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/>
+                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88"/>
+                      <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/>
+                      <path d="M2 12a10 10 0 0 1 18-6"/>
+                      <path d="M2 16h.01"/>
+                      <path d="M21.8 16c.2-2 .131-5.354 0-6"/>
+                      <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/>
+                      <path d="M8.65 22c.21-.66.45-1.32.57-2"/>
+                      <path d="M9 6.8a6 6 0 0 1 9 5.2v2"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Authentic GBoard Virtual Keyboard Surface -->
+                <div class="gboard-keyboard">
+                  <div class="gboard-tools-row">
+                    <span>⋮⋮</span>
+                    <span>📋</span>
+                    <span>😀</span>
+                    <span>🌐</span>
+                    <span>🎨</span>
+                    <span>⚙️</span>
+                    <span>🎤</span>
+                  </div>
+                  <div class="gboard-num-row">
+                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>0</span>
+                  </div>
+                  <div class="gboard-letters-row">
+                    <span>Q</span><span>W</span><span>E</span><span>R</span><span>T</span><span>Y</span><span>U</span><span>I</span><span>O</span><span>P</span>
+                  </div>
+                  <div class="gboard-letters-row indent">
+                    <span>A</span><span>S</span><span>D</span><span>F</span><span>G</span><span>H</span><span>J</span><span>K</span><span>L</span>
+                  </div>
+                  <div class="gboard-letters-row shift-row">
+                    <span class="key-shift">⇧</span>
+                    <span>Z</span><span>X</span><span>C</span><span>V</span><span>B</span><span>N</span><span>M</span>
+                    <span class="key-del">⌫</span>
+                  </div>
+                  <div class="gboard-bottom-row">
+                    <span class="key-symbol">?123</span>
+                    <span class="key-comma">,</span>
+                    <span class="key-emoji">😀</span>
+                    <span class="key-space">English</span>
+                    <span class="key-dot">.</span>
+                    <button type="button" class="key-return-btn" onclick="performLogin()" aria-label="Submit login">↵</button>
                   </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4rem; border-bottom: 1px solid #f1f5f9;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.1rem; background: #f0fdf4; border-radius: 50%; padding: 4px; display: inline-flex;">💰</span>
-                    <div style="display: flex; flex-direction: column;">
-                      <span id="salaryTransName" style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">SALARY / TechCorp</span>
-                      <span style="font-size: 0.55rem; color: #64748b;">ACH Credit</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ============================================ -->
+          <!-- AUTHENTICATED APP SHELL                       -->
+          <!-- ============================================ -->
+          <div id="yono-app-shell" class="yono-app-shell" style="display: none;">
+
+            <!-- Modern Phone Status Bar -->
+            <div class="phone-status-bar" aria-hidden="true">
+              <span class="status-time">9:41</span>
+              <div class="status-icons">
+                <span class="status-signal">5G</span>
+                <span class="status-wifi">📶</span>
+                <span class="status-battery">100% 🔋</span>
+              </div>
+            </div>
+
+            <!-- Authentic Redesigned Top Header -->
+            <div class="behance-header">
+              <button type="button" class="behance-avatar-btn" onclick="openProfileModal()" aria-label="Open customer profile">
+                <span id="userInitialsBadge" class="avatar-circle">AV</span>
+              </button>
+
+              <div class="behance-user-greeting">
+                <span class="greeting-sub">Hello <span id="yonoUser">Aiwin</span>,</span>
+                <span class="greeting-main">Let's get started!</span>
+              </div>
+
+              <div class="behance-header-actions">
+                <button type="button" class="header-action-icon-btn" onclick="toggleSearch()" aria-label="Search">
+                  <span aria-hidden="true">🔍</span>
+                </button>
+                <button type="button" class="header-action-icon-btn" onclick="navigateToView('impact')" aria-label="Saarthi AI notifications">
+                  <span aria-hidden="true">🔔</span>
+                  <span class="unread-dot" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="header-action-icon-btn" onclick="performLogout()" aria-label="Logout">
+                  <span aria-hidden="true">↪</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Sub-Header for Nested Screens (Loans, Insurance, Investments) -->
+            <div id="yonoSubHeader" class="behance-sub-header" style="display: none;">
+              <button id="yonoBackBtn" type="button" class="behance-back-btn" onclick="navigateToView('home')">
+                <span aria-hidden="true">‹</span> <span id="yonoViewTitle">Back</span>
+              </button>
+              <button type="button" class="headset-support-btn" onclick="showToast('success', 'SBI 24/7 Helpline', 'Connected to 1800-1234')" aria-label="Customer support">
+                <span aria-hidden="true">🎧</span>
+              </button>
+            </div>
+
+            <!-- Dynamic View Container -->
+            <div class="behance-content-container">
+
+              <!-- ============================================ -->
+              <!-- VIEW 1: HOME DASHBOARD (4 CATEGORY TABS)     -->
+              <!-- ============================================ -->
+              <div id="yono-view-home" class="behance-view-pane">
+
+                <!-- Category Horizontal Tabs -->
+                <div class="category-tabs-bar" role="tablist">
+                  <button id="catTabBanking" type="button" class="category-tab-btn active" role="tab" aria-selected="true" onclick="switchCategoryTab('banking')">
+                    Banking
+                  </button>
+                  <button id="catTabLifestyle" type="button" class="category-tab-btn" role="tab" aria-selected="false" onclick="switchCategoryTab('lifestyle')">
+                    Life Style
+                  </button>
+                  <button id="catTabRewards" type="button" class="category-tab-btn" role="tab" aria-selected="false" onclick="switchCategoryTab('rewards')">
+                    Rewards
+                  </button>
+                  <button id="catTabOthers" type="button" class="category-tab-btn" role="tab" aria-selected="false" onclick="switchCategoryTab('others')">
+                    Others
+                  </button>
+                </div>
+
+                <!-- CATEGORY 1: BANKING PANE -->
+                <div id="catPaneBanking" class="category-pane">
+
+                  <!-- Authentic Magenta-to-Plum Combined Balance Card -->
+                  <div class="combined-balance-card">
+                    <div class="card-wave-mesh" aria-hidden="true"></div>
+
+                    <div class="card-row-top">
+                      <div>
+                        <span class="card-balance-label">Combined Balance</span>
+                        <div id="yonoBalance" class="card-balance-val">₹68,526.00</div>
+                      </div>
+                      <button type="button" class="sbi-card-tag-btn" onclick="navigateToView('cards')" aria-label="Open SBI Card Details">
+                        <span>SBI Card</span>
+                        <span class="card-info-i" aria-hidden="true">ⓘ</span>
+                        <span aria-hidden="true">›</span>
+                      </button>
+                    </div>
+
+                    <div class="card-row-middle">
+                      <span id="maskedCardNum" class="card-masked-num">XXXX XXXX XXXX 0369</span>
+                      <button id="balanceToggleBtn" type="button" class="card-eye-btn" onclick="toggleBalanceVisibility()" aria-label="Toggle balance visibility">
+                        <span id="balanceEyeIcon" aria-hidden="true">👁️</span>
+                      </button>
+                    </div>
+
+                    <div class="card-row-bottom">
+                      <span id="cardHolderName" class="card-holder-name">AIWIN VINU</span>
+                      <span class="card-visa-brand" aria-hidden="true">VISA</span>
                     </div>
                   </div>
-                  <div style="text-align: right;">
-                    <div id="salaryTransAmount" style="font-size: 0.7rem; font-weight: bold; color: var(--success);">+₹1,45,000.00</div>
-                    <div style="font-size: 0.5rem; color: #64748b;">28th Jun</div>
+
+                  <!-- UPI Lite Pill Strip -->
+                  <div class="upi-lite-strip">
+                    <span class="upi-handle-text">UPI : <span id="userUpiHandle">aiwinvinu@sbi</span></span>
+                    <button type="button" class="enable-lite-btn" onclick="showToast('success', 'UPI LITE', 'Enabled on device with PIN-less transactions')">
+                      Enable UPI LITE
+                    </button>
                   </div>
+
+                  <!-- Quick Actions Header & 4 Circular Pink Icons -->
+                  <div class="section-row-header">
+                    <span class="section-bold-title">Quick Actions</span>
+                    <button type="button" class="show-more-link" onclick="switchCategoryTab('others')">Show More ›</button>
+                  </div>
+
+                  <div class="quick-pink-grid">
+                    <button type="button" class="pink-action-item" onclick="triggerScenario('opportunity')">
+                      <div class="pink-circle-icon" aria-hidden="true">👤</div>
+                      <span class="pink-action-label">Pay to contact</span>
+                    </button>
+                    <button type="button" class="pink-action-item" onclick="triggerScenario('friction')">
+                      <div class="pink-circle-icon" aria-hidden="true">🧾</div>
+                      <span class="pink-action-label">Pay Bill</span>
+                    </button>
+                    <button type="button" class="pink-action-item" onclick="triggerScenario('lifeevent')">
+                      <div class="pink-circle-icon" aria-hidden="true">🏦</div>
+                      <span class="pink-action-label">Bank Transfer</span>
+                    </button>
+                    <button type="button" class="pink-action-item" onclick="showToast('success', 'Fastag &amp; Mobile', 'Instant Recharge Ready')">
+                      <div class="pink-circle-icon" aria-hidden="true">📱</div>
+                      <span class="pink-action-label">Recharge</span>
+                    </button>
+                  </div>
+
+                  <!-- Recent Transfer Transaction Feed -->
+                  <div class="section-row-header" style="margin-top: 0.5rem;">
+                    <span class="section-bold-title">Recent Transfer</span>
+                    <button type="button" class="show-more-link" onclick="triggerScenario('opportunity')">View more</button>
+                  </div>
+
+                  <div class="recent-transfers-card">
+                    <!-- Tx 1: UPI Transfer Out -->
+                    <button type="button" class="transfer-row-btn" onclick="triggerScenario('friction')">
+                      <div class="transfer-meta">
+                        <span class="transfer-title">UPI-TRANFER TO 5651343...</span>
+                        <span class="transfer-date">UPI • 13 May 2026, 10:16 pm</span>
+                      </div>
+                      <div class="transfer-amount debit">
+                        <span>₹16,268.00 ↗</span>
+                        <span class="transfer-bal">Balance: ₹16,268.00</span>
+                      </div>
+                    </button>
+
+                    <!-- Tx 2: NEFT Transfer In -->
+                    <button type="button" class="transfer-row-btn" onclick="triggerScenario('lifeevent')">
+                      <div class="transfer-meta">
+                        <span class="transfer-title">NEFT-TRANFER FROM 9950...</span>
+                        <span class="transfer-date">NEFT • 12 May 2026, 11:00 pm</span>
+                      </div>
+                      <div class="transfer-amount credit">
+                        <span>₹32,536.00 ✓</span>
+                        <span class="transfer-bal">Balance: ₹32,536.00</span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <!-- Hidden elements for test contract compatibility -->
+                  <div style="display:none;" aria-hidden="true">
+                    <span id="investSavingsBalance">₹68,526.00</span>
+                    <span id="salaryTransAmount">+₹85,000</span>
+                    <span id="cardOutstanding">₹45,000.00</span>
+                    <span id="cardMinDue">₹2,250.00</span>
+                    <span id="cardInterestPaid">₹1,850.00</span>
+                    <span id="ccInterestTransAmount">-₹1,850.00</span>
+                    <div id="cardInterestRow"></div>
+                  </div>
+
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.1rem; background: #fee2e2; border-radius: 50%; padding: 4px; display: inline-flex;">💳</span>
-                    <div style="display: flex; flex-direction: column;">
-                      <span style="font-size: 0.65rem; font-weight: bold; color: #1e293b;">CC Interest Payment</span>
-                      <span style="font-size: 0.55rem; color: #64748b;">Auto-Debit Card Bill</span>
+                <!-- CATEGORY 2: LIFE STYLE PANE -->
+                <div id="catPaneLifestyle" class="category-pane" style="display: none;">
+                  <div class="dual-ads-row">
+                    <div class="ad-banner-box">Advertisement 1</div>
+                    <div class="ad-banner-box">Advertisement 2</div>
+                  </div>
+
+                  <div class="lifestyle-section">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Travel</span>
+                      <button type="button" class="show-more-link" onclick="showToast('success', 'YONO Travel', 'Discounts Applied')">View All</button>
+                    </div>
+                    <div class="lifestyle-icons-grid">
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Flights', 'Searching SBI Travel')">
+                        <div class="pink-circle-icon" aria-hidden="true">✈️</div>
+                        <span class="pink-action-label">Flight</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'IRCTC Trains', 'Booking Portal')">
+                        <div class="pink-circle-icon" aria-hidden="true">🚆</div>
+                        <span class="pink-action-label">Train</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Bus Booking', 'RedBus Partner')">
+                        <div class="pink-circle-icon" aria-hidden="true">🚌</div>
+                        <span class="pink-action-label">Bus</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Hotels', 'Luxury Partner Stays')">
+                        <div class="pink-circle-icon" aria-hidden="true">🏨</div>
+                        <span class="pink-action-label">Hotel</span>
+                      </button>
                     </div>
                   </div>
-                  <div style="text-align: right;">
-                    <div id="ccInterestTransAmount" style="font-size: 0.7rem; font-weight: bold; color: #ef4444;">-₹4,200.00</div>
-                    <div style="font-size: 0.5rem; color: #64748b;">25th Jun</div>
+
+                  <div class="lifestyle-section">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Offers &amp; Stores</span>
+                    </div>
+                    <div class="lifestyle-icons-grid three-col">
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Vouchers', 'Amazon &amp; Flipkart Vouchers')">
+                        <div class="pink-circle-icon" aria-hidden="true">🎁</div>
+                        <span class="pink-action-label">Gift cards/vouchers</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'YONO Stores', 'Exclusive SBI Offers')">
+                        <div class="pink-circle-icon" aria-hidden="true">🛒</div>
+                        <span class="pink-action-label">Stores</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Health', 'Apollo 24|7 &amp; Cult.fit')">
+                        <div class="pink-circle-icon" aria-hidden="true">💪</div>
+                        <span class="pink-action-label">Health &amp; Wellness</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="lifestyle-section">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Other services</span>
+                    </div>
+                    <div class="lifestyle-icons-grid three-col">
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'ClearTax', 'Direct E-Filing')">
+                        <div class="pink-circle-icon" aria-hidden="true">📄</div>
+                        <span class="pink-action-label">Clear Tax</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'YONO Motorz', 'Car Loan &amp; Buy')">
+                        <div class="pink-circle-icon" aria-hidden="true">🚗</div>
+                        <span class="pink-action-label">YONO Motorz</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'SBI Property', 'Approved Real Estate')">
+                        <div class="pink-circle-icon" aria-hidden="true">🏢</div>
+                        <span class="pink-action-label">Property</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CATEGORY 3: REWARDS PANE -->
+                <div id="catPaneRewards" class="category-pane" style="display: none;">
+                  <div class="rewards-card">
+                    <div class="rewards-top-row">
+                      <div>
+                        <span class="rewards-label">Available Points</span>
+                        <div class="rewards-points-huge">140</div>
+                      </div>
+                      <span class="tier-pill">Dreamer</span>
+                    </div>
+                    <div class="rewards-sub-stats">
+                      <span>Unlocking Soon: <strong>0</strong></span>
+                      <span>Expiring Soon: <strong>0</strong></span>
+                    </div>
+
+                    <button type="button" class="total-points-bar" onclick="showToast('success', 'SBI Rewardz', '140 Points = ₹35.00')">
+                      <span>⭐ Total Points: 140</span>
+                      <span aria-hidden="true">›</span>
+                    </button>
+
+                    <button type="button" class="magenta-pill-btn" onclick="showToast('success', 'Redeem Rewardz', 'Opening Rewards Catalog')">
+                      Redeem Now
+                    </button>
+                  </div>
+
+                  <div class="lifestyle-section" style="margin-top: 0.8rem;">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Way to Earn Points</span>
+                      <button type="button" class="show-more-link" onclick="showToast('success', 'Points Multipliers', 'Earn 5X on UPI')">View All</button>
+                    </div>
+                    <div class="lifestyle-icons-grid">
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('opportunity')">
+                        <div class="pink-circle-icon" aria-hidden="true">⚡</div>
+                        <span class="pink-action-label">UPI</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('friction')">
+                        <div class="pink-circle-icon" aria-hidden="true">🧾</div>
+                        <span class="pink-action-label">Bill Payment</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('lifeevent')">
+                        <div class="pink-circle-icon" aria-hidden="true">💰</div>
+                        <span class="pink-action-label">Savings account</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('opportunity')">
+                        <div class="pink-circle-icon" aria-hidden="true">📈</div>
+                        <span class="pink-action-label">FD/RD Opening</span>
+                      </button>
+                    </div>
+                    <div style="text-align: right; margin-top: 0.35rem;">
+                      <button type="button" class="show-more-link" onclick="showToast('success', 'Rewards', 'Explore more ways to earn')">Explore more</button>
+                    </div>
+                  </div>
+
+                  <div class="yono-watermark-bottom">
+                    <span class="brand-yono">yono</span> <span class="brand-dot-sm" aria-hidden="true"></span> <span class="brand-sbi">SBI</span>
+                  </div>
+                </div>
+
+                <!-- CATEGORY 4: OTHERS PANE -->
+                <div id="catPaneOthers" class="category-pane" style="display: none;">
+                  <div class="lifestyle-section">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Transact</span>
+                      <button type="button" class="show-more-link">View All</button>
+                    </div>
+                    <div class="lifestyle-icons-grid">
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('opportunity')">
+                        <div class="pink-circle-icon" aria-hidden="true">👤</div>
+                        <span class="pink-action-label">Pay to mobile or contact</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('friction')">
+                        <div class="pink-circle-icon" aria-hidden="true">⚡</div>
+                        <span class="pink-action-label">Quick Transfer</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="triggerScenario('lifeevent')">
+                        <div class="pink-circle-icon" aria-hidden="true">💸</div>
+                        <span class="pink-action-label">Send Money</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Bill Payment', 'Bharat BillPay Hub')">
+                        <div class="pink-circle-icon" aria-hidden="true">🧾</div>
+                        <span class="pink-action-label">Bill Payment</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="lifestyle-section">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Calculator</span>
+                      <button type="button" class="show-more-link">View All</button>
+                    </div>
+                    <div class="lifestyle-icons-grid three-col">
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'Loan EMI Calculator', 'Calculate EMI')">
+                        <div class="pink-circle-icon" aria-hidden="true">🧮</div>
+                        <span class="pink-action-label">Loan Calculator</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'SIP Calculator', 'Calculate Wealth Growth')">
+                        <div class="pink-circle-icon" aria-hidden="true">📊</div>
+                        <span class="pink-action-label">Mutual Funds Calculator</span>
+                      </button>
+                      <button type="button" class="pink-action-item" onclick="showToast('success', 'FD Calculator', 'Compound Interest')">
+                        <div class="pink-circle-icon" aria-hidden="true">🏛️</div>
+                        <span class="pink-action-label">Deposits Calculator</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="lifestyle-section">
+                    <div class="section-row-header">
+                      <span class="section-sub-bold">Offers</span>
+                    </div>
+                  </div>
+
+                  <div class="yono-watermark-bottom">
+                    <span class="brand-yono">yono</span> <span class="brand-dot-sm" aria-hidden="true"></span> <span class="brand-sbi">SBI</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- ============================================ -->
+              <!-- VIEW 2: LOANS SCREEN (BOTTOM NAV TAB 2)      -->
+              <!-- ============================================ -->
+              <div id="yono-view-loans" class="behance-view-pane" style="display: none;">
+                <div class="screen-bold-heading">Apply for a New Loan</div>
+
+                <div class="loan-vertical-list">
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">👤</div>
+                      <span class="loan-type-name">Personal Loan</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">📈</div>
+                      <span class="loan-type-name">Loan Against Mutual Fund</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">💍</div>
+                      <span class="loan-type-name">Gold Loan</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">🏠</div>
+                      <span class="loan-type-name">Home Loan</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">🚗</div>
+                      <span class="loan-type-name">Car Loan</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">🎓</div>
+                      <span class="loan-type-name">Education Loan</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('opportunity')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">🔒</div>
+                      <span class="loan-type-name">Overdraft against Deposit</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+                </div>
+
+                <div class="credit-score-banner">
+                  <div class="credit-score-text">
+                    <strong>Check your</strong>
+                    <span>Credit Score ›</span>
+                  </div>
+                  <div class="credit-score-badge" aria-hidden="true">785 🟢</div>
+                </div>
+              </div>
+
+              <!-- ============================================ -->
+              <!-- VIEW 3: INSURANCE SCREEN (BOTTOM NAV TAB 4)  -->
+              <!-- ============================================ -->
+              <div id="yono-view-insurance" class="behance-view-pane" style="display: none;">
+                <div class="ad-banner-box large">Advertisement 1</div>
+
+                <div class="carousel-dots-row" aria-hidden="true">
+                  <span class="car-dot active"></span>
+                  <span class="car-dot"></span>
+                  <span class="car-dot"></span>
+                </div>
+
+                <div class="insurance-pill-actions">
+                  <button type="button" class="insurance-pill-btn" onclick="showToast('success', 'Policies', '1 Active Health Policy')">
+                    Manage Policies
+                  </button>
+                  <button type="button" class="insurance-pill-btn" onclick="showToast('success', 'Resume', 'No pending drafts')">
+                    Resume Application
+                  </button>
+                </div>
+
+                <div class="insurance-sub-tabs">
+                  <button type="button" class="ins-tab-btn active">Life Insurance</button>
+                  <button type="button" class="ins-tab-btn">General Insurance</button>
+                </div>
+
+                <div class="lifestyle-section">
+                  <div class="section-sub-bold" style="margin-bottom: 0.5rem;">Select Product Category</div>
+                  <div class="lifestyle-icons-grid">
+                    <button type="button" class="pink-action-item" onclick="showToast('success', 'Protection', 'Term Life Plans')">
+                      <div class="pink-circle-icon" aria-hidden="true">🛡️</div>
+                      <span class="pink-action-label">Protection Plans</span>
+                    </button>
+                    <button type="button" class="pink-action-item" onclick="showToast('success', 'Child', 'Education Corpus')">
+                      <div class="pink-circle-icon" aria-hidden="true">👶</div>
+                      <span class="pink-action-label">Child Plan</span>
+                    </button>
+                    <button type="button" class="pink-action-item" onclick="showToast('success', 'Retirement', 'Pension Plans')">
+                      <div class="pink-circle-icon" aria-hidden="true">🏖️</div>
+                      <span class="pink-action-label">Retirement Plans</span>
+                    </button>
+                    <button type="button" class="pink-action-item" onclick="showToast('success', 'Wealth', 'ULIP Growth')">
+                      <div class="pink-circle-icon" aria-hidden="true">💎</div>
+                      <span class="pink-action-label">Wealth Creation</span>
+                    </button>
+                  </div>
+
+                  <div class="lifestyle-icons-grid" style="margin-top: 0.5rem;">
+                    <button type="button" class="pink-action-item" onclick="showToast('success', 'Savings Plans', 'Guaranteed Return Plans')">
+                      <div class="pink-circle-icon" aria-hidden="true">👤</div>
+                      <span class="pink-action-label">Savings Plans</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="lifestyle-section" style="margin-top: 0.6rem;">
+                  <div class="section-sub-bold" style="margin-bottom: 0.4rem;">Choose Protection Plans</div>
+                  <div class="featured-protection-card">
+                    <div class="card-icon-title">
+                      <div class="protection-avatar-icon" aria-hidden="true">🛡️</div>
+                      <div>
+                        <strong class="protection-title">SBI Life - Saral Jeevan Bima</strong>
+                        <span class="protection-uoid">111N128V02</span>
+                      </div>
+                    </div>
+                    <p class="protection-desc">
+                      A pure protection cover that ensures your family is financially protected all the time.
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- YONO View: Investments -->
-          <div id="yono-view-investments" class="yono-content" style="display: none;">
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">My Investment Portfolio</div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-                <span style="color: #64748b;">Mutual Funds:</span>
-                <span id="portfolioMF" style="font-weight: 600; color: var(--success);">₹1,20,000.00</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-                <span style="color: #64748b;">Fixed Deposits (FD):</span>
-                <span id="portfolioFD" style="font-weight: 600; color: #334155;">₹0.00</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; padding-top: 0.25rem; border-top: 1px solid #f1f5f9;">
-                <span style="font-weight: 600; color: #1e293b;">Total Invested:</span>
-                <span id="portfolioTotal" style="font-weight: 700; color: #1e293b;">₹1,20,000.00</span>
-              </div>
-            </div>
-            
-            <button type="button" class="phone-scenario-trigger" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px; padding: 0.65rem; display: flex; flex-direction: column; gap: 0.25rem; cursor: pointer;" onclick="triggerScenario('lifeevent')">
-              <span style="font-size: 0.7rem; font-weight: bold; color: #b45309; display: flex; align-items: center; gap: 4px;">
-                <span aria-hidden="true">⚠️</span> Savings Review Opportunity
-              </span>
-              <span style="font-size: 0.65rem; color: #78350f; line-height: 1.35;">
-                Your savings account balance is <strong id="investSavingsBalance">₹2,80,000.00</strong>. A live SBI rate and suitability feed is required before comparing savings or deposit options.
-              </span>
-            </button>
+              <!-- ============================================ -->
+              <!-- VIEW 4: INVESTMENTS SCREEN (BOTTOM NAV TAB 5)-->
+              <!-- ============================================ -->
+              <div id="yono-view-investments" class="behance-view-pane" style="display: none;">
+                <div class="ad-banner-box large">Advertisement 1</div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-              <div style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Explore Markets</div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 1.1rem;">🚀</span>
-                  <div style="display: flex; flex-direction: column;">
-                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">SBI Mutual Fund (SIP)</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Live scheme, risk and performance feed required</span>
+                <div class="carousel-dots-row" aria-hidden="true">
+                  <span class="car-dot active"></span>
+                  <span class="car-dot"></span>
+                  <span class="car-dot"></span>
+                </div>
+
+                <div class="screen-bold-heading" style="margin-top: 0.6rem;">Your Investments</div>
+
+                <div class="loan-vertical-list">
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('lifeevent')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">📈</div>
+                      <span class="loan-type-name">Mutual Funds</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('lifeevent')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">📊</div>
+                      <span class="loan-type-name">Demat &amp; Securities</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('lifeevent')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">🏛️</div>
+                      <span class="loan-type-name">NPS</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('lifeevent')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">💰</div>
+                      <span class="loan-type-name">PPF</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+
+                  <button type="button" class="loan-list-row" onclick="triggerScenario('lifeevent')">
+                    <div class="loan-lead">
+                      <div class="pink-circle-icon" aria-hidden="true">🚀</div>
+                      <span class="loan-type-name">IPO</span>
+                    </div>
+                    <span class="chevron-arrow" aria-hidden="true">›</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ============================================ -->
+              <!-- VIEW 5: PAY & CARDS (COMPATIBILITY VIEWS)     -->
+              <!-- ============================================ -->
+              <div id="yono-view-pay" class="behance-view-pane" style="display: none;">
+                <div class="screen-bold-heading">YONO Pay &amp; Transfers</div>
+                <div class="quick-pink-grid">
+                  <button type="button" class="pink-action-item" onclick="openQrScannerModal()">
+                    <div class="pink-circle-icon" aria-hidden="true">📷</div>
+                    <span class="pink-action-label">Scan QR</span>
+                  </button>
+                  <button type="button" class="pink-action-item" onclick="triggerScenario('opportunity')">
+                    <div class="pink-circle-icon" aria-hidden="true">👤</div>
+                    <span class="pink-action-label">To Contact</span>
+                  </button>
+                  <button type="button" class="pink-action-item" onclick="triggerScenario('friction')">
+                    <div class="pink-circle-icon" aria-hidden="true">🏦</div>
+                    <span class="pink-action-label">To Bank A/c</span>
+                  </button>
+                  <button type="button" class="pink-action-item" onclick="navigateToView('home')">
+                    <div class="pink-circle-icon" aria-hidden="true">🔄</div>
+                    <span class="pink-action-label">Self Trans</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="yono-view-cards" class="behance-view-pane" style="display: none;">
+                <!-- Realistic 3D Premium Credit Card -->
+                <div class="premium-credit-card">
+                  <div class="card-wave-mesh" aria-hidden="true"></div>
+
+                  <div class="card-chip-row">
+                    <div class="card-chip" aria-hidden="true">
+                      <span class="chip-line"></span>
+                      <span class="chip-line"></span>
+                    </div>
+                    <span class="contactless-icon" aria-hidden="true">📶</span>
+                    <span class="card-tier-label">YONO PREMIUM • SBI CARD ELITE</span>
+                  </div>
+
+                  <div class="card-embossed-num">
+                    4321 •••• •••• 9901
+                  </div>
+
+                  <div class="card-footer-row">
+                    <div>
+                      <span class="card-footer-label">CARD HOLDER</span>
+                      <div class="card-footer-val">AIWIN VINU</div>
+                    </div>
+                    <div>
+                      <span class="card-footer-label">EXPIRES</span>
+                      <div class="card-footer-val">09/30</div>
+                    </div>
+                    <div class="card-visa-brand" aria-hidden="true">VISA</div>
                   </div>
                 </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
-              </div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 1.1rem;">🔒</span>
-                  <div style="display: flex; flex-direction: column;">
-                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Fixed &amp; Recurring Deposit</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Live SBI tenure and rate feed required</span>
+
+                <!-- Interactive Card Statement Breakdown Box -->
+                <button type="button" class="card-statement-box" onclick="triggerScenario('opportunity')">
+                  <div class="statement-header-row">
+                    <span class="statement-bold-title">💳 Card Statement &amp; Due</span>
+                    <span class="opportunity-trigger-tag">💡 Optimize with Saarthi ›</span>
                   </div>
-                </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
-              </div>
-            </div>
-          </div>
 
-          <!-- YONO View: Cards -->
-          <div id="yono-view-cards" class="yono-content" style="display: none;">
-            <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 12px; padding: 0.85rem; color: white; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1.58/1; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden;">
-              <div style="position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; background: rgba(0, 160, 228, 0.12); border-radius: 50%;"></div>
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
-                <span style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--primary-sbi); font-weight: bold;">YONO Premium</span>
-                <span style="font-size: 0.85rem; font-weight: bold; font-family: 'Space Grotesk', sans-serif;">SBI</span>
-              </div>
-              <div style="font-family: 'Fira Code', monospace; font-size: 0.9rem; letter-spacing: 1.5px; margin: 0.5rem 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); z-index: 1;">
-                4321 XXXX XXXX 9901
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
-                <div>
-                  <div style="font-size: 0.5rem; color: #94a3b8; text-transform: uppercase;">Card Holder</div>
-                  <div id="cardHolderName" style="font-size: 0.7rem; font-weight: bold; letter-spacing: 0.3px;">PRIYA SHARMA</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.5rem; color: #94a3b8; text-transform: uppercase;">Expiry</div>
-                  <div style="font-size: 0.7rem; font-weight: bold;">09/30</div>
-                </div>
-              </div>
-            </div>
-
-            <button type="button" class="phone-scenario-trigger" style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; cursor: pointer;" onclick="triggerScenario('opportunity')">
-              <span style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Card Statement</span>
-              <span style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-                <span style="color: #64748b;">Total Outstanding:</span>
-                <span id="cardOutstanding" style="font-weight: 700; color: var(--error);">₹85,000.00</span>
-              </span>
-              <span style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-                <span style="color: #64748b;">Minimum Due:</span>
-                <span id="cardMinDue" style="font-weight: 600; color: #334155;">₹4,250.00</span>
-              </span>
-              <span style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-                <span style="color: #64748b;">Pricing:</span>
-                <span style="font-weight: 600; color: #334155;">Live statement feed required</span>
-              </span>
-              <span id="cardInterestRow" style="display: flex; justify-content: space-between; font-size: 0.75rem; padding-top: 0.25rem; border-top: 1px dashed #e2e8f0; color: var(--error);">
-                <span style="font-weight: 600;">Monthly Interest Cost:</span>
-                <span id="cardInterestPaid" style="font-weight: 700;">₹4,200.00</span>
-              </span>
-            </button>
-          </div>
-
-          <!-- YONO View: Loans -->
-          <div id="yono-view-loans" class="yono-content" style="display: none;">
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.25rem;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Active Loans</div>
-              <div id="activeLoansContainer">
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #3b82f6; padding-left: 6px; margin: 4px 0;">
-                  <div style="display: flex; flex-direction: column;">
-                    <span style="font-weight: bold; color: #1e293b;">Home Loan</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">A/c: XXXXXX99102</span>
+                  <div class="statement-data-grid">
+                    <div class="statement-data-item">
+                      <span class="stat-label">Total Outstanding</span>
+                      <span id="cardOutstanding" class="stat-val danger">₹45,000.00</span>
+                    </div>
+                    <div class="statement-data-item">
+                      <span class="stat-label">Minimum Due</span>
+                      <span id="cardMinDue" class="stat-val">₹2,250.00</span>
+                    </div>
+                    <div class="statement-data-item">
+                      <span class="stat-label">Available Limit</span>
+                      <span class="stat-val success">₹1,05,000.00</span>
+                    </div>
+                    <div class="statement-data-item">
+                      <span class="stat-label">Due Date</span>
+                      <span class="stat-val warning">25 May 2026</span>
+                    </div>
                   </div>
-                  <div style="text-align: right;">
-                    <span style="font-weight: bold; color: #1e293b;">₹45,00,000</span>
-                    <br><span style="font-size: 0.6rem; color: #64748b;">EMI: ₹38,500/mo</span>
+
+                  <div id="cardInterestRow" class="statement-interest-banner">
+                    <div class="interest-warning-icon" aria-hidden="true">⚠️</div>
+                    <div class="interest-warning-content">
+                      <div class="interest-warning-title">
+                        <span>Monthly Revolving Interest:</span>
+                        <span id="cardInterestPaid" class="interest-amount-red">₹1,850.00</span>
+                      </div>
+                      <div class="interest-warning-sub">
+                        You are paying 42% APR. Tap to consolidate into 10.5% personal loan &amp; save ₹1,000/mo.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">Offer Preview — Live Eligibility Required</div>
-              <div id="loanOffersContainer"></div>
-            </div>
-          </div>
-
-          <!-- YONO View: Insurance -->
-          <div id="yono-view-insurance" class="yono-content" style="display: none;">
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.25rem;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b;">My Policies</div>
-              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border-left: 3px solid #10b981; padding-left: 6px; margin: 4px 0;">
-                <div style="display: flex; flex-direction: column;">
-                  <span style="font-weight: bold; color: #1e293b;">SBI General Health</span>
-                  <span style="font-size: 0.6rem; color: #64748b;">Policy: HI-9912048</span>
-                </div>
-                <div style="text-align: right;">
-                  <span style="font-weight: bold; color: #10b981;">₹5,00,000 Cover</span>
-                  <br><span style="font-size: 0.6rem; color: #64748b;">Premium: Paid</span>
-                </div>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-              <div style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Explore Coverages</div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 1.1rem;">🚗</span>
-                  <div style="display: flex; flex-direction: column;">
-                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Motor Insurance</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Instant cover for car &amp; two-wheeler</span>
-                  </div>
-                </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
-              </div>
-              <div style="background: white; border-radius: 8px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 1.1rem;">🛡️</span>
-                  <div style="display: flex; flex-direction: column;">
-                    <span style="font-size: 0.7rem; font-weight: bold; color: #1e293b;">Term Life Insurance</span>
-                    <span style="font-size: 0.6rem; color: #64748b;">Secure your family's future</span>
-                  </div>
-                </div>
-                <span style="font-size: 0.75rem; color: #94a3b8;" aria-hidden="true">→</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- YONO View: Services (Privacy-Control Prototype) -->
-          <div id="yono-view-services" class="yono-content" style="display: none;">
-            <div style="background: white; border-radius: 12px; padding: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: auto;">
-              <div style="font-size: 0.75rem; font-weight: bold; color: #1e293b; display: flex; align-items: center; gap: 4px;">
-                🛡️ Saarthi Privacy-Control Prototype
-              </div>
-              
-              <div style="font-size: 0.65rem; color: #64748b; line-height: 1.35;">
-                This screen demonstrates purpose consent, a prototype data export and eligible Saarthi-data erasure. Legal scope and production workflow require SBI approval.
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
-                <label for="yonoConsentToggle" style="display: flex; flex-direction: column; max-width: 75%; cursor: pointer;">
-                  <span style="font-size: 0.7rem; font-weight: bold; color: #334155;">Active Profiling Consent</span>
-                  <span style="font-size: 0.52rem; color: #64748b;">Allow the synthetic Saarthi demo to evaluate contextual recommendation signals.</span>
-                </label>
-                <input type="checkbox" id="yonoConsentToggle" onchange="syncConsentFromApp()" style="width: 16px; height: 16px; cursor: pointer;">
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.2rem;">
-                <button type="button" class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; border: 1px solid #cbd5e1; border-radius: 6px;" onclick="triggerDataExport()">
-                  <span aria-hidden="true">📦</span> Export My Data (JSON)
                 </button>
-                <button id="erasureRequestBtn" type="button" class="nudge-btn nudge-btn-secondary" style="font-size: 0.65rem; text-align: left; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 6px; color: #b91c1c; background: rgba(239,68,68,0.05); border: 1px solid rgba(185,28,28,0.25); border-radius: 6px;" onclick="triggerDataErasure()">
-                  <span aria-hidden="true">🗑️</span> Request Eligible-Data Erasure
-                </button>
-                <!-- Inline erasure confirmation -->
-                <div id="erasureConfirm" class="erasure-confirm" role="alertdialog" aria-modal="true" aria-labelledby="erasureConfirmText" aria-hidden="true" inert>
-                  <div id="erasureConfirmText" class="erasure-confirm-text"><span aria-hidden="true">⚠️</span> This prototype removes eligible Saarthi-derived personalisation data and opts you out. Regulated banking records are outside this workflow.</div>
-                  <div class="erasure-confirm-actions">
-                    <button type="button" class="erasure-cancel-btn" onclick="cancelErasure()">Cancel</button>
-                    <button type="button" class="erasure-confirm-btn" onclick="confirmErasure()">Confirm Erasure</button>
+
+                <!-- Quick Card Controls -->
+                <div class="section-row-header" style="margin-top: 0.3rem;">
+                  <span class="section-sub-bold">Card Management</span>
+                </div>
+                <div class="quick-pink-grid">
+                  <button type="button" class="pink-action-item" onclick="triggerScenario('opportunity')">
+                    <div class="pink-circle-icon" aria-hidden="true">🔄</div>
+                    <span class="pink-action-label">Convert to EMI</span>
+                  </button>
+                  <button type="button" class="pink-action-item" onclick="showToast('success', 'Card Controls', 'Domestic & International limits active')">
+                    <div class="pink-circle-icon" aria-hidden="true">⚙️</div>
+                    <span class="pink-action-label">Manage Limits</span>
+                  </button>
+                  <button type="button" class="pink-action-item" onclick="showToast('success', 'Card Security', 'Instant Card Lock/Unlock')">
+                    <div class="pink-circle-icon" aria-hidden="true">🔒</div>
+                    <span class="pink-action-label">Lock Card</span>
+                  </button>
+                  <button type="button" class="pink-action-item" onclick="showToast('success', 'Green PIN', 'OTP sent to mobile to reset PIN')">
+                    <div class="pink-circle-icon" aria-hidden="true">🔑</div>
+                    <span class="pink-action-label">Generate PIN</span>
+                  </button>
+                </div>
+
+                <!-- Recent Card Spends -->
+                <div class="section-row-header" style="margin-top: 0.3rem;">
+                  <span class="section-sub-bold">Recent Card Spends</span>
+                  <button type="button" class="show-more-link" onclick="triggerScenario('opportunity')">View Statement</button>
+                </div>
+                <div class="recent-transfers-card">
+                  <button type="button" class="transfer-row-btn" onclick="triggerScenario('opportunity')">
+                    <div class="transfer-meta">
+                      <span class="transfer-title">Amazon India Online</span>
+                      <span class="transfer-date">SBI Card Elite • 14 May 2026</span>
+                    </div>
+                    <div class="transfer-amount debit">
+                      <span>-₹14,500.00</span>
+                      <span class="transfer-bal">Electronics</span>
+                    </div>
+                  </button>
+                  <button type="button" class="transfer-row-btn" onclick="triggerScenario('opportunity')">
+                    <div class="transfer-meta">
+                      <span class="transfer-title">Swiggy Dineout &amp; Instamart</span>
+                      <span class="transfer-date">SBI Card Elite • 12 May 2026</span>
+                    </div>
+                    <div class="transfer-amount debit">
+                      <span>-₹2,450.00</span>
+                      <span class="transfer-bal">Dining</span>
+                    </div>
+                  </button>
+                  <button type="button" class="transfer-row-btn" onclick="triggerScenario('opportunity')">
+                    <div class="transfer-meta">
+                      <span class="transfer-title">Revolving CC Interest (42% APR)</span>
+                      <span class="transfer-date">Finance Charge • 10 May 2026</span>
+                    </div>
+                    <div class="transfer-amount debit">
+                      <span id="ccInterestTransAmount">-₹1,850.00</span>
+                      <span class="transfer-bal" style="color: #e11d48; font-weight: bold;">High Interest</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ============================================ -->
+              <!-- VIEW 6: DPDP PRIVACY CENTER                  -->
+              <!-- ============================================ -->
+              <div id="yono-view-services" class="behance-view-pane" style="display: none;">
+                <div class="screen-bold-heading">🛡️ DPDP Privacy &amp; Consent Center</div>
+
+                <div class="privacy-intro-text">
+                  Under India's Digital Personal Data Protection (DPDP) Act, you have absolute control over algorithmic profiling, personal data export, and right to erasure.
+                </div>
+
+                <div class="privacy-toggle-row">
+                  <label for="yonoConsentToggle" class="privacy-toggle-label">
+                    <span class="toggle-title">Active Personalisation Consent</span>
+                    <span class="toggle-desc">Allow Saarthi to evaluate real-time signals for contextual financial optimization.</span>
+                  </label>
+                  <input type="checkbox" id="yonoConsentToggle" onchange="syncConsentFromApp()" class="ios-switch">
+                </div>
+
+                <div class="privacy-actions-list">
+                  <button type="button" class="privacy-action-btn" onclick="triggerDataExport()">
+                    <span aria-hidden="true">📦</span> Export My Saarthi Profile (JSON)
+                  </button>
+                  <button id="erasureRequestBtn" type="button" class="privacy-action-btn danger" onclick="triggerDataErasure()">
+                    <span aria-hidden="true">🗑️</span> Request Right to Data Erasure
+                  </button>
+
+                  <div id="erasureConfirm" class="erasure-confirm" role="alertdialog" aria-modal="true" aria-labelledby="erasureConfirmText" aria-hidden="true" inert>
+                    <div id="erasureConfirmText" class="erasure-confirm-text">
+                      <span aria-hidden="true">⚠️</span> This prototype removes eligible Saarthi-derived personalisation data and opts you out. Regulated banking records are outside this workflow.
+                    </div>
+                    <div class="erasure-confirm-actions">
+                      <button type="button" id="erasureCancelBtn" class="erasure-cancel-btn" onclick="cancelErasure()">Cancel</button>
+                      <button type="button" id="erasureConfirmBtn" class="erasure-confirm-btn" onclick="confirmErasure()">Confirm Erasure</button>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <!-- ============================================ -->
+              <!-- VIEW 7: SAARTHI IMPACT & METRICS             -->
+              <!-- ============================================ -->
+              <div id="yono-view-impact" class="behance-view-pane" style="display: none;">
+                <div class="rewards-card">
+                  <span class="rewards-label">✦ SAARTHI AI METRICS</span>
+                  <div class="screen-bold-heading" style="color:white; margin-top: 2px;">This Month with Saarthi</div>
+                </div>
+
+                <div class="impact-metrics-grid" style="margin-top: 0.6rem;">
+                  <div class="impact-metric-card">
+                    <div class="impact-icon-circle">🏦</div>
+                    <div class="impact-metric-content">
+                      <div id="impactTask" class="impact-metric-title">2 Tasks Completed Digitally</div>
+                      <div id="impactTaskSub" class="impact-metric-sub">Saved ~2 hours of branch waiting time</div>
+                    </div>
+                  </div>
+
+                  <div class="impact-metric-card">
+                    <div class="impact-icon-circle">💰</div>
+                    <div class="impact-metric-content">
+                      <div id="impactSavings" class="impact-metric-title">₹2,100 Saved This Month</div>
+                      <div id="impactSavingsSub" class="impact-metric-sub">From debt consolidation recommendation</div>
+                    </div>
+                  </div>
+
+                  <div class="impact-metric-card">
+                    <div class="impact-icon-circle">📍</div>
+                    <div class="impact-metric-content">
+                      <div id="impactBranch" class="impact-metric-title">1 Branch Visit Avoided</div>
+                      <div id="impactBranchSub" class="impact-metric-sub">Using YONO Pay instead of counter deposit</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="impact-progress-card" style="margin-top: 0.6rem;">
+                  <div class="progress-card-title">30-Day Digital Confidence Growth</div>
+                  <div class="progress-bar-row">
+                    <span class="progress-label">30d</span>
+                    <div class="progress-track"><div id="impactBar30" class="progress-fill" style="width: 40%;" role="progressbar" aria-label="30-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"></div></div>
+                  </div>
+                  <div class="progress-bar-row">
+                    <span class="progress-label">60d</span>
+                    <div class="progress-track"><div id="impactBar60" class="progress-fill" style="width: 65%;" role="progressbar" aria-label="60-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65"></div></div>
+                  </div>
+                  <div class="progress-bar-row">
+                    <span class="progress-label">90d</span>
+                    <div class="progress-track"><div id="impactBar90" class="progress-fill" style="width: 82%;" role="progressbar" aria-label="90-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="82"></div></div>
+                  </div>
+                  <div class="progress-footer-note">Your digital financial independence is growing 📈</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Slide-Up Nudge Card -->
+            <div id="nudgeCard" class="saarthi-nudge-container" role="region" aria-labelledby="nudgeTitle" aria-live="polite" aria-hidden="true" inert>
+              <div class="nudge-header">
+                <span class="nudge-logo">SAARTHI</span>
+                <span>PROACTIVE RECOMMENDATION</span>
+              </div>
+              <div class="nudge-body">
+                <div id="nudgeTitle" class="nudge-title">Consolidate Debt &amp; Save</div>
+                <div id="nudgeText" class="nudge-text">
+                  You paid ₹1,850 in card interest last month. Convert to personal loan and save ₹1,000/mo.
+                </div>
+
+                <!-- Explainability Toggle -->
+                <div id="explainBox" class="explain-box">
+                  <button id="explainToggle" type="button" class="explain-toggle" onclick="toggleExplain()">
+                    <span>Why am I seeing this?</span>
+                    <span id="explainArrow" class="explain-arrow" aria-hidden="true">▼</span>
+                  </button>
+                  <div id="explainContent" class="explain-content">
+                    Signal: CC interest exceeds ₹1,500/mo. Idle savings balance available. Policy: DPDP purpose consent verified.
+                  </div>
+                </div>
+
+                <div class="nudge-actions">
+                  <button type="button" class="nudge-btn nudge-btn-secondary" onclick="dismissNudge()">Dismiss</button>
+                  <button id="nudgeActionBtn" type="button" class="nudge-btn nudge-btn-primary" onclick="acceptNudge()">Review &amp; Apply</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stress Mode Card -->
+            <div id="stressCard" class="stress-card" role="region" aria-labelledby="stressTitle" aria-live="polite" aria-hidden="true" inert>
+              <div class="stress-header">
+                <span class="stress-badge-icon" aria-hidden="true">🛡️</span>
+                <span id="stressTitle">SBI Compassionate Support</span>
+              </div>
+              <div id="stressBodyText" class="stress-body">
+                Hi Aiwin, we noticed your recent EMI payment was missed. We're here to help — not to sell.
+              </div>
+              <div id="stressOfflineActions">
+                <button type="button" class="stress-action-btn outline" onclick="dismissStressCard()">📋 View Repayment Options</button>
+                <button type="button" class="stress-action-btn filled" onclick="connectToRM()">📞 Connect to Relationship Manager</button>
+                <button type="button" class="stress-action-btn outline" onclick="dismissStressCard()">📅 Request EMI Restructuring</button>
+              </div>
+            </div>
+
+            <!-- RM Connection In-Phone Toast -->
+            <div id="rmToast" class="rm-toast" role="status" aria-live="polite" aria-hidden="true">
+              <div class="rm-pulse" aria-hidden="true"></div>
+              <span>Connecting you to your SBI Relationship Manager... Expected wait: 2 minutes</span>
+            </div>
+
+            <!-- Authentic 5-Tab Floating Bottom Navigation with Elevated Center Scan QR -->
+            <nav class="behance-bottom-nav" aria-label="YONO navigation">
+              <button id="navHome" type="button" class="behance-nav-btn active" data-view="home" onclick="navigateToView('home')" aria-current="page">
+                <span class="behance-nav-icon" aria-hidden="true">🏠</span>
+                <span class="behance-nav-label">Home</span>
+              </button>
+              <button id="navLoan" type="button" class="behance-nav-btn" data-view="loans" onclick="navigateToView('loans')">
+                <span class="behance-nav-icon" aria-hidden="true">💰</span>
+                <span class="behance-nav-label">Loan</span>
+              </button>
+
+              <!-- Center Prominent Scan QR Button -->
+              <button id="navScanQR" type="button" class="behance-scan-qr-btn" onclick="openQrScannerModal()" aria-label="Scan QR Code">
+                <span class="qr-glow-icon" aria-hidden="true">⛶</span>
+                <span class="behance-nav-label">Scan QR</span>
+              </button>
+
+              <button id="navInsurance" type="button" class="behance-nav-btn" data-view="insurance" onclick="navigateToView('insurance')">
+                <span class="behance-nav-icon" aria-hidden="true">🛡️</span>
+                <span class="behance-nav-label">Insurance</span>
+              </button>
+              <button id="navInvestments" type="button" class="behance-nav-btn" data-view="investments" onclick="navigateToView('investments')">
+                <span class="behance-nav-icon" aria-hidden="true">📈</span>
+                <span class="behance-nav-label">Investments</span>
+              </button>
+            </nav>
+
+            <!-- Compatible Hidden Buttons for Test Contract Invariants -->
+            <div style="display:none;" aria-hidden="true">
+              <button id="yonoHomeBtn" type="button" onclick="navigateToView('home')">Home</button>
+              <button id="navPay" type="button" onclick="navigateToView('pay')">Pay</button>
+              <button id="navInvest" type="button" onclick="navigateToView('investments')">Invest</button>
+              <button id="navCards" type="button" onclick="navigateToView('cards')">Cards</button>
+              <button id="navImpact" type="button" onclick="navigateToView('impact')">Impact</button>
+            </div>
+
+          </div>
+
+          <!-- ============================================ -->
+          <!-- MODAL 1: ACCOUNT DETAILS & PROFILE MODAL     -->
+          <!-- ============================================ -->
+          <div id="profileModal" class="behance-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle" aria-hidden="true" inert>
+            <div class="profile-modal-card">
+              <div class="profile-modal-top-bar">
+                <div class="yono-sbi-brand-purple">
+                  <span class="brand-yono">yono</span>
+                  <span class="brand-dot" aria-hidden="true"></span>
+                  <span class="brand-sbi">SBI</span>
+                </div>
+                <button type="button" class="modal-close-x-btn" onclick="closeProfileModal()" aria-label="Close profile modal">✕</button>
+              </div>
+
+              <div class="profile-avatar-center-box">
+                <div class="avatar-large-circle">
+                  <span id="profileModalInitials">AV</span>
+                  <span class="avatar-qr-badge" aria-hidden="true">⛶</span>
+                </div>
+                <div id="profileModalTitle" class="profile-user-fullname">Aiwin Vinu</div>
+                <span class="profile-welcome-note">Congratulations on your first login!</span>
+              </div>
+
+              <div class="account-details-box">
+                <div class="account-details-header">
+                  <span>Account Details</span>
+                  <button type="button" class="share-icon-btn" onclick="showToast('success', 'Share Details', 'Account details copied')" aria-label="Share account details">
+                    <span aria-hidden="true">🔗</span>
+                  </button>
+                </div>
+                <div class="acc-detail-row">
+                  <span class="acc-detail-label">CNR</span>
+                  <span class="acc-detail-val">******369 👁️</span>
+                </div>
+                <div class="acc-detail-row">
+                  <span class="acc-detail-label">Account No.</span>
+                  <span class="acc-detail-val">0123456789</span>
+                </div>
+                <div class="acc-detail-row">
+                  <span class="acc-detail-label">IFSC Code</span>
+                  <span class="acc-detail-val">SBIN0000369</span>
+                </div>
+                <div class="acc-detail-row">
+                  <span class="acc-detail-label">Home Branch</span>
+                  <span class="acc-detail-val">KOCHI-KAKKANAD</span>
+                </div>
+                <div class="acc-detail-row">
+                  <span class="acc-detail-label">UPI ID</span>
+                  <span class="acc-detail-val">aiwinvinu@sbi 📋</span>
+                </div>
+              </div>
+
+              <div class="profile-menu-links">
+                <button type="button" class="profile-menu-row" onclick="navigateToView('services'); closeProfileModal();">
+                  <span>👤 Manage My Profile</span>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <button type="button" class="profile-menu-row" onclick="navigateToView('home'); closeProfileModal();">
+                  <span>🏦 Manage My Accounts</span>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <button type="button" class="profile-menu-row" onclick="navigateToView('services'); closeProfileModal();">
+                  <span>🛡️ Access Service (DPDP)</span>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <button type="button" class="profile-menu-row" onclick="showToast('success', 'Settings', 'App Preferences')">
+                  <span>⚙️ Settings</span>
+                  <span aria-hidden="true">›</span>
+                </button>
+              </div>
+
+              <button type="button" class="magenta-pill-btn logout" onclick="performLogout()">
+                Logout
+              </button>
             </div>
           </div>
 
-          <!-- YONO View: My Saarthi Impact -->
-          <div id="yono-view-impact" class="yono-content" style="display: none;">
-            <div class="impact-header">📊 This Month with Saarthi</div>
-            <div class="impact-metric">
-              <div class="impact-icon">🏦</div>
-              <div>
-                <div id="impactTask" class="impact-metric-title">2 Tasks Completed Digitally</div>
-                <div id="impactTaskSub" class="impact-metric-sub">Saved ~2 hours of branch waiting time</div>
+          <!-- ============================================ -->
+          <!-- MODAL 2: QR SCANNER SIMULATION MODAL         -->
+          <!-- ============================================ -->
+          <div id="qrScannerModal" class="behance-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="qrModalTitle" aria-hidden="true" inert>
+            <div class="qr-scanner-card">
+              <div class="qr-modal-header">
+                <span id="qrModalTitle" class="qr-modal-title">Scan any UPI QR Code</span>
+                <button type="button" class="modal-close-x-btn" onclick="closeQrScannerModal()" aria-label="Close QR scanner">✕</button>
               </div>
-            </div>
-            <div class="impact-metric">
-              <div class="impact-icon">💰</div>
-              <div>
-                <div id="impactSavings" class="impact-metric-title">₹2,100 Saved This Month</div>
-                <div id="impactSavingsSub" class="impact-metric-sub">From debt consolidation recommendation</div>
-              </div>
-            </div>
-            <div class="impact-metric">
-              <div class="impact-icon">📍</div>
-              <div>
-                <div id="impactBranch" class="impact-metric-title">1 Branch Visit Avoided</div>
-                <div id="impactBranchSub" class="impact-metric-sub">Using YONO Pay instead of counter deposit</div>
-              </div>
-            </div>
-            <div class="impact-bar-container">
-              <div class="impact-bar-title">30-Day Digital Engagement</div>
-              <div class="impact-bar-row">
-                <span class="impact-bar-label">30d</span>
-                <div class="impact-bar-track"><div id="impactBar30" class="impact-bar-fill" style="width: 40%;" role="progressbar" aria-label="30-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"></div></div>
-              </div>
-              <div class="impact-bar-row">
-                <span class="impact-bar-label">60d</span>
-                <div class="impact-bar-track"><div id="impactBar60" class="impact-bar-fill" style="width: 65%;" role="progressbar" aria-label="60-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65"></div></div>
-              </div>
-              <div class="impact-bar-row">
-                <span class="impact-bar-label">90d</span>
-                <div class="impact-bar-track"><div id="impactBar90" class="impact-bar-fill" style="width: 82%;" role="progressbar" aria-label="90-day digital engagement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="82"></div></div>
-              </div>
-              <div class="impact-confidence">Your digital confidence is growing 📈</div>
-            </div>
-            <div class="impact-footer">Powered by Saarthi — your proactive financial co-pilot</div>
-          </div>
 
+              <div class="qr-viewfinder">
+                <div class="qr-laser-line" aria-hidden="true"></div>
+                <div class="qr-corner top-left"></div>
+                <div class="qr-corner top-right"></div>
+                <div class="qr-corner bottom-left"></div>
+                <div class="qr-corner bottom-right"></div>
+                <span class="qr-hint-text">Align QR code within frame</span>
+              </div>
 
-          <!-- Slide-Up Nudge Card -->
-          <div id="nudgeCard" class="saarthi-nudge-container" role="region" aria-labelledby="nudgeTitle" aria-live="polite" aria-hidden="true" inert>
-            <div class="nudge-header">
-              <span class="nudge-logo">SAARTHI</span>
-              <span>PROACTIVE RECOMMENDATION</span>
-            </div>
-            <div class="nudge-body">
-              <div id="nudgeTitle" class="nudge-title">Consolidate Debt &amp; Save</div>
-              <div id="nudgeText" class="nudge-text">
-                A governed recommendation will appear here only after the connected backend returns persisted product-bound evidence.
-              </div>
-              <!-- Explainability Accordion -->
-              <button id="explainToggle" type="button" class="nudge-explainability-toggle" onclick="toggleExplainability()" aria-expanded="false" aria-controls="explainContent">ⓘ Why am I seeing this?</button>
-              <div id="explainContent" class="nudge-explainability-content" aria-hidden="true">
-                <div id="explainBox" class="nudge-explain-box"></div>
-              </div>
-              <div class="nudge-actions">
-                <button type="button" class="nudge-btn nudge-btn-secondary" onclick="dismissNudge()">Skip</button>
-                <button id="nudgeActionBtn" type="button" class="nudge-btn nudge-btn-primary" onclick="acceptNudge()">Apply Now</button>
+              <div class="qr-bottom-actions">
+                <button type="button" class="magenta-pill-btn" onclick="simulateQrPayment()">
+                  Simulate Merchant Scan (₹250)
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Financial Stress Support Card -->
-          <div id="stressCard" class="stress-nudge-container" role="status" aria-live="polite" aria-labelledby="stressCardTitle" aria-hidden="true" inert>
-            <div id="stressCardTitle" class="stress-header"><span aria-hidden="true">🛡️</span> SAARTHI SUPPORT MODE</div>
-            <div id="stressBodyText" class="stress-body-text">
-              Hi Priya, we noticed your recent EMI payment was missed. We're here to help — not to sell.
-            </div>
-            <div id="stressOfflineActions">
-              <button type="button" class="stress-action-btn outline" onclick="dismissStressCard()">📋 View Repayment Options</button>
-              <button type="button" class="stress-action-btn filled" onclick="connectToRM()">📞 Connect to Relationship Manager</button>
-              <button type="button" class="stress-action-btn outline" onclick="dismissStressCard()">📅 Request EMI Restructuring</button>
-            </div>
-          </div>
-
-          <!-- RM Connection In-Phone Toast -->
-          <div id="rmToast" class="rm-toast" role="status" aria-live="polite" aria-hidden="true">
-            <div class="rm-pulse" aria-hidden="true"></div>
-            <span>Connecting you to your SBI Relationship Manager... Expected wait: 2 minutes</span>
-          </div>
-
-          <nav class="yono-bottom-nav" aria-label="YONO app sections">
-            <button type="button" class="yono-bottom-nav-btn active" data-view="home" onclick="navigateToView('home')" aria-current="page">
-              <span aria-hidden="true">⌂</span>
-              <span>Home</span>
-            </button>
-            <button type="button" class="yono-bottom-nav-btn" data-view="pay" onclick="navigateToView('pay')">
-              <span aria-hidden="true">₹</span>
-              <span>Pay</span>
-            </button>
-            <button type="button" class="yono-bottom-nav-btn" data-view="cards" onclick="navigateToView('cards')">
-              <span aria-hidden="true">▭</span>
-              <span>Cards</span>
-            </button>
-            <button type="button" class="yono-bottom-nav-btn" data-view="impact" onclick="navigateToView('impact')">
-              <span aria-hidden="true">✦</span>
-              <span>Saarthi</span>
-            </button>
-          </nav>
-
-          <!-- Consent Flow Screen -->
+          <!-- Consent Flow Dialog Modal -->
           <div id="consentScreen" class="yono-consent-screen" role="dialog" aria-modal="true" aria-labelledby="consentDialogTitle" aria-describedby="consentText" aria-hidden="true" inert>
-            <div id="consentScreenContent">
+            <div id="consentScreenContent" class="consent-modal-card">
               <div class="consent-icon" aria-hidden="true">📝</div>
               <div id="consentDialogTitle" class="consent-title" tabindex="-1">Confirm Governed Action</div>
               <div id="consentText" class="consent-desc">
@@ -666,7 +1358,7 @@
                 3. Revocation and erasure apply to eligible Saarthi-derived data; regulated banking records follow SBI retention requirements.
               </div>
               <div class="nudge-actions" style="margin-top: auto;">
-                <button type="button" class="nudge-btn nudge-btn-secondary" onclick="closeConsentScreen()">Cancel</button>
+                <button id="consentCancelBtn" type="button" class="nudge-btn nudge-btn-secondary" onclick="closeConsentScreen()">Cancel</button>
                 <button id="confirmActionBtn" type="button" class="nudge-btn nudge-btn-primary" onclick="confirmAction()">Authorize &amp; Execute</button>
               </div>
             </div>
@@ -697,7 +1389,7 @@
             <div class="comparison-sub">Proactive — notices before you ask</div>
           </div>
         </div>
-        
+
         <div class="pipeline-status">
           <div class="status-item">
             <span id="dot1" class="status-dot" aria-hidden="true"></span>

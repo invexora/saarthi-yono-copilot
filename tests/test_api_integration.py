@@ -621,6 +621,12 @@ class SettingsSecurityTests(unittest.TestCase):
                 customer_context_mode="synthetic",
             ).validate()
 
+        Settings(
+            auth_mode="development",
+            decision_secret="long-enough-decision-secret-for-tests",
+            signal_detection_mode="model",
+        ).validate()
+
     def test_oidc_rejects_symmetric_algorithms_and_production_requires_oidc(self):
         with self.assertRaises(RuntimeError):
             Settings(
