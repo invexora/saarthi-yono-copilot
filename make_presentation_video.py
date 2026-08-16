@@ -1,10 +1,13 @@
-import os, sys, math, time, subprocess
+import os, sys, math, time, subprocess, wave
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
 WIDTH, HEIGHT = 1920, 1080
 FPS = 30
 TOTAL_SCENES = 12
+SCENE_DUR = 3.5 # Fast-paced 3.5s per scene / diagram
+TOTAL_DURATION = TOTAL_SCENES * SCENE_DUR # 42.0 seconds
+TOTAL_FRAMES = int(TOTAL_DURATION * FPS)
 
 FONT_PATH = "/System/Library/Fonts/Supplemental/Kohinoor.ttc"
 
@@ -71,26 +74,26 @@ def extract_phone_crop(full_img, zoom_mode="full"):
 def draw_header_footer(draw, title_text, scene_idx, progress_pct):
     draw.rectangle([0, 0, WIDTH, 65], fill=(11, 18, 34))
     draw.line([0, 65, WIDTH, 65], fill=(0, 160, 228, 120), width=2)
-    
+
     # Brand Pill
     draw.rectangle([40, 14, 140, 52], fill=(0, 51, 102), outline=C_CYAN, width=1)
     f_brand = get_font(17, bold=True)
     draw.text((52, 21), "SBI", fill=C_CYAN, font=f_brand)
     draw.text((92, 21), "YONO", fill=C_TEXT_WHITE, font=f_brand)
-    
+
     # Title
     f_title = get_font(18, bold=True)
     draw.text((160, 21), f"SAARTHI  •  {title_text.upper()}", fill=C_TEXT_WHITE, font=f_title)
-    
+
     # Live Tag Badge
     f_tag = get_font(13, bold=True)
     draw.rectangle([WIDTH - 380, 15, WIDTH - 40, 50], fill=(16, 185, 129, 35), outline=C_EMERALD, width=1)
     draw.text((WIDTH - 365, 23), "LIVE PROTOTYPE  •  YONO COPILOT", fill=C_EMERALD, font=f_tag)
-    
+
     # Bottom Footer Bar
     draw.rectangle([0, HEIGHT - 45, WIDTH, HEIGHT], fill=(11, 18, 34))
     draw.line([0, HEIGHT - 45, WIDTH, HEIGHT - 45], fill=(255, 255, 255, 25), width=1)
-    
+
     f_foot = get_font(13, bold=False)
     draw.text((40, HEIGHT - 32), "State Bank of India — Autonomous Governed Co-Pilot", fill=C_TEXT_MUTED, font=f_foot)
     f_foot_b = get_font(13, bold=True)
@@ -102,20 +105,20 @@ def draw_bullet_card(draw, box, title, bullets, badge_text=None, border_color=C_
     draw.rectangle([x1, y1, x2, y2], fill=C_CARD_BG, outline=border_color, width=2)
     draw.rectangle([x1, y1, x2, y1 + 45], fill=(18, 28, 52))
     draw.line([x1, y1 + 45, x2, y1 + 45], fill=border_color, width=1)
-    
+
     f_bt = get_font(19, bold=True)
     draw.text((x1 + 18, y1 + 12), title, fill=C_TEXT_WHITE, font=f_bt)
-    
+
     if badge_text:
         f_bg = get_font(12, bold=True)
         tw = draw.textlength(badge_text, font=f_bg)
         bx = x2 - tw - 25
         draw.rectangle([bx, y1 + 10, x2 - 12, y1 + 35], fill=(0, 210, 255, 25), outline=border_color, width=1)
         draw.text((bx + 6, y1 + 15), badge_text, fill=border_color, font=f_bg)
-        
+
     f_body = get_font(15, bold=False)
     f_bold = get_font(15, bold=True)
-    
+
     curr_y = y1 + 60
     for prefix, highlight, rest in bullets:
         draw.text((x1 + 18, curr_y), prefix, fill=border_color, font=f_bold)
@@ -148,19 +151,19 @@ def render_scene_1(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Executive Overview & Vision", scene_idx, prog)
-    
+
     f_hero = get_font(46, bold=True)
     f_sub = get_font(21, bold=False)
     draw.text((70, 95), "SAARTHI : Autonomous Governed Co-Pilot", fill=C_CYAN, font=f_hero)
     draw.text((70, 155), "Transforming SBI YONO from Reactive Banking to Proactive Financial Intelligence", fill=C_TEXT_WHITE, font=f_sub)
-    
+
     draw_stat_box(draw, [70, 210, 480, 335], "80 Million+", "YONO Digital User Base", "Target scale for proactive engagement", C_CYAN)
     draw_stat_box(draw, [510, 210, 920, 335], "4.8 ms", "On-Premise 3B SLM Latency", "Sub-10ms edge inference budget", C_EMERALD)
     draw_stat_box(draw, [950, 210, 1360, 335], "DPDP Act 2023", "Full Regulatory Compliance", "Consent gating & right to erasure", C_PURPLE)
     draw_stat_box(draw, [1390, 210, 1850, 335], "+₹1,250 Cr", "Annual Revenue Uplift", "Digital lending pre-qualified conversions", C_AMBER)
-    
+
     place_image_with_glow(img, img_arch_full, [70, 360, 980, 1000], C_CYAN)
-    
+
     bullets = [
         ("•", "Reactive Banking Problem:", "Customers search, browse, and miss critical financial savings opportunities."),
         ("•", "Proprietary 3B SLM:", "Trained specifically on Indian banking signals, DPDP privacy, and product matrices."),
@@ -175,21 +178,21 @@ def render_scene_2(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "The Reactive Banking Challenge", scene_idx, prog)
-    
+
     phone_crop = extract_phone_crop(img_opp_trace, "full")
     place_image_with_glow(img, phone_crop, [70, 85, 520, 1000], C_MAGENTA)
-    
+
     draw_bullet_card(draw, [550, 85, 1850, 480], "Customer Persona Case Study: Priya Sharma (Tech Lead)", [
         ("[!]", "Silent Wealth Drain:", "Paying ₹4,200/mo revolving credit card interest at 42% APR across 2 cards."),
         ("[!]", "Idle Capital Drag:", "Maintains ₹2,80,000 in savings account earning only 2.70% p.a. against 6% inflation."),
         ("[!]", "Branch Counter Friction:", "Physically visits branch 0032 to deposit quarterly advance tax in queues."),
         ("[!]", "The Core Flaw in Current YONO:", "Traditional apps only respond when asked; they never proactively optimize.")
     ], "SBI-772910 CASE", C_MAGENTA)
-    
+
     draw_stat_box(draw, [550, 505, 950, 630], "₹4,200/mo", "Card Finance Charges", "Revolving at 42% APR penalty rates", C_MAGENTA)
     draw_stat_box(draw, [980, 505, 1380, 630], "₹2,80,000", "Idle Savings Balance", "Earning sub-inflation 2.70% interest", C_AMBER)
     draw_stat_box(draw, [1410, 505, 1850, 630], "~2 Hours", "Branch Wait Time", "Lost time on manual counter deposits", C_CYAN)
-    
+
     bullets_sol = [
         ("->", "Saarthi's Autonomous Shift:", "Instead of waiting for Priya to search, Saarthi continuously scans transaction streams."),
         ("->", "Governed AI Ingestion:", "Redis Streams bus + PII Input Guardian masks data in < 0.3ms before SLM evaluation."),
@@ -202,16 +205,16 @@ def render_scene_3(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Proactive Solution: Debt Optimization Nudge", scene_idx, prog)
-    
+
     phone_crop = extract_phone_crop(img_opp_trace, "full")
     place_image_with_glow(img, phone_crop, [70, 85, 520, 1000], C_EMERALD)
-    
+
     nudge_crop = extract_phone_crop(img_opp_trace, "nudge")
     place_image_with_glow(img, nudge_crop, [550, 85, 1180, 720], C_EMERALD)
-    
+
     draw_stat_box(draw, [550, 745, 845, 875], "₹2,100/mo", "Direct Savings", "Cut interest burden by 50%", C_EMERALD)
     draw_stat_box(draw, [875, 745, 1180, 875], "10.5% p.a.", "Express Credit", "Replacing 42% credit card APR", C_CYAN)
-    
+
     bullets = [
         ("1.", "Instant Financial Relief:", "Replaces high-interest revolving card debt with SBI pre-approved loan."),
         ("2.", "Customer-Centric Context:", "Tailored specifically for Priya's salary (₹1.45L) and credit score (785)."),
@@ -226,13 +229,13 @@ def render_scene_4(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Explainability & DPDP Transparency", scene_idx, prog)
-    
+
     phone_crop = extract_phone_crop(img_explain, "full")
     place_image_with_glow(img, phone_crop, [70, 85, 520, 1000], C_CYAN)
-    
+
     exp_crop = extract_phone_crop(img_explain, "nudge")
     place_image_with_glow(img, exp_crop, [550, 85, 1180, 720], C_CYAN)
-    
+
     bullets_gov = [
         ("[PASS]", "HIGH_CC_INTEREST_OPTIMIZATION:", "Card finance charges exceed ₹1,500/month threshold."),
         ("[PASS]", "DPDP_PURPOSE_CONSENT_VERIFIED:", "Customer granted explicit opt-in for savings optimization."),
@@ -241,7 +244,7 @@ def render_scene_4(scene_idx, prog):
         ("[PASS]", "APPROVED_POLICY_EVIDENCE:", "Bound to immutable policy SHA-256 hash in audit ledger.")
     ]
     draw_bullet_card(draw, [1210, 85, 1850, 1000], "Verified Governance Reason Codes", bullets_gov, "TRANSPARENCY", C_CYAN)
-    
+
     draw_stat_box(draw, [550, 745, 845, 875], "100%", "Deterministic", "Zero LLM hallucinations", C_EMERALD)
     draw_stat_box(draw, [875, 745, 1180, 875], "Auditable", "Regulatory Proof", "Full DPDP compliance trace", C_PURPLE)
     return img
@@ -250,13 +253,13 @@ def render_scene_5(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Proprietary 3B Small Language Model (SLM)", scene_idx, prog)
-    
+
     place_image_with_glow(img, img_arch_slm, [70, 85, 980, 680], C_PURPLE)
-    
+
     draw_stat_box(draw, [70, 710, 350, 840], "4.8 ms", "P50 Latency", "Edge runtime execution", C_EMERALD)
     draw_stat_box(draw, [380, 710, 670, 840], "99.4%", "Signal F1-Score", "Tested on 10k scenarios", C_CYAN)
     draw_stat_box(draw, [700, 710, 980, 840], "1.8 GB", "RAM Footprint", "4-bit GGUF Q4_K_M", C_PURPLE)
-    
+
     bullets_slm = [
         ("•", "Why Not Cloud LLMs?:", "Cloud models cause data sovereignty hazards, ₹100Cr+ API costs, & 800ms latency."),
         ("•", "Synthetic Dataset Generator:", "10,000+ multi-persona banking scenarios with automated DPDP PII scrubbing."),
@@ -271,13 +274,13 @@ def render_scene_6(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Agentic Traffic Controller (ATC) & LangGraph", scene_idx, prog)
-    
+
     place_image_with_glow(img, img_arch_atc, [70, 85, 980, 680], C_CYAN)
-    
+
     draw_stat_box(draw, [70, 710, 350, 840], "6.54 ms", "Total P50 Time", "Entire 6-Node execution loop", C_CYAN)
     draw_stat_box(draw, [380, 710, 670, 840], "11.43 ms", "P99 Max Latency", "Guaranteed sub-15ms budget", C_EMERALD)
     draw_stat_box(draw, [700, 710, 980, 840], "6 Nodes", "LangGraph State", "Compiled deterministic graph", C_PURPLE)
-    
+
     bullets_atc = [
         ("1.", "Node 1: Redis Streams Ingestion:", "Sub-millisecond event streaming on saarthi:events bus (0.14ms)."),
         ("2.", "Node 2: PII Input Guardian:", "Scans & masks PAN, Aadhaar, Account No. with salted SHA-256 (0.22ms)."),
@@ -293,13 +296,13 @@ def render_scene_7(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Multi-Signal Versatility: Friction & Life-Events", scene_idx, prog)
-    
+
     crop_fric = extract_phone_crop(img_friction, "full")
     place_image_with_glow(img, crop_fric, [70, 85, 480, 1000], C_AMBER)
-    
+
     crop_life = extract_phone_crop(img_lifeevent, "full")
     place_image_with_glow(img, crop_life, [510, 85, 920, 1000], C_EMERALD)
-    
+
     bullets_fric = [
         ("[1]", "Signal 1: Branch Friction (Direct Tax):", "Priya visits physical branch counter to deposit advance tax."),
         ("->", "Saarthi Action:", "Intercepts counter visit and offers instant digital tax payment in YONO."),
@@ -315,16 +318,16 @@ def render_scene_8(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Vulnerability Protection & Fatigue Cooldown", scene_idx, prog)
-    
+
     crop_stress = extract_phone_crop(img_stress, "full")
     place_image_with_glow(img, crop_stress, [70, 85, 520, 1000], C_MAGENTA)
-    
+
     place_image_with_glow(img, img_arch_fatigue, [550, 85, 1300, 560], C_AMBER)
-    
+
     draw_stat_box(draw, [1330, 85, 1850, 215], "0 Marketing", "Distress Policy", "Promotions blocked 100%", C_MAGENTA)
     draw_stat_box(draw, [1330, 235, 1850, 365], "14 Days", "Fatigue Cooldown", "Mandatory silence period", C_AMBER)
     draw_stat_box(draw, [1330, 385, 1850, 515], "Dynamic 5", "Nudge Budget", "Adapts to user acceptance", C_CYAN)
-    
+
     bullets_stress = [
         ("[GUARD]", "Ethical AI Circuit Breaker:", "When financial stress or missed EMIs are detected, marketing is BLOCKED."),
         ("[CARE]", "SBI Compassionate Support:", "UI switches to compassionate Relationship Manager outreach."),
@@ -338,16 +341,16 @@ def render_scene_9(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Single-Use Decision Tokens & Cryptographic Audit", scene_idx, prog)
-    
+
     crop_tok = extract_phone_crop(img_token, "full")
     place_image_with_glow(img, crop_tok, [70, 85, 520, 1000], C_PURPLE)
-    
+
     place_image_with_glow(img, img_arch_ledger, [550, 85, 1300, 560], C_PURPLE)
-    
+
     draw_stat_box(draw, [1330, 85, 1850, 215], "600 Seconds", "Token TTL", "Strict single-use lifecycle", C_PURPLE)
     draw_stat_box(draw, [1330, 235, 1850, 365], "HMAC-SHA256", "Token Signature", "Tamper-evident verification", C_CYAN)
     draw_stat_box(draw, [1330, 385, 1850, 515], "Merkle Chain", "Audit Trail", "Append-only state ledger", C_EMERALD)
-    
+
     bullets_crypto = [
         ("[HMAC]", "Single-Use HMAC-SHA256 Token:", "Token = HMAC(K_decision, CustomerID || ProductID || Timestamp || RunID)."),
         ("[LOCK]", "Zero Replay Vulnerabilities:", "Token is consumed permanently upon execution to prevent replay attacks."),
@@ -361,16 +364,16 @@ def render_scene_10(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "DPDP Act 2023 Privacy & Customer Rights", scene_idx, prog)
-    
+
     crop_dpdp = extract_phone_crop(img_dpdp, "full")
     place_image_with_glow(img, crop_dpdp, [70, 85, 520, 1000], C_EMERALD)
-    
+
     place_image_with_glow(img, img_arch_dpdp, [550, 85, 1300, 560], C_EMERALD)
-    
+
     draw_stat_box(draw, [1330, 85, 1850, 215], "Opt-In", "Purpose Consent", "Active toggle control", C_EMERALD)
     draw_stat_box(draw, [1330, 235, 1850, 365], "JSON Export", "Data Portability", "Download profiling trace", C_CYAN)
     draw_stat_box(draw, [1330, 385, 1850, 515], "Tombstone", "Right to Erasure", "Immutable deletion proof", C_PURPLE)
-    
+
     bullets_dpdp = [
         ("[PURPOSE]", "Purpose Limitation:", "Consent is scoped strictly to 'savings_optimization' or 'financial_support'."),
         ("[ERASURE]", "Automated Right to Erasure:", "Purges all Saarthi models, caches, and profiling records on demand."),
@@ -384,14 +387,14 @@ def render_scene_11(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Quantified Business ROI for State Bank of India", scene_idx, prog)
-    
+
     draw_stat_box(draw, [70, 85, 480, 245], "+₹1,250 Cr", "Annual Lending Book Growth", "Express Credit pre-qualified conversions", C_AMBER)
     draw_stat_box(draw, [510, 85, 920, 245], "-35% Load", "Branch Queue Reduction", "Cash deposits routed to CDM & UPI LITE", C_EMERALD)
     draw_stat_box(draw, [950, 85, 1360, 245], "+18% Uplift", "Deposit Mobilization", "Auto-allocated Fixed & Recurring Deposits", C_CYAN)
     draw_stat_box(draw, [1390, 85, 1850, 245], "₹0 Penalties", "Regulatory Safety", "DPDP Act 2023 & RBI digital lending proof", C_PURPLE)
-    
+
     place_image_with_glow(img, img_arch_graph, [70, 275, 980, 1000], C_CYAN)
-    
+
     bullets_roi = [
         ("•", "Digital Lending Acceleration:", "Targeted debt consolidation captures high-quality salaried personal loans."),
         ("•", "Branch Operational Efficiency:", "Frees up branch teller capacity by digitizing routine tax & cash deposits."),
@@ -406,19 +409,19 @@ def render_scene_12(scene_idx, prog):
     img = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, "Hackathon Grand Finale & Live Deployment", scene_idx, prog)
-    
+
     f_grand = get_font(46, bold=True)
     f_sub = get_font(21, bold=False)
     draw.text((70, 95), "SAARTHI : The Future of Governed Autonomous Banking", fill=C_CYAN, font=f_grand)
     draw.text((70, 155), "Delivering Proactive, Ethical & Cryptographically Verified AI to 80M+ SBI Customers", fill=C_TEXT_WHITE, font=f_sub)
-    
+
     draw.rectangle([70, 205, 1850, 280], fill=(16, 185, 129, 25), outline=C_EMERALD, width=2)
     f_live = get_font(20, bold=True)
     draw.text((95, 230), ">> LIVE DEPLOYED APP:", fill=C_EMERALD, font=f_live)
     draw.text((360, 230), "https://invexora.github.io/saarthi-yono-copilot/", fill=C_TEXT_WHITE, font=f_live)
-    
+
     place_image_with_glow(img, img_opp_trace, [70, 310, 980, 1000], C_CYAN)
-    
+
     bullets_fin = [
         ("•", "Complete Solution Suite:", "Live Behance YONO Mobile UI + 6-Node LangGraph Orchestration Trace."),
         ("•", "Proprietary 3B SLM:", "99.4% F1 Accuracy, 4.8ms P50 latency, 1.8 GB RAM on-premise model."),
@@ -430,42 +433,147 @@ def render_scene_12(scene_idx, prog):
     return img
 
 SCENE_DEFS = [
-    ("Executive Overview & Vision", 20, render_scene_1),
-    ("The Reactive Banking Challenge", 22, render_scene_2),
-    ("Proactive Opportunity Nudge", 26, render_scene_3),
-    ("Explainability & DPDP Transparency", 24, render_scene_4),
-    ("Proprietary 3B SLM Pipeline", 28, render_scene_5),
-    ("Agentic Traffic Controller & LangGraph", 26, render_scene_6),
-    ("Branch Friction & Life-Events", 24, render_scene_7),
-    ("Vulnerability Protection Mode", 24, render_scene_8),
-    ("Single-Use Tokens & Merkle Audit", 22, render_scene_9),
-    ("DPDP Act 2023 Customer Rights", 22, render_scene_10),
-    ("Quantified Business ROI for SBI", 24, render_scene_11),
-    ("Grand Finale & Live Deployment", 18, render_scene_12),
+    ("Executive Overview & Vision", SCENE_DUR, render_scene_1),
+    ("The Reactive Banking Challenge", SCENE_DUR, render_scene_2),
+    ("Proactive Opportunity Nudge", SCENE_DUR, render_scene_3),
+    ("Explainability & DPDP Transparency", SCENE_DUR, render_scene_4),
+    ("Proprietary 3B SLM Pipeline", SCENE_DUR, render_scene_5),
+    ("Agentic Traffic Controller & LangGraph", SCENE_DUR, render_scene_6),
+    ("Branch Friction & Life-Events", SCENE_DUR, render_scene_7),
+    ("Vulnerability Protection Mode", SCENE_DUR, render_scene_8),
+    ("Single-Use Tokens & Merkle Audit", SCENE_DUR, render_scene_9),
+    ("DPDP Act 2023 Customer Rights", SCENE_DUR, render_scene_10),
+    ("Quantified Business ROI for SBI", SCENE_DUR, render_scene_11),
+    ("Grand Finale & Live Deployment", SCENE_DUR, render_scene_12),
 ]
 
-TOTAL_DURATION = sum(s[1] for s in SCENE_DEFS)
-TOTAL_FRAMES = TOTAL_DURATION * FPS
-print(f"Total Video Duration: {TOTAL_DURATION}s ({TOTAL_DURATION/60:.1f} mins) | Total Frames: {TOTAL_FRAMES}")
+print(f"Fast Video Duration: {TOTAL_DURATION}s ({TOTAL_DURATION:.1f} secs) | Total Frames: {TOTAL_FRAMES}")
 
 OUTPUT_MP4 = "docs/saarthi_demo_presentation_5min.mp4"
 FINAL_COPY = "presentation-final/saarthi_demo_presentation_5min.mp4"
+FAST_COPY = "docs/saarthi_demo_presentation_fast.mp4"
 
-# Generate Synthesized Audio Track
-AUDIO_FILE = "/tmp/saarthi_ambient_track.wav"
-print("Generating synthesized fintech ambient soundtrack...")
-subprocess.run([
-    "ffmpeg", "-y", "-f", "lavfi",
-    "-i", f"anoisesrc=d={TOTAL_DURATION}:c=pink:r=44100:a=0.015,bandpass=f=440:w=120,volume=0.4",
-    "-f", "lavfi",
-    "-i", f"sine=frequency=220:duration={TOTAL_DURATION},volume=0.08",
-    "-f", "lavfi",
-    "-i", f"sine=frequency=440:duration={TOTAL_DURATION},volume=0.04",
-    "-filter_complex", "[0:a][1:a][2:a]amix=inputs=3[aout]",
-    "-map", "[aout]",
-    AUDIO_FILE
-], capture_output=True)
+# 1. GENERATE DYNAMIC HIGH-ENERGY SOUNDTRACK WITH SFX
+AUDIO_FILE = "/tmp/saarthi_high_energy_soundtrack.wav"
+print("Synthesizing 124 BPM electronic fintech soundtrack with transition whooshes & chimes...")
 
+SAMPLE_RATE = 44100
+BPM = 124.0
+BEAT_SEC = 60.0 / BPM
+TOTAL_SAMPLES = int(SAMPLE_RATE * TOTAL_DURATION)
+
+left = np.zeros(TOTAL_SAMPLES)
+right = np.zeros(TOTAL_SAMPLES)
+
+num_beats = int(TOTAL_DURATION / BEAT_SEC)
+
+# 1a. Kick Drum (808 style pitch-dropped sine)
+for b in range(num_beats):
+    start_time = b * BEAT_SEC
+    idx_start = int(start_time * SAMPLE_RATE)
+    kick_len = int(0.22 * SAMPLE_RATE)
+    if idx_start + kick_len < TOTAL_SAMPLES:
+        kt = np.linspace(0, 0.22, kick_len, False)
+        k_freq = 45 + 120 * np.exp(-kt * 28)
+        k_phase = 2 * np.pi * np.cumsum(k_freq) / SAMPLE_RATE
+        k_env = np.exp(-kt * 16)
+        kick_wave = 0.55 * np.sin(k_phase) * k_env
+        left[idx_start:idx_start+kick_len] += kick_wave
+        right[idx_start:idx_start+kick_len] += kick_wave
+
+# 1b. Snare / Clap (Beats 2 and 4)
+for b in range(num_beats):
+    if b % 2 == 1:
+        start_time = b * BEAT_SEC
+        idx_start = int(start_time * SAMPLE_RATE)
+        snare_len = int(0.18 * SAMPLE_RATE)
+        if idx_start + snare_len < TOTAL_SAMPLES:
+            st = np.linspace(0, 0.18, snare_len, False)
+            noise = np.random.uniform(-1, 1, snare_len)
+            snare_tone = np.sin(2 * np.pi * 220 * st) * np.exp(-st * 30)
+            snare_env = np.exp(-st * 20)
+            snare_wave = (0.28 * noise + 0.15 * snare_tone) * snare_env
+            left[idx_start:idx_start+snare_len] += snare_wave * 0.95
+            right[idx_start:idx_start+snare_len] += snare_wave * 1.05
+
+# 1c. 16th Note Hi-Hats
+sixteenth = BEAT_SEC / 4.0
+num_16ths = int(TOTAL_DURATION / sixteenth)
+for s in range(num_16ths):
+    start_time = s * sixteenth
+    idx_start = int(start_time * SAMPLE_RATE)
+    hat_len = int(0.045 * SAMPLE_RATE)
+    if idx_start + hat_len < TOTAL_SAMPLES:
+        ht = np.linspace(0, 0.045, hat_len, False)
+        noise = np.random.uniform(-1, 1, hat_len)
+        hat_env = np.exp(-ht * 95)
+        vol = 0.12 if s % 4 == 2 else 0.07
+        hat_wave = noise * hat_env * vol
+        left[idx_start:idx_start+hat_len] += hat_wave * 1.05
+        right[idx_start:idx_start+hat_len] += hat_wave * 0.95
+
+# 1d. Synth Bassline Arpeggio
+freqs = [65.41, 77.78, 87.31, 98.00] # C, Eb, F, G in bass octaves
+for b in range(num_beats * 2):
+    start_time = b * (BEAT_SEC / 2)
+    idx_start = int(start_time * SAMPLE_RATE)
+    bass_len = int((BEAT_SEC / 2) * SAMPLE_RATE)
+    if idx_start + bass_len < TOTAL_SAMPLES:
+        bt = np.linspace(0, BEAT_SEC / 2, bass_len, False)
+        chord_idx = int((b // 8) % len(freqs))
+        f_base = freqs[chord_idx]
+        note_freq = f_base * (1.5 if (b % 4 == 2) else 1.0)
+        saw = 0.20 * (np.sin(2 * np.pi * note_freq * bt) + 0.5 * np.sin(4 * np.pi * note_freq * bt))
+        env = np.exp(-bt * 6)
+        left[idx_start:idx_start+bass_len] += saw * env
+        right[idx_start:idx_start+bass_len] += saw * env
+
+# 1e. Transition SFX: Whoosh & Cyber Chime at every scene boundary
+for s in range(TOTAL_SCENES):
+    t_trans = s * SCENE_DUR
+    idx_start = int(t_trans * SAMPLE_RATE)
+
+    # Cyber Whoosh (0.35s)
+    w_len = int(0.35 * SAMPLE_RATE)
+    if idx_start + w_len < TOTAL_SAMPLES:
+        wt = np.linspace(0, 0.35, w_len, False)
+        noise = np.random.uniform(-1, 1, w_len)
+        w_sweep = np.sin(2 * np.pi * (300 + 1600 * (wt/0.35)**2) * wt)
+        w_env = np.sin(np.pi * wt / 0.35)
+        whoosh = (0.28 * noise + 0.22 * w_sweep) * w_env
+        left[idx_start:idx_start+w_len] += whoosh
+        right[idx_start:idx_start+w_len] += whoosh
+
+    # High-Tech Confirmation Chime
+    ch_len = int(0.28 * SAMPLE_RATE)
+    if idx_start + ch_len < TOTAL_SAMPLES:
+        ct = np.linspace(0, 0.28, ch_len, False)
+        chime1 = np.sin(2 * np.pi * 1760 * ct) * np.exp(-ct * 14)
+        chime2 = np.sin(2 * np.pi * 2640 * ct) * np.exp(-ct * 18)
+        chime = 0.20 * (chime1 + chime2)
+        left[idx_start:idx_start+ch_len] += chime * 0.85
+        right[idx_start:idx_start+ch_len] += chime * 1.15
+
+# Master Limiter
+max_val = max(np.max(np.abs(left)), np.max(np.abs(right)), 1e-6)
+left = (left / max_val) * 0.94
+right = (right / max_val) * 0.94
+
+left_16 = (left * 32767).astype(np.int16)
+right_16 = (right * 32767).astype(np.int16)
+stereo_interleaved = np.empty((TOTAL_SAMPLES * 2,), dtype=np.int16)
+stereo_interleaved[0::2] = left_16
+stereo_interleaved[1::2] = right_16
+
+with wave.open(AUDIO_FILE, "wb") as wf:
+    wf.setnchannels(2)
+    wf.setsampwidth(2)
+    wf.setframerate(SAMPLE_RATE)
+    wf.writeframes(stereo_interleaved.tobytes())
+
+print("Audio track synthesized successfully!")
+
+# 2. RENDER VIDEO WITH SYNCED AUDIO
 ffmpeg_cmd = [
     "ffmpeg", "-y",
     "-f", "rawvideo",
@@ -488,22 +596,22 @@ proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE)
 
 current_global_frame = 0
 for scene_idx, (s_title, s_dur, s_render) in enumerate(SCENE_DEFS, start=1):
-    num_frames = s_dur * FPS
-    print(f"Rendering Act {scene_idx}/{TOTAL_SCENES}: {s_title} ({s_dur}s)...")
-    
+    num_frames = int(s_dur * FPS)
+    print(f"Rendering Act {scene_idx}/{TOTAL_SCENES}: {s_title} ({s_dur}s, {num_frames} frames)...")
+
     base_img = s_render(scene_idx, current_global_frame / TOTAL_FRAMES)
     base_bgr = np.array(base_img)[:, :, ::-1].copy()
-    
+
     for f in range(num_frames):
         prog = (current_global_frame + f) / TOTAL_FRAMES
         frame_bgr = base_bgr.copy()
-        
-        # Progress bar
+
+        # Bottom Animated Progress Bar
         bar_w = min(WIDTH, int(WIDTH * prog))
         frame_bgr[HEIGHT - 5 : HEIGHT, 0 : bar_w] = (255, 210, 0)
-        
+
         proc.stdin.write(frame_bgr.tobytes())
-        
+
     current_global_frame += num_frames
 
 proc.stdin.close()
@@ -512,4 +620,5 @@ proc.wait()
 print(f"Video created successfully at: {OUTPUT_MP4}")
 os.makedirs("presentation-final", exist_ok=True)
 subprocess.run(["cp", OUTPUT_MP4, FINAL_COPY])
-print(f"Copied to: {FINAL_COPY}")
+subprocess.run(["cp", OUTPUT_MP4, FAST_COPY])
+print(f"Copied to: {FINAL_COPY} & {FAST_COPY}")
