@@ -2,6 +2,9 @@
 
 This document defines the complete technical, agentic, cryptographic, and machine learning architecture for **Saarthi**, the Governed Proactive Engagement Co-Pilot for SBI YONO.
 
+> **Live Deployed Prototype:** [https://invexora.github.io/saarthi-yono-copilot/](https://invexora.github.io/saarthi-yono-copilot/)
+> **Backend API Foundation:** `http://localhost:5050` (FastAPI / LangGraph Decision Engine)
+
 ---
 
 ## 🏛️ 1. End-to-End System Architecture
@@ -73,28 +76,20 @@ Instead of relying on multi-billion parameter cloud models that introduce latenc
 ```mermaid
 flowchart LR
   subgraph DataPipeline["Data Prep & Privacy"]
-    D1["Synthetic Generator
-(10k Multi-Persona Scenarios)"] --> D2["DPDP Privacy Scrubbing
-(Regex Masking & Noise)"]
-    D2 --> D3["Anonymized Training Dataset
-(JSONL Schema v1)"]
+    D1["Synthetic Generator (10k Multi-Persona Scenarios)"] --> D2["DPDP Privacy Scrubbing (Regex Masking & Noise)"]
+    D2 --> D3["Anonymized Training Dataset (JSONL Schema v1)"]
   end
 
   subgraph TrainingPipeline["Fine-Tuning & Distillation"]
-    T1["Teacher Model
-(Llama-3-70B Distillation)"] --> T2["Student Base
-(Llama-3.2-3B / Phi-3.5-mini)"]
+    T1["Teacher Model (Llama-3-70B Distillation)"] --> T2["Student Base (Llama-3.2-3B / Phi-3.5-mini)"]
     D3 --> T2
-    T2 --> T3["4-Bit QLoRA Fine-Tuning
-(r=16, alpha=32, lr=2e-4)"]
-    T3 --> T4["Quantized Artifacts
-(GGUF Q4_K_M / ONNX TensorRT)"]
+    T2 --> T3["4-Bit QLoRA Fine-Tuning (r=16, alpha=32, lr=2e-4)"]
+    T3 --> T4["Quantized Artifacts (GGUF Q4_K_M / ONNX TensorRT)"]
   end
 
   subgraph InferenceEngine["Edge Inference & Confidence Gate"]
     T4 --> I1["Sub-10ms Inference Runtime"]
-    I1 --> I2{"Confidence Score
-tau >= 0.85?"}
+    I1 --> I2{"Confidence Score tau >= 0.85?"}
     I2 -->|Yes: High Confidence| I3["Fast-Track Governed Action"]
     I2 -->|No: Low Confidence| I4["Deterministic Rule Graph Fallback"]
   end
@@ -120,58 +115,68 @@ The **Agentic Traffic Controller (ATC)** is a compiled **6-Node LangGraph State 
 ### Vector Diagram
 ![ATC Vector Architecture](diagrams/atc_governance_orchestrator.svg)
 
-### 6-Node LangGraph Execution Lifecycle
+---
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant Client as 📱 YONO App
-  participant Redis as 📥 Redis Streams
-  participant IG as 🛡️ Input Guardian
-  participant SLM as 🧠 Signal Detector
-  participant Neo4j as 🕸️ Neo4j Graph RAG
-  participant CG as ⚖️ Compliance Gate
-  participant OG as 🔒 Output Guardian
-  participant Ledger as 📜 HMAC Audit Ledger
+## 🛡️ 4. DPDP Act 2023 Privacy & Consent Guardrails Engine
 
-  Client->>Redis: Ingest Event (saarthi:events)
-  Redis->>IG: Stream Read (saarthi:consumers)
-  Note over IG: Enforces DPDP Purpose Masking
-  IG->>SLM: Sanitized Intent Payload
-  Note over SLM: Sub-10ms Signal Classification (tau >= 0.85)
-  SLM->>Neo4j: Intent + Customer Segment
-  Note over Neo4j: Cypher Product Match & Policy Evidence RAG
-  Neo4j->>CG: Product Offer + Policy Documents
-  Note over CG: Dynamic Budget (Avg 5) & Decline Fatigue Check
-  alt Non-Compliant / Fatigue Cooldown
-    CG-->>Client: Promotional Nudge Suppressed
-  else Compliance Cleared
-    CG->>OG: Approved Decision Package
-    Note over OG: Signs Single-Use HMAC-SHA256 Token
-    OG->>Ledger: Append to Merkle Audit Chain
-    OG-->>Client: Deliver Governed Nudge + Token
-  end
-```
+Under the **Digital Personal Data Protection Act 2023**, Saarthi enforces privacy by design:
 
-### Key Governance Controls
+![DPDP Privacy Guardrails](images/dpdp_privacy_consent_guardrails.jpg)
 
-1. **Dynamic Nudge Budget**:
-   $$	ext{Budget}_{	ext{effective}} = \min(5, 	ext{Historical Acceptances} + 1)$$
-   Prevents notification fatigue while allowing high-engagement users contextual updates.
-
-2. **Decline Fatigue Cooldown**:
-   If a customer rejects 3 consecutive nudges, all promotional nudges are capped and enter a **14-day mandatory silence cooldown**.
-
-3. **Vulnerable Customer Support-Only Mode**:
-   When financial distress signals are detected, promotional cross-selling is strictly **BLOCKED** by the policy engine, activating compassionate relationship management.
-
-4. **Cryptographic Single-Use Authorization Token**:
-   $$	ext{Token} = 	ext{HMAC-SHA256}(K_{	ext{decision}}, 	ext{Customer ID} \parallel 	ext{Product ID} \parallel 	ext{Timestamp} \parallel 	ext{Run ID})$$
-   Valid for 600 seconds, strictly single-use to eliminate replay and spoofing attacks.
+### Technical Privacy Controls:
+1. **Purpose Consent Gate**: Evaluates explicit opt-in purpose consent prior to running any behavioral profiling node.
+2. **Real-Time PII Masking Engine**: Scans input event streams and irreversibly redacts 8 identifier classes (PAN, Aadhaar, Account No., Passport, Phone, Email, Voter ID, Driving License) into cryptographically salted SHA-256 representations.
+3. **Right to Erasure Tombstone Ledger**: Automates customer erasure requests by purging all Saarthi-derived profiling data, models, and nudge caches while maintaining an immutable compliance tombstone.
+4. **JSON Portability Export**: Enables customers to download their complete algorithmic profiling trace in an open JSON schema.
 
 ---
 
-## ⚡ 4. Latency & Performance Benchmarks
+## ⏱️ 5. Dynamic Nudge Budget & Decline Fatigue Control System
+
+To prevent intrusive notification overload, Saarthi introduces a real-time behavioral governor:
+
+![Dynamic Nudge Budget & Fatigue Controller](images/dynamic_nudge_budget_fatigue_controller.jpg)
+
+### Governing Rules:
+- **Dynamic 5-Dot Budget**:
+  $$\text{Budget}_{\text{effective}} = \min(5, \text{Historical Acceptances} + 1)$$
+  Limits unsolicited promotional interactions while dynamically expanding for highly engaged users.
+- **Decline Fatigue Circuit Breaker**:
+  When a user declines 3 consecutive recommendations, all marketing prompts enter an automated **14-Day Mandatory Silence Cooldown**.
+- **Financial Stress Override**:
+  When financial hardship signals are detected, marketing nudges are instantly **BLOCKED**, switching the UI to compassionate relationship manager support.
+
+---
+
+## 🔒 6. Cryptographic Audit Ledger & Single-Use Decision Tokens
+
+Every action recommended or executed by Saarthi is mathematically verifiable and non-repudiable:
+
+![Cryptographic Audit Merkle Ledger](images/cryptographic_audit_merkle_ledger.jpg)
+
+### Cryptographic Guarantees:
+- **Single-Use Decision Token**:
+  $$\text{Token} = \text{HMAC-SHA256}(K_{\text{decision}}, \text{Customer ID} \parallel \text{Product ID} \parallel \text{Timestamp} \parallel \text{Run ID})$$
+  Scoped to a 600-second TTL and permanently marked consumed upon execution to eliminate replay vulnerabilities.
+- **Tamper-Evident Merkle Hash Chain**:
+  Each decision event appends a new node into the local HMAC ledger where $H_i = \text{SHA-256}(H_{i-1} \parallel \text{Record}_i)$, enabling instantaneous audit verification.
+
+---
+
+## 🕸️ 7. Neo4j Knowledge Graph RAG & Product Matrix
+
+Saarthi queries a rich semantic graph connecting SBI banking products, interest matrices, customer segments, and RBI guidelines:
+
+![Neo4j Graph RAG Matrix](images/neo4j_graph_rag_product_matrix.jpg)
+
+### Graph Schema Nodes & Relationships:
+- `(:Customer {segment: "corporate"})-[:HOLDS_ACCOUNT]->(:Account)`
+- `(:Product {name: "SBI Express Credit", apr: 0.105})-[:TARGETS]->(:DebtConsolidation)`
+- `(:RegulatoryPolicy {name: "RBI Digital Lending KFS"})-[:GOVERNS]->(:Product)`
+
+---
+
+## ⚡ 8. Latency & Performance Benchmarks
 
 | Component | Target Latency | P50 (Observed) | P99 (Observed) |
 | :--- | :--- | :--- | :--- |
@@ -182,11 +187,3 @@ sequenceDiagram
 | **DPDP Compliance & Nudge Gate** | < 2.0 ms | 0.35 ms | 0.70 ms |
 | **Output Guardian & Token Signing** | < 1.0 ms | 0.18 ms | 0.40 ms |
 | **End-to-End Orchestration Loop** | **< 20.0 ms** | **6.54 ms** | **11.43 ms** |
-
----
-
-## 🔒 5. Regulatory Compliance & DPDP Alignment
-
-- **DPDP Act 2023**: Active opt-in purpose consent, verifiable right to erasure, granular data export in JSON format.
-- **RBI Digital Lending Guidelines**: Full Key Fact Statement (KFS) disclosure, cooling-off period support, single-use loan authorization.
-- **Auditable Merkle Chain**: Every signal evaluation, policy decision, and consent modification is recorded with SHA-256 HMAC integrity hashes.

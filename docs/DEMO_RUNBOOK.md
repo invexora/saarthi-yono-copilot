@@ -1,8 +1,8 @@
 # Saarthi SBI Review Demo Runbook
 
-Snapshot: 13 August 2026
-Audience: SBI product, digital, risk, privacy, security, architecture and operations reviewers
-Scope: repeatable evidence for the current synthetic reference prototype
+> **Live Deployed Prototype:** [https://invexora.github.io/saarthi-yono-copilot/](https://invexora.github.io/saarthi-yono-copilot/)
+> **Audience:** SBI product, digital, risk, privacy, security, architecture and operations reviewers
+> **Scope:** Repeatable evidence for the current synthetic reference prototype
 
 ## Review boundary
 

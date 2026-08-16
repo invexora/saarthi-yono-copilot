@@ -1,30 +1,38 @@
 # Saarthi — Proactive Digital Engagement Co-Pilot for YONO SBI
 
+[![Live Demo](https://img.shields.io/badge/Live_Deployed_App-GitHub_Pages-22c55e?style=for-the-badge&logo=github&logoColor=white)](https://invexora.github.io/saarthi-yono-copilot/)
+[![Backend Health](https://img.shields.io/badge/FastAPI_Backend-0.16--governed--artifacts-3b82f6?style=for-the-badge&logo=fastapi&logoColor=white)](http://localhost:5050/api/v1/health)
+[![DPDP Act 2023](https://img.shields.io/badge/DPDP_Compliance-Audited_Guardrails-a855f7?style=for-the-badge&logo=shield&logoColor=white)](docs/ARCHITECTURE.md#4-dpdp-act-2023-privacy--consent-guardrails-engine)
+
 Saarthi is a governed proactive-engagement reference prototype designed for a future **YONO SBI** integration. It detects synthetic customer signals and demonstrates policy-controlled recommendations; it is not currently connected to SBI systems or approved for customers.
 
-Built for the **YONO Copilot Hackathon**, Saarthi currently provides a high-fidelity experience prototype and a pilot-oriented backend foundation. It demonstrates privacy and fair-engagement controls inspired by the **Digital Personal Data Protection (DPDP) Act 2023** and RBI guidance; formal compliance remains subject to SBI legal, security, risk, and architecture review.
+Built for the **YONO Copilot Hackathon**, Saarthi provides a high-fidelity experience prototype and a pilot-oriented backend foundation. It demonstrates privacy and fair-engagement controls inspired by the **Digital Personal Data Protection (DPDP) Act 2023** and RBI guidance; formal compliance remains subject to SBI legal, security, risk, and architecture review.
 
 ---
 
-## 🚀 Demo & Technical Walkthrough
+## 🌐 Live Deployed Application & Walkthrough
 
-*   **Current checked-out prototype:** `http://127.0.0.1:8000` while the local services are running.
-*   **Connected/production-mode walkthrough:** open the prototype without `?mode=offline-demo` against API `5050` and follow [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md).
-*   **UI/UX rehearsal mode:** `http://127.0.0.1:8000/?mode=offline-demo` (simulation-only, no real action).
-*   **Deck:** `presentation.html` contains the final presentation pack.
-*   **Local media assets:** `presentation-final/` (for slide renders/video artifacts; distribution depends on your packaging policy).
+*   🚀 **Live Deployed Prototype:** [**https://invexora.github.io/saarthi-yono-copilot/**](https://invexora.github.io/saarthi-yono-copilot/)
+*   💻 **Local Web Server:** `http://127.0.0.1:8000`
+*   ⚙️ **Backend Decision Engine:** `http://127.0.0.1:5050` (FastAPI / LangGraph)
+*   📖 **Interactive Runbook:** [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md)
+*   📊 **Presentation Pack:** `presentation.html`
 
 ---
 
 ## 🏛️ System & SLM Architecture Blueprints
 
-Comprehensive architectural blueprints, Small Language Model (SLM) training/inference pipelines, and Agentic Traffic Controller (ATC) state machine diagrams are documented in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**:
+Comprehensive architectural blueprints, Small Language Model (SLM) training/inference pipelines, DPDP guardrails, and Agentic Traffic Controller (ATC) state machine diagrams are documented in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**:
 
-| Architectural Component | Blueprint & Specification | Visual Diagram |
+| Architectural Component | Blueprint & Specification | Visual Architecture Diagram |
 | :--- | :--- | :--- |
-| **End-to-End System** | [docs/ARCHITECTURE.md#1-end-to-end-system-architecture](docs/ARCHITECTURE.md#1-end-to-end-system-architecture) | ![System Architecture](docs/images/saarthi_full_copilot_architecture.jpg) |
-| **Small Language Model (SLM)** | [docs/ARCHITECTURE.md#2-small-language-model-slm-architecture--signal-detection](docs/ARCHITECTURE.md#2-small-language-model-slm-architecture--signal-detection) | ![SLM Flow](docs/images/slm_architecture_flow.jpg) |
-| **Agentic Traffic Controller (ATC)** | [docs/ARCHITECTURE.md#3-agentic-traffic-controller-atc--decision-orchestrator](docs/ARCHITECTURE.md#3-agentic-traffic-controller-atc--decision-orchestrator) | ![ATC Decision](docs/images/atc_decision_orchestrator.jpg) |
+| **1. End-to-End System** | [docs/ARCHITECTURE.md#1-end-to-end-system-architecture](docs/ARCHITECTURE.md#1-end-to-end-system-architecture) | ![System Architecture](docs/images/saarthi_full_copilot_architecture.jpg) |
+| **2. Small Language Model (SLM)** | [docs/ARCHITECTURE.md#2-small-language-model-slm-architecture--signal-detection](docs/ARCHITECTURE.md#2-small-language-model-slm-architecture--signal-detection) | ![SLM Flow](docs/images/slm_architecture_flow.jpg) |
+| **3. Agentic Traffic Controller (ATC)** | [docs/ARCHITECTURE.md#3-agentic-traffic-controller-atc--decision-orchestrator](docs/ARCHITECTURE.md#3-agentic-traffic-controller-atc--decision-orchestrator) | ![ATC Decision](docs/images/atc_decision_orchestrator.jpg) |
+| **4. DPDP Privacy & Consent Guardrails** | [docs/ARCHITECTURE.md#4-dpdp-act-2023-privacy--consent-guardrails-engine](docs/ARCHITECTURE.md#4-dpdp-act-2023-privacy--consent-guardrails-engine) | ![DPDP Guardrails](docs/images/dpdp_privacy_consent_guardrails.jpg) |
+| **5. Dynamic Nudge Budget & Fatigue Controller** | [docs/ARCHITECTURE.md#5-dynamic-nudge-budget--decline-fatigue-control-system](docs/ARCHITECTURE.md#5-dynamic-nudge-budget--decline-fatigue-control-system) | ![Nudge Budget](docs/images/dynamic_nudge_budget_fatigue_controller.jpg) |
+| **6. Cryptographic Audit Merkle Ledger** | [docs/ARCHITECTURE.md#6-cryptographic-audit-ledger--single-use-decision-tokens](docs/ARCHITECTURE.md#6-cryptographic-audit-ledger--single-use-decision-tokens) | ![Audit Ledger](docs/images/cryptographic_audit_merkle_ledger.jpg) |
+| **7. Neo4j Knowledge Graph RAG Matrix** | [docs/ARCHITECTURE.md#7-neo4j-knowledge-graph-rag--product-matrix](docs/ARCHITECTURE.md#7-neo4j-knowledge-graph-rag--product-matrix) | ![Graph RAG](docs/images/neo4j_graph_rag_product_matrix.jpg) |
 
 ---
 
